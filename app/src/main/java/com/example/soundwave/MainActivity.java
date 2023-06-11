@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPlaying() {
         stopPlaying();
-        int frequency = frequencyBar.getProgress();
+        int frequency = Integer.parseInt(frequencyTxt.getText().toString());
         int duration = durationBar.getProgress();
         soundGenerator = new SoundGenerator(frequency, duration);
         soundGenerator.play();
@@ -55,6 +55,38 @@ public class MainActivity extends AppCompatActivity {
         //TODO: save tone
     }
 
+    private int convertFromSlider(int sliderValue) {
+        int output = 0;
+        double fractionOutput = 0.0d;
+        double toEightPower = 0.0d;
+
+        sliderValue += 500;
+        toEightPower = sliderValue/500.0d;
+        fractionOutput = Math.pow(toEightPower, 10);
+        output = (int) Math.round(fractionOutput); // 1 is the lowest possible
+        output += 19; // thats why + 19 to match 20Hz minimum
+
+        if (output > Constants.FREQ_MAX.value)
+            output = Constants.FREQ_MAX.value;
+
+        return output;
+    }
+
+    private int convertToSlider(int input) {
+        int output = 0;
+        double fractionOutput = 0.0d;
+
+        double toEightPower = input/20.0d;
+        fractionOutput = Math.pow(toEightPower, 8);
+        output = (int) Math.round(fractionOutput);
+
+
+
+
+
+        return output;
+    }
+
     private void initializeUIElements() {
         frequencyBar = findViewById(R.id.frequency_bar);
         durationBar = findViewById(R.id.duration_bar);
@@ -67,16 +99,17 @@ public class MainActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_btn);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            frequencyBar.setMin(Constants.FREQ_MIN.value);
+            frequencyBar.setMin(0);
             durationBar.setMin(Constants.DURATION_MIN.value);
         }
-        frequencyBar.setMax(Constants.FREQ_MAX.value);
+        frequencyBar.setMax(850);
         durationBar.setMax(Constants.DURATION_MAX.value);
 
-        frequencyBar.setProgress(Constants.FREQUENCY_START.value);
+        frequencyBar.setProgress(425);
         durationBar.setProgress(Constants.DURATION_START.value);
 
-        frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_START.value));
+        //frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_START.value));
+        frequencyTxt.setText(String.valueOf(convertFromSlider(425)));
         durationTxt.setText(String.valueOf(Constants.DURATION_START.value));
     }
 
@@ -84,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         frequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                frequencyTxt.setText(String.valueOf(progress));
+                frequencyTxt.setText(String.valueOf(convertFromSlider(progress)));
             }
 
             @Override

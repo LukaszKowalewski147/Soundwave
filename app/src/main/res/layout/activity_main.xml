@@ -29,8 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/frequency_txt"
-        android:layout_toEndOf="@id/frequency_txt"
-        android:layout_marginLeft="40dp"
+        android:layout_alignEnd="@+id/frequency_bar"
         android:text="ZASTOSUJ"/>
 
     <SeekBar
@@ -38,7 +37,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/frequency_txt"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
 
     <TextView
         android:id="@+id/duration_hint"
@@ -64,8 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/duration_txt"
-        android:layout_toEndOf="@id/duration_txt"
-        android:layout_marginLeft="40dp"
+        android:layout_alignEnd="@id/duration_bar"
         android:text="ZASTOSUJ"/>
 
     <SeekBar
@@ -73,14 +73,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/duration_txt"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"/>
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Soundwave"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/on_btn"
