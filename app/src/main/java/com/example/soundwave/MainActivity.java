@@ -58,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
     private int convertFromSlider(int sliderValue) {
         int output = 0;
         double fractionOutput = 0.0d;
-        double toEightPower = 0.0d;
+        double toTenthPower = 0.0d;
 
         sliderValue += 500;
-        toEightPower = sliderValue/500.0d;
-        fractionOutput = Math.pow(toEightPower, 10);
+        toTenthPower = sliderValue/500.0d;
+        fractionOutput = Math.pow(toTenthPower, 10);
         output = (int) Math.round(fractionOutput); // 1 is the lowest possible
         output += 19; // thats why + 19 to match 20Hz minimum
 
@@ -75,14 +75,13 @@ public class MainActivity extends AppCompatActivity {
     private int convertToSlider(int input) {
         int output = 0;
         double fractionOutput = 0.0d;
+        double toTenthRoot = 0.0d;
 
-        double toEightPower = input/20.0d;
-        fractionOutput = Math.pow(toEightPower, 8);
+        input -= 19;
+        toTenthRoot = Math.pow(input, (double) 1/10);
+        fractionOutput = toTenthRoot * 500;
+        fractionOutput -= 500;
         output = (int) Math.round(fractionOutput);
-
-
-
-
 
         return output;
     }
@@ -99,17 +98,16 @@ public class MainActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_btn);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            frequencyBar.setMin(0);
+            frequencyBar.setMin(Constants.FREQ_SLIDER_MIN.value);
             durationBar.setMin(Constants.DURATION_MIN.value);
         }
-        frequencyBar.setMax(850);
+        frequencyBar.setMax(Constants.FREQ_SLIDER_MAX.value);
         durationBar.setMax(Constants.DURATION_MAX.value);
 
-        frequencyBar.setProgress(425);
+        frequencyBar.setProgress(Constants.FREQ_SLIDER_START.value);
         durationBar.setProgress(Constants.DURATION_START.value);
 
-        //frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_START.value));
-        frequencyTxt.setText(String.valueOf(convertFromSlider(425)));
+        frequencyTxt.setText(String.valueOf(convertFromSlider(Constants.FREQ_SLIDER_START.value)));
         durationTxt.setText(String.valueOf(Constants.DURATION_START.value));
     }
 
@@ -153,12 +151,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int frequency = Integer.parseInt(frequencyTxt.getText().toString());
 
-                if (frequency >= Constants.FREQ_MIN.value && frequency <= Constants.FREQ_MAX.value)
-                    frequencyBar.setProgress(frequency);
+                if (frequency >= Constants.FREQ_MIN.value && frequency <= Constants.FREQ_MAX.value) {
+                    frequencyBar.setProgress(convertToSlider(frequency));
+                    frequencyTxt.setText(String.valueOf(frequency));
+                }
                 else if (frequency > Constants.FREQ_MAX.value)
-                    frequencyBar.setProgress(Constants.FREQ_MAX.value);
+                    frequencyBar.setProgress(Constants.FREQ_SLIDER_MAX.value);
                 else
-                    frequencyBar.setProgress(Constants.FREQ_MIN.value);
+                    frequencyBar.setProgress(Constants.FREQ_SLIDER_MIN.value);
             }
         });
 
