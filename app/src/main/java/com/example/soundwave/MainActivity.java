@@ -155,10 +155,15 @@ public class MainActivity extends AppCompatActivity {
                     frequencyBar.setProgress(convertToSlider(frequency));
                     frequencyTxt.setText(String.valueOf(frequency));
                 }
-                else if (frequency > Constants.FREQ_MAX.value)
+                else if (frequency > Constants.FREQ_MAX.value) {
                     frequencyBar.setProgress(Constants.FREQ_SLIDER_MAX.value);
-                else
+                    frequencyTxt.setText(String.valueOf(Constants.FREQ_MAX.value));
+                }
+                else {
                     frequencyBar.setProgress(Constants.FREQ_SLIDER_MIN.value);
+                    frequencyTxt.setText(String.valueOf(Constants.FREQ_MIN.value));
+                }
+
             }
         });
 
@@ -169,10 +174,14 @@ public class MainActivity extends AppCompatActivity {
 
                 if (duration >= Constants.DURATION_MIN.value && duration <= Constants.DURATION_MAX.value)
                     durationBar.setProgress(duration);
-                else if (duration > Constants.DURATION_MAX.value)
+                else if (duration > Constants.DURATION_MAX.value) {
                     durationBar.setProgress(Constants.DURATION_MAX.value);
-                else
+                    durationTxt.setText(String.valueOf(Constants.DURATION_MAX.value));
+                }
+                else {
                     durationBar.setProgress(Constants.DURATION_MIN.value);
+                    durationTxt.setText(String.valueOf(Constants.DURATION_MIN.value));
+                }
             }
         });
 
