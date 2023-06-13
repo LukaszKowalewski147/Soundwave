@@ -16,7 +16,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText frequencyTxt;
     private EditText durationTxt;
     private AppCompatButton frequencyApplyBtn;
+    private AppCompatButton frequencyDecrementBtn;
+    private AppCompatButton frequencyIncrementBtn;
     private AppCompatButton durationApplyBtn;
+    private AppCompatButton durationDecrementBtn;
+    private AppCompatButton durationIncrementBtn;
     private AppCompatButton startBtn;
     private AppCompatButton stopBtn;
     private AppCompatButton saveBtn;
@@ -65,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
         sliderValue += 500;
         toTenthPower = sliderValue/500.0d;
         fractionOutput = Math.pow(toTenthPower, 10);
-        output = (int) Math.round(fractionOutput); // 1 is the lowest possible
-        output += 19; // thats why + 19 to match 20Hz minimum
+        output = (int) Math.round(fractionOutput);  // 1 is the lowest possible
+        output += 19;                               // thats why + 19 to match 20Hz minimum
 
         if (output > Constants.FREQ_MAX.value)
             output = Constants.FREQ_MAX.value;
@@ -94,7 +98,11 @@ public class MainActivity extends AppCompatActivity {
         frequencyTxt = findViewById(R.id.frequency_txt);
         durationTxt = findViewById(R.id.duration_txt);
         frequencyApplyBtn = findViewById(R.id.frequency_apply_btn);
+        frequencyDecrementBtn = findViewById(R.id.frequency_decrement_btn);
+        frequencyIncrementBtn = findViewById(R.id.frequency_increment_btn);
         durationApplyBtn = findViewById(R.id.duration_apply_btn);
+        durationDecrementBtn = findViewById(R.id.duration_decrement_btn);
+        durationIncrementBtn = findViewById(R.id.duration_increment_btn);
         startBtn = findViewById(R.id.on_btn);
         stopBtn = findViewById(R.id.off_btn);
         saveBtn = findViewById(R.id.save_btn);
@@ -183,6 +191,50 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     durationBar.setProgress(Constants.DURATION_MIN.value);
                     durationTxt.setText(String.valueOf(Constants.DURATION_MIN.value));
+                }
+            }
+        });
+
+        frequencyDecrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int frequency = Integer.parseInt(frequencyTxt.getText().toString());
+                if (--frequency >= Constants.FREQ_MIN.value) {
+                    frequencyBar.setProgress(convertToSlider(frequency));
+                    frequencyTxt.setText(String.valueOf(frequency));
+                }
+            }
+        });
+
+        frequencyIncrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int frequency = Integer.parseInt(frequencyTxt.getText().toString());
+                if (++frequency <= Constants.FREQ_MAX.value) {
+                    frequencyBar.setProgress(convertToSlider(frequency));
+                    frequencyTxt.setText(String.valueOf(frequency));
+                }
+            }
+        });
+
+        durationDecrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int duration = Integer.parseInt(durationTxt.getText().toString());
+                if (--duration >= Constants.DURATION_MIN.value) {
+                    durationBar.setProgress(duration);
+                    durationTxt.setText(String.valueOf(duration));
+                }
+            }
+        });
+
+        durationIncrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int duration = Integer.parseInt(durationTxt.getText().toString());
+                if (++duration <= Constants.DURATION_MAX.value) {
+                    durationBar.setProgress(duration);
+                    durationTxt.setText(String.valueOf(duration));
                 }
             }
         });

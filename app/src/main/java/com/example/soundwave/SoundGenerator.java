@@ -18,23 +18,24 @@ import java.nio.ByteOrder;
 
 public class SoundGenerator {
 
-    private Context context;
-    private static final int FILE_BPS = 16; // bits per sample
     private static final String FILE_EXTENSION = ".wav";
     private static final String FILE_FOLDER = "myTones";
-    private static final String FILE_NAME = "myTone3.wav";
 
+    private Context context;
     private AudioTrack audioTrack;
-    private final int sampleRate = 44100;   // in Hz (CD quality)
+
     private final int numberOfSamples;
-    private final int frequency;         // in Hz
+    private final int frequency;        // in Hz
+    private final int duration;         // in s
     private final double sample[];
     private final byte outputSound[];
 
     public SoundGenerator(Context context, int frequency, int duration) {
         this.context = context;
         this.frequency = frequency;
-        numberOfSamples = duration * sampleRate;
+        this.duration = duration;
+
+        numberOfSamples = duration * Constants.SAMPLE_RATE.value;
         sample = new double[numberOfSamples];
         outputSound = new byte[2 * numberOfSamples];
 
@@ -49,34 +50,20 @@ public class SoundGenerator {
                         .build())
                 .setAudioFormat(new AudioFormat.Builder()
                         .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                        .setSampleRate(sampleRate)
+                        .setSampleRate(Constants.SAMPLE_RATE.value)
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
                 .setBufferSizeInBytes(outputSound.length)
                 .build();
         audioTrack.write(outputSound, 0, outputSound.length);
         audioTrack.play();
+        Toast.makeText(context, "Odtwarzanie...", Toast.LENGTH_SHORT).show();
     }
 
     public void stop() {
         audioTrack.stop();
         audioTrack.release();
-    }
-
-    private void genTone() {
-        for (int i = 0; i < numberOfSamples; ++i) {
-            sample[i] = Math.sin(2 * Math.PI * i/(sampleRate/(double)frequency));
-        }
-
-        // convert to 16 bit pcm sound array
-        int index = 0;
-        for (final double dVal : sample) {
-            // scale to maximum amplitude
-            final short val = (short) ((dVal * 32767));
-            // in 16 bit wav PCM, first byte is the low order byte
-            outputSound[index++] = (byte) (val & 0x00ff);
-            outputSound[index++] = (byte) ((val & 0xff00) >>> 8);
-        }
+        Toast.makeText(context, "Zatrzymano odtwarzanie", Toast.LENGTH_SHORT).show();
     }
 
     public void saveTone() {
@@ -108,11 +95,27 @@ public class SoundGenerator {
                 }
             }
         }
+    }
 
+    private void genTone() {
+        for (int i = 0; i < numberOfSamples; ++i) {
+            sample[i] = Math.sin(2 * Math.PI * i/(Constants.SAMPLE_RATE.value/(double)frequency));
+        }
+
+        // convert to 16 bit pcm sound array
+        int index = 0;
+        for (final double dVal : sample) {
+            // scale to maximum amplitude
+            final short val = (short) ((dVal * 32767));
+            // in 16 bit wav PCM, first byte is the low order byte
+            outputSound[index++] = (byte) (val & 0x00ff);
+            outputSound[index++] = (byte) ((val & 0xff00) >>> 8);
+        }
     }
 
     private String getFilename() {
-        return (System.currentTimeMillis() + FILE_EXTENSION);
+        String filename = frequency + "hz-" + duration + "s-" + System.currentTimeMillis() + FILE_EXTENSION;
+        return filename;
     }
 
     private boolean isExternalStorageAvailable() {
@@ -123,23 +126,19 @@ public class SoundGenerator {
     }
 
     private static void writeWavHeader(OutputStream out) throws IOException {
-        // Convert the multi-byte integers to raw bytes in little endian format as required by the spec
-
         short channels = 1;
         short bitDepth = 16;
-        int sampleRate = 44100;
 
         byte[] littleBytes = ByteBuffer
                 .allocate(14)
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .putShort(channels)
-                .putInt(sampleRate)
-                .putInt(sampleRate * channels * (bitDepth / 8))
+                .putInt(Constants.SAMPLE_RATE.value)
+                .putInt(Constants.SAMPLE_RATE.value * channels * (bitDepth / 8))
                 .putShort((short) (channels * (bitDepth / 8)))
                 .putShort(bitDepth)
                 .array();
 
-        // Not necessarily the best, but it's very easy to visualize this way
         out.write(new byte[]{
                 // RIFF header
                 'R', 'I', 'F', 'F', // ChunkID
@@ -164,15 +163,12 @@ public class SoundGenerator {
         byte[] sizes = ByteBuffer
                 .allocate(8)
                 .order(ByteOrder.LITTLE_ENDIAN)
-                // There are probably a bunch of different/better ways to calculate
-                // these two given your circumstances. Cast should be safe since if the WAV is
-                // > 4 GB we've already made a terrible mistake.
                 .putInt((int) (wav.length() - 8)) // ChunkSize
                 .putInt((int) (wav.length() - 44)) // Subchunk2Size
                 .array();
 
         RandomAccessFile accessWave = null;
-        //noinspection CaughtExceptionImmediatelyRethrown
+
         try {
             accessWave = new RandomAccessFile(wav, "rw");
             // ChunkSize
@@ -183,14 +179,13 @@ public class SoundGenerator {
             accessWave.seek(40);
             accessWave.write(sizes, 4, 4);
         } catch (IOException ex) {
-            // Rethrow but we still close accessWave in our finally
             throw ex;
         } finally {
             if (accessWave != null) {
                 try {
                     accessWave.close();
                 } catch (IOException ex) {
-                    //
+
                 }
             }
         }
