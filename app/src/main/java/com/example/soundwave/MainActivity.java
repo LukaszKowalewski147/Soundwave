@@ -5,9 +5,6 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Contacts;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -41,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         stopPlaying();
         int frequency = Integer.parseInt(frequencyTxt.getText().toString());
         int duration = durationBar.getProgress();
-        soundGenerator = new SoundGenerator(frequency, duration);
+        soundGenerator = new SoundGenerator(this, frequency, duration);
         soundGenerator.play();
     }
 
@@ -52,7 +49,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveTone() {
-        //TODO: save tone
+        stopPlaying();
+        int frequency = Integer.parseInt(frequencyTxt.getText().toString());
+        int duration = durationBar.getProgress();
+        soundGenerator = new SoundGenerator(this, frequency, duration);
+        soundGenerator.saveTone();
+        soundGenerator = null;
     }
 
     private int convertFromSlider(int sliderValue) {
