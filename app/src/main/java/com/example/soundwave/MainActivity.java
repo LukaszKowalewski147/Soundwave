@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,14 +26,16 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton stopBtn;
     private AppCompatButton saveBtn;
 
-    private SoundGenerator soundGenerator;
+    private Tone tone;
+    private TonePlayer tonePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        soundGenerator = null;
+        tone = null;
+        tonePlayer = null;
 
         initializeUIElements();
         initializeUIListeners();
@@ -40,25 +43,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPlaying() {
         stopPlaying();
-        int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-        int duration = durationBar.getProgress();
-        soundGenerator = new SoundGenerator(this, frequency, duration);
-        soundGenerator.play();
+        int frequency = getFrequency();
+        short duration = getDuration();
+        tone = new SoundGenerator(frequency, duration).generateTone();
+        tonePlayer = new TonePlayer(tone);
+        tonePlayer.play(this);
     }
 
     private void stopPlaying() {
-        if (soundGenerator != null)
-            soundGenerator.stop();
-        soundGenerator = null;
+        if (tonePlayer != null)
+            tonePlayer.stop(this);
+        tonePlayer = null;
+        tone = null;
     }
 
     private void saveTone() {
         stopPlaying();
-        int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-        int duration = durationBar.getProgress();
-        soundGenerator = new SoundGenerator(this, frequency, duration);
-        soundGenerator.saveTone();
-        soundGenerator = null;
+        int frequency = getFrequency();
+        short duration = getDuration();
+        tone = new SoundGenerator(frequency, duration).generateTone();
+        WavCreator wavCreator = new WavCreator(this, tone);
+        wavCreator.saveTone();
+    }
+
+    private int getFrequency() {
+        return Integer.parseInt(frequencyTxt.getText().toString());
+    }
+
+    private short getDuration() {
+        return (short) durationBar.getProgress();
     }
 
     private int convertFromSlider(int sliderValue) {
