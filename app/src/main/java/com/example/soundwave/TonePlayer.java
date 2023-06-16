@@ -28,6 +28,7 @@ public class TonePlayer {
 
     public void stop(Context context) {
         if (isPlaying()) {
+            fadeOutStop();
             audioTrack.stop();
             audioTrack.release();
             Toast.makeText(context, "Zatrzymano odtwarzanie", Toast.LENGTH_SHORT).show();
@@ -44,6 +45,15 @@ public class TonePlayer {
         if (audioTrack != null)
             return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
         return false;
+    }
+
+    private void fadeOutStop() {
+        audioTrack.setVolume(0.0f);
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void buildAudioTrack() {
