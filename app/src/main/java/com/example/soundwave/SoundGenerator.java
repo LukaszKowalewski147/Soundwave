@@ -1,7 +1,7 @@
 package com.example.soundwave;
 
 public class SoundGenerator {
-    private final int numberOfSamples;
+    private final int samplesNumber;
     private final int frequency;        // in Hz
     private final short duration;         // in s
     private final double sample[];
@@ -11,13 +11,13 @@ public class SoundGenerator {
         this.frequency = frequency;
         this.duration = duration;
 
-        numberOfSamples = duration * Constants.SAMPLE_RATE.value;
-        sample = new double[numberOfSamples];
-        outputSound = new byte[2 * numberOfSamples];
+        samplesNumber = duration * Constants.SAMPLE_RATE.value;
+        sample = new double[samplesNumber];
+        outputSound = new byte[2 * samplesNumber];
     }
 
     public Tone generateTone() {
-        for (int i = 0; i < numberOfSamples; ++i) {
+        for (int i = 0; i < samplesNumber; ++i) {
             sample[i] = Math.sin(2 * Math.PI * i/(Constants.SAMPLE_RATE.value/(double)frequency));
         }
 
@@ -30,6 +30,43 @@ public class SoundGenerator {
             outputSound[index++] = (byte) (val & 0x00ff);
             outputSound[index++] = (byte) ((val & 0xff00) >>> 8);
         }
+        fadeIn();
+        fadeOut();
         return new Tone(outputSound, frequency, duration);
+    }
+
+    private void fadeIn() {
+        int index = 0;
+        int fadeDuration = getFadeDuration();
+        double faderStep = getFaderStep();
+        double fader = 0.0d;
+
+        for (int i = 0; i < fadeDuration; ++i) {
+            outputSound[index++] *= fader;
+            outputSound[index++] *= fader;
+            fader += faderStep;
+        }
+    }
+
+    private void fadeOut() {
+        int index = (samplesNumber * 2) - 1;
+        int fadeDuration = getFadeDuration();
+        double faderStep = getFaderStep();
+        double fader = 0.0d;
+
+        for (int i = samplesNumber - 1; i > samplesNumber - fadeDuration; --i) {
+            outputSound[index--] *= fader;
+            outputSound[index--] *= fader;
+            fader += faderStep;
+        }
+    }
+
+    private double getFaderStep() {
+        int fadeDuration = getFadeDuration();
+        return 1.0d / fadeDuration;
+    }
+
+    private int getFadeDuration() {
+        return Constants.SAMPLE_RATE.value / 50; // 0.02s
     }
 }
