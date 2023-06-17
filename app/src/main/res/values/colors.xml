@@ -11,4 +11,11 @@
     <color name="background_end">#500000</color>
     <color name="button_start">#006DB6</color>
     <color name="button_end">#004C9E</color>
+
+    <color name="background2_start">#4C006D</color>
+    <color name="background2_center">#2D0060</color>
+    <color name="background2_end">#000000</color>
+    <color name="button2_start">#7E4EFF</color>
+    <color name="button2_end">#57007C</color>
+    <color name="transparent_black">#1A000000</color>
 </resources>

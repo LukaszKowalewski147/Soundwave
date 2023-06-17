@@ -7,195 +7,363 @@
     android:background="@drawable/background"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/frequency_header"
+    <RelativeLayout
+        android:id="@+id/frequency_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:text="Tone frequency"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shadow_layout"
+        android:padding="20dp">
 
-    <EditText
-        android:id="@+id/frequency_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/frequency_header"
-        android:layout_marginTop="5dp"
-        android:inputType="numberSigned"
-        android:textColor="@color/white"
-        android:text="500"/>
+        <RelativeLayout
+            android:id="@+id/frequency_top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/frequency_unit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/frequency_txt"
-        android:layout_alignBottom="@+id/frequency_txt"
-        android:layout_toEndOf="@+id/frequency_txt"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:text="Hz"/>
+            <EditText
+                android:id="@+id/frequency_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:inputType="numberSigned"
+                android:text="500"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/frequency_apply_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
-        android:layout_alignTop="@+id/frequency_txt"
-        android:layout_alignEnd="@+id/frequency_bar"
-        android:textColor="@color/black"
-        android:text="APPLY"/>
+            <TextView
+                android:id="@+id/frequency_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:text="FREQUENCY"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:gravity="center"/>
 
-    <SeekBar
-        android:id="@+id/frequency_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/frequency_txt"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp" />
+            <TextView
+                android:id="@+id/frequency_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/frequency_txt"
+                android:gravity="center"
+                android:text="Hz"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/frequency_decrement_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
-        android:layout_alignTop="@+id/frequency_bar"
-        android:layout_alignStart="@+id/frequency_bar"
-        android:layout_marginTop="35dp"
-        android:textColor="@color/black"
-        android:text="-"/>
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/frequency_apply_btn"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/custom_button"
+                android:text="APPLY"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/frequency_increment_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
-        android:layout_alignTop="@+id/frequency_bar"
-        android:layout_alignEnd="@+id/frequency_bar"
-        android:layout_marginTop="35dp"
-        android:textColor="@color/black"
-        android:text="+"/>
+        </RelativeLayout>
 
-    <TextView
-        android:id="@+id/duration_hint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/frequency_decrement_btn"
-        android:layout_marginTop="40dp"
-        android:textColor="@color/white"
-        android:text="Tone duration"/>
-
-    <EditText
-        android:id="@+id/duration_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/duration_hint"
-        android:layout_marginTop="5dp"
-        android:inputType="numberSigned"
-        android:textColor="@color/white"
-        android:text="30"/>
-
-    <TextView
-        android:id="@+id/duration_unit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/duration_txt"
-        android:layout_alignBottom="@+id/duration_txt"
-        android:layout_toEndOf="@+id/duration_txt"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:text="s"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/duration_apply_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
-        android:layout_alignTop="@+id/duration_txt"
-        android:layout_alignEnd="@id/duration_bar"
-        android:textColor="@color/black"
-        android:text="APPLY"/>
-
-    <SeekBar
-        android:id="@+id/duration_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/duration_txt"
-        android:layout_marginTop="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/duration_decrement_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
-        android:layout_alignTop="@+id/duration_bar"
-        android:layout_alignStart="@+id/duration_bar"
-        android:layout_marginTop="35dp"
-        android:textColor="@color/black"
-        android:text="-"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/duration_increment_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_button"
-        android:layout_alignTop="@+id/duration_bar"
-        android:layout_alignEnd="@+id/duration_bar"
-        android:layout_marginTop="35dp"
-        android:textColor="@color/black"
-        android:text="+"/>
-
-    <LinearLayout
-        android:id="@+id/playback_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/duration_decrement_btn"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="60dp" >
+        <SeekBar
+            android:id="@+id/frequency_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frequency_top_layout"
+            android:layout_marginTop="15dp" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/on_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/frequency_decrement_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignStart="@+id/frequency_bar"
+            android:layout_alignTop="@+id/frequency_bar"
+            android:layout_marginTop="35dp"
             android:background="@drawable/custom_button"
-            android:layout_marginEnd="30dp"
-            android:textColor="@color/black"
-            android:text="START"/>
+            android:text="-"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/off_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/frequency_increment_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/frequency_bar"
+            android:layout_alignEnd="@+id/frequency_bar"
+            android:layout_marginTop="35dp"
             android:background="@drawable/custom_button"
-            android:textColor="@color/black"
-            android:text="STOP"/>
+            android:text="+"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
 
-    </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/duration_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/frequency_layout"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shadow_layout"
+        android:padding="20dp">
+
+        <RelativeLayout
+            android:id="@+id/duration_top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/duration_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:inputType="numberSigned"
+                android:text="30"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/duration_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:text="DURATION"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/duration_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/duration_txt"
+                android:gravity="center"
+                android:text="s"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/duration_apply_btn"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/custom_button"
+                android:text="APPLY"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+        </RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/duration_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/duration_top_layout"
+            android:layout_marginTop="15dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/duration_decrement_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignStart="@+id/duration_bar"
+            android:layout_alignTop="@+id/duration_bar"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/custom_button"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/duration_increment_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignTop="@+id/duration_bar"
+            android:layout_alignEnd="@+id/duration_bar"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/custom_button"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/playback_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" >
+        android:layout_below="@id/duration_layout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shadow_layout"
+        android:padding="20dp">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/save_btn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_button"
-            android:layout_centerInParent="true"
-            android:textColor="@color/black"
-            android:text="SAVE"/>
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RelativeLayout
+                android:id="@+id/tone_info"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/tone_details_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:text="Tone details"/>
+
+                <TextView
+                    android:id="@+id/tone_details_frequency_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tone_details_header"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:text="Frequency:"/>
+
+                <TextView
+                    android:id="@+id/tone_details_frequency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/tone_details_frequency_txt"
+                    android:layout_toEndOf="@+id/tone_details_sampling_txt"
+                    android:textColor="@color/white"
+                    android:text="500Hz"/>
+
+                <TextView
+                    android:id="@+id/tone_details_duration_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tone_details_frequency"
+                    android:textColor="@color/white"
+                    android:text="Duration:"/>
+
+                <TextView
+                    android:id="@+id/tone_details_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/tone_details_duration_txt"
+                    android:layout_toEndOf="@id/tone_details_sampling_txt"
+                    android:textColor="@color/white"
+                    android:text="30s"/>
+
+                <TextView
+                    android:id="@+id/tone_details_sampling_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tone_details_duration_txt"
+                    android:textColor="@color/white"
+                    android:text="Sample rate:  "/>
+
+                <TextView
+                    android:id="@+id/tone_details_sampling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/tone_details_sampling_txt"
+                    android:layout_toEndOf="@id/tone_details_sampling_txt"
+                    android:textColor="@color/white"
+                    android:text="44100Hz"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/tone_menu"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/load_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/custom_button"
+                    android:text="LOAD"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/save_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/load_btn"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/custom_button"
+                    android:text="SAVE"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/playback_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/playback_separator"
+            android:layout_marginBottom="20dp"/>
+
+        <View
+            android:id="@+id/playback_separator"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignTop="@+id/playback_layout"/>
+
+        <LinearLayout
+            android:id="@+id/playback_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/pause_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ic_baseline_pause_circle_filled_24"/>
+
+            <ImageButton
+                android:id="@+id/play_btn"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/ic_baseline_play_circle_filled_24"/>
+
+            <ImageButton
+                android:id="@+id/stop_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ic_baseline_stop_circle_24"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

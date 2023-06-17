@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton durationApplyBtn;
     private AppCompatButton durationDecrementBtn;
     private AppCompatButton durationIncrementBtn;
-    private AppCompatButton startBtn;
-    private AppCompatButton stopBtn;
+    private ImageButton playBtn;
+    private ImageButton pauseBtn;
+    private ImageButton stopBtn;
     private AppCompatButton saveBtn;
 
     private Tone tone;
@@ -40,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         initializeUIListeners();
     }
 
-    private void startPlaying() {
-        stopPlaying();
+    private void startPlayback() {
+        stopPlayback();
         int frequency = getFrequency();
         short duration = getDuration();
         tone = new SoundGenerator(frequency, duration).generateTone();
@@ -49,15 +51,20 @@ public class MainActivity extends AppCompatActivity {
         tonePlayer.play(this);
     }
 
-    private void stopPlaying() {
+    private void pausePlayback() {
         if (tonePlayer != null)
-            tonePlayer.stop(this);
+            tonePlayer.pause();
+    }
+
+    private void stopPlayback() {
+        if (tonePlayer != null)
+            tonePlayer.stop();
         tonePlayer = null;
         tone = null;
     }
 
     private void saveTone() {
-        stopPlaying();
+        stopPlayback();
         int frequency = getFrequency();
         short duration = getDuration();
         tone = new SoundGenerator(frequency, duration).generateTone();
@@ -115,8 +122,9 @@ public class MainActivity extends AppCompatActivity {
         durationApplyBtn = findViewById(R.id.duration_apply_btn);
         durationDecrementBtn = findViewById(R.id.duration_decrement_btn);
         durationIncrementBtn = findViewById(R.id.duration_increment_btn);
-        startBtn = findViewById(R.id.on_btn);
-        stopBtn = findViewById(R.id.off_btn);
+        playBtn = findViewById(R.id.play_btn);
+        pauseBtn = findViewById(R.id.pause_btn);
+        stopBtn = findViewById(R.id.stop_btn);
         saveBtn = findViewById(R.id.save_btn);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -251,17 +259,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        playBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startPlaying();
+                startPlayback();
+            }
+        });
+
+        pauseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pausePlayback();
             }
         });
 
         stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopPlaying();
+                stopPlayback();
             }
         });
 

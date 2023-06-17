@@ -26,12 +26,17 @@ public class TonePlayer {
         Toast.makeText(context, "Odtwarzanie...", Toast.LENGTH_SHORT).show();
     }
 
-    public void stop(Context context) {
+    public void pause() {
+        if (isPlaying()) {
+            audioTrack.pause();
+        }
+    }
+
+    public void stop() {
         if (isPlaying()) {
             fadeOutStop();
             audioTrack.stop();
             audioTrack.release();
-            Toast.makeText(context, "Zatrzymano odtwarzanie", Toast.LENGTH_SHORT).show();
         }
     }
 
