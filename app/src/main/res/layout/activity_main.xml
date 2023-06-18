@@ -284,7 +284,7 @@
                     android:layout_alignTop="@id/tone_details_sampling_txt"
                     android:layout_toEndOf="@id/tone_details_sampling_txt"
                     android:textColor="@color/white"
-                    android:text="44100Hz"/>
+                    android:text="44.1kHz"/>
 
             </RelativeLayout>
 
@@ -317,53 +317,86 @@
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/extra_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/save_btn"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/custom_button"
+                    android:text="EXTRA"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
             </RelativeLayout>
 
         </LinearLayout>
 
-        <SeekBar
-            android:id="@+id/playback_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/playback_separator"
-            android:layout_marginBottom="20dp"/>
-
-        <View
-            android:id="@+id/playback_separator"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_alignTop="@+id/playback_layout"/>
-
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/playback_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:clipToPadding="false"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_alignParentBottom="true">
 
-            <ImageButton
-                android:id="@+id/pause_btn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ic_baseline_pause_circle_filled_24"/>
+            <SeekBar
+                android:id="@+id/playback_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
 
-            <ImageButton
-                android:id="@+id/play_btn"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/ic_baseline_play_circle_filled_24"/>
+            <RelativeLayout
+                android:id="@+id/playback_control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/playback_bar"
+                android:layout_marginTop="20dp">
 
-            <ImageButton
-                android:id="@+id/stop_btn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/ic_baseline_stop_circle_24"/>
+                <ImageButton
+                    android:id="@+id/play_pause_btn"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/play_btn"/>
 
-        </LinearLayout>
+                <ImageButton
+                    android:id="@+id/stop_btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/play_pause_btn"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/replay_btn"/>
+
+                <ImageButton
+                    android:id="@+id/loop_btn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/play_pause_btn"
+                    android:layout_marginStart="32dp"
+                    android:background="@drawable/loop_btn"
+                    android:elevation="1dp"/>
+
+                <ImageView
+                    android:id="@+id/loop_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/loop_btn"
+                    android:layout_alignTop="@+id/loop_btn"
+                    android:layout_alignEnd="@+id/loop_btn"
+                    android:layout_alignBottom="@+id/loop_btn"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:elevation="0dp"
+                    android:src="@drawable/active_background" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

@@ -5,6 +5,6 @@
         android:centerColor="@color/background2_center"
         android:endColor="@color/black"
 
-        android:centerX="0.4"
+        android:centerX="0.6"
         android:angle="225"/>
 </shape>

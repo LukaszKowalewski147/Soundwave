@@ -15,15 +15,21 @@ public class TonePlayer {
         audioTrack = null;
     }
 
-    public void play(Context context) {
-        if (!isReady()) {
-            Toast.makeText(context, "Błąd generatora dźwięku", Toast.LENGTH_SHORT).show();
+    public void load(Context context) {
+        if (!isReadyToWrite()) {
+            Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
             return;
         }
         audioTrack.flush();
         audioTrack.write(tone.getSinWaveData(), 0, tone.getSinWaveData().length);
+        if (!isReadyToPlay()) {
+            Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+    public void play() {
         audioTrack.play();
-        Toast.makeText(context, "Odtwarzanie...", Toast.LENGTH_SHORT).show();
     }
 
     public void pause() {
@@ -36,13 +42,20 @@ public class TonePlayer {
         if (isPlaying()) {
             fadeOutStop();
             audioTrack.stop();
-            audioTrack.release();
         }
     }
 
-    private boolean isReady() {
+    public int getPlaybackPosition() {
+        return audioTrack.getPlaybackHeadPosition();
+    }
+
+    private boolean isReadyToWrite() {
         if (audioTrack == null)
             buildAudioTrack();
+        return audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED;
+    }
+
+    private boolean isReadyToPlay() {
         return audioTrack.getState() == AudioTrack.STATE_INITIALIZED;
     }
 
@@ -72,7 +85,12 @@ public class TonePlayer {
                         .setSampleRate(Constants.SAMPLE_RATE.value)
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
+                .setTransferMode(AudioTrack.MODE_STATIC)
                 .setBufferSizeInBytes(tone.getSinWaveData().length)
                 .build();
+    }
+
+    public void extra(Context context) {
+        Toast.makeText(context, "Playback position: " + audioTrack.getPlaybackHeadPosition(), Toast.LENGTH_SHORT).show();
     }
 }

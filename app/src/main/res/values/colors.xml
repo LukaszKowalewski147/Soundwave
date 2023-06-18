@@ -13,9 +13,10 @@
     <color name="button_end">#004C9E</color>
 
     <color name="background2_start">#4C006D</color>
-    <color name="background2_center">#2D0060</color>
+    <color name="background2_center">#120060</color>
     <color name="background2_end">#000000</color>
-    <color name="button2_start">#7E4EFF</color>
-    <color name="button2_end">#57007C</color>
+    <color name="button2_start">#3466FF</color>
+    <color name="button2_end">#A700C5</color>
     <color name="transparent_black">#1A000000</color>
+    <color name="active_green">#00FF00</color>
 </resources>

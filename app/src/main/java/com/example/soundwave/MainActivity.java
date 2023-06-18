@@ -2,15 +2,21 @@ package com.example.soundwave;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String PLAYBACK_STATE_PLAYING = "playing";
+    private String PLAYBACK_STATE_NOT_PLAYING = "notPlaying";
 
     private SeekBar frequencyBar;
     private SeekBar durationBar;
@@ -22,13 +28,20 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton durationApplyBtn;
     private AppCompatButton durationDecrementBtn;
     private AppCompatButton durationIncrementBtn;
-    private ImageButton playBtn;
-    private ImageButton pauseBtn;
-    private ImageButton stopBtn;
+    private AppCompatButton loadBtn;
     private AppCompatButton saveBtn;
+    private TextView frequencyDetails;
+    private TextView durationDetails;
+    private ImageButton playPauseBtn;
+    private ImageButton stopBtn;
+    private ImageButton loopBtn;
+    private ImageView loopIndicator;
+
+    private AppCompatButton extraBtn;
 
     private Tone tone;
     private TonePlayer tonePlayer;
+    private Thread playbackThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,27 +53,37 @@ public class MainActivity extends AppCompatActivity {
 
         initializeUIElements();
         initializeUIListeners();
+
+        loadTone();
+        playPauseBtn.setTag(PLAYBACK_STATE_NOT_PLAYING);
     }
 
-    private void startPlayback() {
+    private void loadTone() {
         stopPlayback();
         int frequency = getFrequency();
         short duration = getDuration();
         tone = new SoundGenerator(frequency, duration).generateTone();
         tonePlayer = new TonePlayer(tone);
-        tonePlayer.play(this);
+        tonePlayer.load(this);
+        frequencyDetails.setText(frequency + "Hz");
+        durationDetails.setText(duration + "s");
+    }
+
+    private void startPlayback() {
+        tonePlayer.play();
+
     }
 
     private void pausePlayback() {
-        if (tonePlayer != null)
-            tonePlayer.pause();
+        tonePlayer.pause();
+
     }
 
     private void stopPlayback() {
         if (tonePlayer != null)
             tonePlayer.stop();
-        tonePlayer = null;
-        tone = null;
+        //tonePlayer = null;
+        //tone = null;
     }
 
     private void saveTone() {
@@ -70,6 +93,49 @@ public class MainActivity extends AppCompatActivity {
         tone = new SoundGenerator(frequency, duration).generateTone();
         WavCreator wavCreator = new WavCreator(this, tone);
         wavCreator.saveTone();
+    }
+
+    private void managePlayPauseActivity() {
+        Object buttonState = playPauseBtn.getTag();
+
+        if (buttonState.equals(PLAYBACK_STATE_PLAYING)) {
+            pausePlayback();
+            managePlayPauseButton(false);
+        } else {
+            startPlayback();
+            managePlayPauseButton(true);
+        }
+    }
+
+    private void managePlayPauseButton(boolean isPlaying) {
+        if (isPlaying) {
+            playPauseBtn.setBackgroundResource(R.drawable.pause_btn);
+            playPauseBtn.setTag(PLAYBACK_STATE_PLAYING);
+        } else {
+            playPauseBtn.setBackgroundResource(R.drawable.play_btn);
+            playPauseBtn.setTag(PLAYBACK_STATE_NOT_PLAYING);
+        }
+    }
+
+    private void managePlaybackBar() {
+        playbackThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+        playbackThread.start();
+    }
+
+    private void manageLoopButton() {
+        if (loopIndicator.getVisibility() == View.INVISIBLE)
+            loopIndicator.setVisibility(View.VISIBLE);
+        else
+            loopIndicator.setVisibility(View.INVISIBLE);
+    }
+
+    private void extra() {
+        tonePlayer.extra(this);
     }
 
     private int getFrequency() {
@@ -122,10 +188,16 @@ public class MainActivity extends AppCompatActivity {
         durationApplyBtn = findViewById(R.id.duration_apply_btn);
         durationDecrementBtn = findViewById(R.id.duration_decrement_btn);
         durationIncrementBtn = findViewById(R.id.duration_increment_btn);
-        playBtn = findViewById(R.id.play_btn);
-        pauseBtn = findViewById(R.id.pause_btn);
-        stopBtn = findViewById(R.id.stop_btn);
+        loadBtn = findViewById(R.id.load_btn);
         saveBtn = findViewById(R.id.save_btn);
+        frequencyDetails = findViewById(R.id.tone_details_frequency);
+        durationDetails = findViewById(R.id.tone_details_duration);
+        playPauseBtn = findViewById(R.id.play_pause_btn);
+        stopBtn = findViewById(R.id.stop_btn);
+        loopBtn = findViewById(R.id.loop_btn);
+        loopIndicator = findViewById(R.id.loop_indicator);
+
+        extraBtn = findViewById(R.id.extra_btn);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             frequencyBar.setMin(Constants.FREQ_SLIDER_MIN.value);
@@ -139,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
         frequencyTxt.setText(String.valueOf(convertFromSlider(Constants.FREQ_SLIDER_START.value)));
         durationTxt.setText(String.valueOf(Constants.DURATION_START.value));
+
+        loopIndicator.setVisibility(View.INVISIBLE);
     }
 
     private void initializeUIListeners() {
@@ -259,17 +333,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        playBtn.setOnClickListener(new View.OnClickListener() {
+        loadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startPlayback();
+                loadTone();
             }
         });
 
-        pauseBtn.setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pausePlayback();
+                saveTone();
+            }
+        });
+
+        playPauseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                managePlayPauseActivity();
             }
         });
 
@@ -280,10 +361,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        loopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTone();
+                manageLoopButton();
+            }
+        });
+
+        extraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                extra();
             }
         });
     }
