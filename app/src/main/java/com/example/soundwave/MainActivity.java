@@ -2,16 +2,17 @@ package com.example.soundwave;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.content.res.ResourcesCompat;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,8 +33,11 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton saveBtn;
     private TextView frequencyDetails;
     private TextView durationDetails;
+    private SeekBar playbackBar;
+    private TextView playbackElapsedTime;
+    private TextView playbackTotalTime;
     private ImageButton playPauseBtn;
-    private ImageButton stopBtn;
+    private ImageButton replayBtn;
     private ImageButton loopBtn;
     private ImageView loopIndicator;
 
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Tone tone;
     private TonePlayer tonePlayer;
     private Thread playbackThread;
+    private boolean resetPlaybackBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         tone = null;
         tonePlayer = null;
+        resetPlaybackBar = false;
 
         initializeUIElements();
         initializeUIListeners();
@@ -67,30 +73,54 @@ public class MainActivity extends AppCompatActivity {
         tonePlayer.load(this);
         frequencyDetails.setText(frequency + "Hz");
         durationDetails.setText(duration + "s");
+        playbackElapsedTime.setText("0");
+        playbackTotalTime.setText(String.valueOf(duration));
     }
 
     private void startPlayback() {
         tonePlayer.play();
-
+        managePlaybackBar();
     }
 
     private void pausePlayback() {
         tonePlayer.pause();
+        if (playbackThread != null && playbackThread.isAlive()) {
+            resetPlaybackBar = true;
+            try {
+                playbackThread.join(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            resetPlaybackBar = false;
+            playbackThread = null;
+        }
+    }
 
+    private void replayPlayback() {
+        //stopPlayback();
+        //TODO: replay playback
+        loadTone(); //temporary solution
     }
 
     private void stopPlayback() {
+        if (playbackThread != null && playbackThread.isAlive()) {
+            resetPlaybackBar = true;
+            try {
+                playbackThread.join(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            resetPlaybackBar = false;
+            playbackThread = null;
+        }
         if (tonePlayer != null)
             tonePlayer.stop();
-        //tonePlayer = null;
-        //tone = null;
+
+        managePlayPauseButton(false);
+        playbackBar.setProgress(0);
     }
 
     private void saveTone() {
-        stopPlayback();
-        int frequency = getFrequency();
-        short duration = getDuration();
-        tone = new SoundGenerator(frequency, duration).generateTone();
         WavCreator wavCreator = new WavCreator(this, tone);
         wavCreator.saveTone();
     }
@@ -118,10 +148,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void managePlaybackBar() {
+        final int barRefreshRate = 200; // ms
+        final int endingPoint = Constants.SAMPLE_RATE.value * tone.getDuration();
+
+        final int barDivider = tone.getDuration() * 100;
+        Handler handler = new Handler();
+
         playbackThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                int playbackPosition = 0;
 
+                while (playbackPosition < endingPoint) {
+                    if (resetPlaybackBar)
+                        break;
+
+                    playbackPosition = tonePlayer.getPlaybackPosition();
+                    int finalPlaybackPosition = (int)Math.round(playbackPosition / (double)barDivider);
+                    int finalElapsedTime = (int) Math.floor(playbackPosition / (double) Constants.SAMPLE_RATE.value);
+
+                    handler.post(new Runnable(){
+                        public void run() {
+                            playbackBar.setProgress(finalPlaybackPosition);
+                            playbackElapsedTime.setText(String.valueOf(finalElapsedTime));
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(barRefreshRate);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                managePlayPauseButton(false);
+                if (resetPlaybackBar && !tonePlayer.isPaused())
+                    playbackBar.setProgress(0);
             }
         });
         playbackThread.start();
@@ -135,7 +196,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extra() {
-        tonePlayer.extra(this);
+
+        Toast.makeText(this, "threads: " + Thread.activeCount(), Toast.LENGTH_SHORT).show();
+
+        //tonePlayer.extra(this);
     }
 
     private int getFrequency() {
@@ -192,8 +256,11 @@ public class MainActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_btn);
         frequencyDetails = findViewById(R.id.tone_details_frequency);
         durationDetails = findViewById(R.id.tone_details_duration);
+        playbackBar = findViewById(R.id.playback_bar);
+        playbackElapsedTime = findViewById(R.id.playback_elapsed_time);
+        playbackTotalTime = findViewById(R.id.playback_total_time);
         playPauseBtn = findViewById(R.id.play_pause_btn);
-        stopBtn = findViewById(R.id.stop_btn);
+        replayBtn = findViewById(R.id.replay_btn);
         loopBtn = findViewById(R.id.loop_btn);
         loopIndicator = findViewById(R.id.loop_indicator);
 
@@ -205,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
         }
         frequencyBar.setMax(Constants.FREQ_SLIDER_MAX.value);
         durationBar.setMax(Constants.DURATION_MAX.value);
+        playbackBar.setMax(Constants.SAMPLE_RATE.value/100); // one step every 100 samples
 
         frequencyBar.setProgress(Constants.FREQ_SLIDER_START.value);
         durationBar.setProgress(Constants.DURATION_START.value);
@@ -354,10 +422,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        stopBtn.setOnClickListener(new View.OnClickListener() {
+        replayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopPlayback();
+                replayPlayback();
             }
         });
 

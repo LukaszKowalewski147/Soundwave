@@ -49,6 +49,12 @@ public class TonePlayer {
         return audioTrack.getPlaybackHeadPosition();
     }
 
+    public boolean isPaused() {
+        if (audioTrack != null)
+            return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED;
+        return false;
+    }
+
     private boolean isReadyToWrite() {
         if (audioTrack == null)
             buildAudioTrack();

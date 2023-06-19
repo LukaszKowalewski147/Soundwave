@@ -339,11 +339,36 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
+            <TextView
+                android:id="@+id/playback_elapsed_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="0"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:minEms="2"
+                android:maxEms="2"/>
+
+            <TextView
+                android:id="@+id/playback_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="30"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:minEms="2"
+                android:maxEms="2"/>
+
             <SeekBar
                 android:id="@+id/playback_bar"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_toEndOf="@+id/playback_elapsed_time"
+                android:layout_toStartOf="@+id/playback_total_time"
+                android:layout_alignBottom="@+id/playback_elapsed_time"/>
 
             <RelativeLayout
                 android:id="@+id/playback_control"
@@ -360,7 +385,7 @@
                     android:background="@drawable/play_btn"/>
 
                 <ImageButton
-                    android:id="@+id/stop_btn"
+                    android:id="@+id/replay_btn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_centerVertical="true"
