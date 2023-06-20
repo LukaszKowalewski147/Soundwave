@@ -16,9 +16,6 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String PLAYBACK_STATE_PLAYING = "playing";
-    private String PLAYBACK_STATE_NOT_PLAYING = "notPlaying";
-
     private SeekBar frequencyBar;
     private SeekBar durationBar;
     private EditText frequencyTxt;
@@ -52,12 +49,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tone = null;
+        playbackManager = null;
 
         initializeUIElements();
         initializeUIListeners();
         initializePlaybackManager();
-
-        playPauseBtn.setTag(PLAYBACK_STATE_NOT_PLAYING);
     }
 
     private void loadTone() {
@@ -71,14 +67,12 @@ public class MainActivity extends AppCompatActivity {
         playbackTotalTime.setText(String.valueOf(duration));
     }
 
-    private void startPlayback() {
-        playbackManager.startPlayback();
-        managePlayPauseButton(true);
-    }
-
-    private void pausePlayback() {
-        playbackManager.pausePlayback();
-        managePlayPauseButton(false);
+    private void managePlayPauseActivity() {
+        boolean playing = playbackManager.managePlayPauseActivity();
+        if (playing) {
+            Thread playbackManagerThread = new Thread(playbackManager);
+            playbackManagerThread.start();
+        }
     }
 
     private void replayPlayback() {
@@ -86,33 +80,9 @@ public class MainActivity extends AppCompatActivity {
         loadTone(); //temporary solution
     }
 
-    private void stopPlayback() {
-        playbackManager.stopPlayback();
-        managePlayPauseButton(false);
-    }
-
     private void saveTone() {
         WavCreator wavCreator = new WavCreator(this, tone);
         wavCreator.saveTone();
-    }
-
-    private void managePlayPauseActivity() {
-        Object buttonState = playPauseBtn.getTag();
-
-        if (buttonState.equals(PLAYBACK_STATE_PLAYING))
-            pausePlayback();
-        else
-            startPlayback();
-    }
-
-    private void managePlayPauseButton(boolean isPlaying) {
-        if (isPlaying) {
-            playPauseBtn.setBackgroundResource(R.drawable.pause_btn);
-            playPauseBtn.setTag(PLAYBACK_STATE_PLAYING);
-        } else {
-            playPauseBtn.setBackgroundResource(R.drawable.play_btn);
-            playPauseBtn.setTag(PLAYBACK_STATE_NOT_PLAYING);
-        }
     }
 
     private void manageLoopButton() {
@@ -174,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         tone = new SoundGenerator(frequency, duration).generateTone();
 
         Handler handler = new Handler();
-        playbackManager = new PlaybackManager(this, handler, playbackBar, playbackElapsedTime);
+        playbackManager = new PlaybackManager(this, handler, playPauseBtn, playbackBar, playbackElapsedTime);
         playbackManager.setTone(tone);
 
         frequencyDetails.setText(frequency + "Hz");
