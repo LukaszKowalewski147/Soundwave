@@ -21,6 +21,7 @@ public class PlaybackManager implements Runnable {
     private TonePlayer tonePlayer;
 
     private volatile boolean manageBar;
+    private volatile boolean loopEnabled;
 
     public PlaybackManager(Context context, Handler handler, ImageButton playPauseBtn, SeekBar playbackBar, TextView playbackElapsedTime) {
         this.context = context;
@@ -31,21 +32,20 @@ public class PlaybackManager implements Runnable {
         tone = null;
         tonePlayer = null;
         manageBar = false;
+        loopEnabled = false;
         playPauseBtn.setTag(PLAYBACK_STATE_NOT_PLAYING);
     }
 
     public void setTone(Tone tone) {
         if (manageBar)
             stopPlayback();
+        manageBar = false;
+        managePlayPauseButton(false);
         this.tone = tone;
         tonePlayer = new TonePlayer(tone);
         tonePlayer.load(context);
 
-        resetPlaybackBar();
-    }
-
-    public void resetTone() {
-        // TODO: looper functionality
+        resetPlaybackBarValues();
     }
 
     public void startPlayback() {
@@ -54,17 +54,18 @@ public class PlaybackManager implements Runnable {
         managePlayPauseButton(true);
     }
 
-    public void stopPlayback() {
-        tonePlayer.stop();
-        manageBar = false;
-        managePlayPauseButton(false);
-        resetPlaybackBar();
-    }
-
     public void pausePlayback() {
         tonePlayer.pause();
         manageBar = false;
         managePlayPauseButton(false);
+    }
+
+    public void resetPlayback() {
+        stopPlayback();
+        manageBar = false;
+        managePlayPauseButton(false);
+        resetPlaybackBarValues();
+        tonePlayer.reload();
     }
 
     public boolean managePlayPauseActivity() {
@@ -80,9 +81,13 @@ public class PlaybackManager implements Runnable {
         return playing;
     }
 
+    public void setLooperState(boolean loopEnabled) {
+        this.loopEnabled = loopEnabled;
+    }
+
     @Override
     public void run() {
-        final int barRefreshRate = 100; // ms
+        final int barRefreshRate = 40; // 40 ms = 25FPS
         final int endingPoint = Constants.SAMPLE_RATE.value * tone.getDuration();
         final int barDivider = tone.getDuration() * 100;
 
@@ -99,10 +104,13 @@ public class PlaybackManager implements Runnable {
     private void updatePlaybackBar(int endingPoint, int barDivider) {
         int playbackPosition = tonePlayer.getPlaybackPosition();
         if (playbackPosition >= endingPoint) {
-            manageBar = false;
-            managePlayPauseButton(false);
+            if (loopEnabled) {
+                reloadTone();
+                return;
+            }
             playbackPosition = (int) Math.round(endingPoint / (double) barDivider);
             setPlaybackBarValues(playbackPosition, tone.getDuration());
+            stopPlayback();
             return;
         }
 
@@ -110,6 +118,20 @@ public class PlaybackManager implements Runnable {
         int finalElapsedTime = (int) Math.floor(playbackPosition / (double) Constants.SAMPLE_RATE.value);
 
         setPlaybackBarValues(finalPlaybackPosition, finalElapsedTime);
+    }
+
+    private void stopPlayback() {
+        tonePlayer.stop();
+        if (!loopEnabled) {
+            manageBar = false;
+            managePlayPauseButton(false);
+        }
+    }
+
+    private void reloadTone() {
+        stopPlayback();
+        tonePlayer.reload();
+        tonePlayer.play();
     }
 
     private void setPlaybackBarValues(int playbackPosition, int elapsedTime) {
@@ -121,7 +143,7 @@ public class PlaybackManager implements Runnable {
         });
     }
 
-    private void resetPlaybackBar() {
+    private void resetPlaybackBarValues() {
         handler.post(new Runnable(){
             public void run() {
                 playbackBar.setProgress(0);
@@ -146,5 +168,9 @@ public class PlaybackManager implements Runnable {
                 }
             });
         }
+    }
+
+    public void extra() {
+        tonePlayer.extra(context);
     }
 }

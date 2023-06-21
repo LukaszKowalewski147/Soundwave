@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void replayPlayback() {
-        //TODO: replay playback
-        loadTone(); //temporary solution
+        playbackManager.resetPlayback();
     }
 
     private void saveTone() {
@@ -86,17 +84,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void manageLoopButton() {
-        if (loopIndicator.getVisibility() == View.INVISIBLE)
+        if (loopIndicator.getVisibility() == View.INVISIBLE) {
             loopIndicator.setVisibility(View.VISIBLE);
-        else
+            playbackManager.setLooperState(true);
+        } else {
             loopIndicator.setVisibility(View.INVISIBLE);
+            playbackManager.setLooperState(false);
+        }
     }
 
     private void extra() {
 
-        Toast.makeText(this, "threads: " + Thread.activeCount(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "threads: " + Thread.activeCount(), Toast.LENGTH_SHORT).show();
 
-        //tonePlayer.extra(this);
+        playbackManager.extra();
     }
 
     private int getFrequency() {

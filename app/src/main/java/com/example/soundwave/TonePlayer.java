@@ -28,6 +28,10 @@ public class TonePlayer {
         }
     }
 
+    public void reload() {
+        audioTrack.reloadStaticData();
+    }
+
     public void play() {
         audioTrack.play();
     }
@@ -42,17 +46,12 @@ public class TonePlayer {
         if (isPlaying()) {
             fadeOutStop();
             audioTrack.stop();
+            audioTrack.setVolume(1.0f);
         }
     }
 
     public int getPlaybackPosition() {
         return audioTrack.getPlaybackHeadPosition();
-    }
-
-    public boolean isPaused() {
-        if (audioTrack != null)
-            return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED;
-        return false;
     }
 
     private boolean isReadyToWrite() {
