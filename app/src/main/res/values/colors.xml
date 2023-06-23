@@ -28,5 +28,6 @@
     <color name="transparent">#00000000</color>
     <color name="transparent_black">#33000000</color>
     <color name="active_green">#00FF00</color>
+    <color name="active_yellow">#FFDE00</color>
     <color name="seek_bar_thumb">#CA9BFF</color>
 </resources>

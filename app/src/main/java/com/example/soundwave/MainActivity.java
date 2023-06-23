@@ -7,18 +7,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SeekBar frequencyBar;
-    private SeekBar durationBar;
-    private EditText frequencyTxt;
-    private EditText durationTxt;
     private AppCompatButton frequencyApplyBtn;
     private AppCompatButton frequencyDecrementBtn;
     private AppCompatButton frequencyIncrementBtn;
@@ -27,17 +25,22 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatButton durationIncrementBtn;
     private AppCompatButton loadBtn;
     private AppCompatButton saveBtn;
-    private TextView frequencyDetails;
-    private TextView durationDetails;
-    private SeekBar playbackBar;
-    private TextView playbackElapsedTime;
-    private TextView playbackTotalTime;
     private ImageButton playPauseBtn;
     private ImageButton replayBtn;
     private ImageButton loopBtn;
     private ImageView loopIndicator;
-
-    private AppCompatButton extraBtn;
+    private TextView frequencyDetails;
+    private TextView durationDetails;
+    private TextView samplingRateDetails;
+    private TextView playbackElapsedTime;
+    private TextView playbackTotalTime;
+    private EditText frequencyTxt;
+    private EditText durationTxt;
+    private SeekBar frequencyBar;
+    private SeekBar durationBar;
+    private SeekBar playbackBar;
+    private Spinner samplingRatesSpinner;
+    //private AppCompatButton extraBtn;
 
     private Tone tone;
     private PlaybackManager playbackManager;
@@ -58,11 +61,13 @@ public class MainActivity extends AppCompatActivity {
     private void loadTone() {
         int frequency = getFrequency();
         short duration = getDuration();
+        String sampleRate = samplingRatesSpinner.getSelectedItem().toString();
         tone = new SoundGenerator(frequency, duration).generateTone();
         playbackManager.setTone(tone);
 
         frequencyDetails.setText(frequency + "Hz");
         durationDetails.setText(duration + "s");
+        samplingRateDetails.setText(sampleRate);
         playbackTotalTime.setText(String.valueOf(duration));
     }
 
@@ -168,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.save_btn);
         frequencyDetails = findViewById(R.id.tone_details_frequency);
         durationDetails = findViewById(R.id.tone_details_duration);
+        samplingRateDetails = findViewById(R.id.tone_details_sampling);
         playbackBar = findViewById(R.id.playback_bar);
         playbackElapsedTime = findViewById(R.id.playback_elapsed_time);
         playbackTotalTime = findViewById(R.id.playback_total_time);
@@ -175,8 +181,13 @@ public class MainActivity extends AppCompatActivity {
         replayBtn = findViewById(R.id.replay_btn);
         loopBtn = findViewById(R.id.loop_btn);
         loopIndicator = findViewById(R.id.loop_indicator);
+        samplingRatesSpinner = findViewById(R.id.sampling_rates_spinner);
 
-        extraBtn = findViewById(R.id.extra_btn);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sampling_rates_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        samplingRatesSpinner.setAdapter(adapter);
+
+        //extraBtn = findViewById(R.id.extra_btn);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             frequencyBar.setMin(Constants.FREQ_SLIDER_MIN.value);
@@ -347,12 +358,13 @@ public class MainActivity extends AppCompatActivity {
                 manageLoopButton();
             }
         });
-
+/*
         extraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 extra();
             }
         });
+ */
     }
 }

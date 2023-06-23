@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Soundwave</string>
+
+        <string-array name="sampling_rates_array">
+            <item>44.1kHz</item>
+            <item>48kHz</item>
+            <item>96kHz</item>
+            <item>192kHz</item>
+        </string-array>
 </resources>
