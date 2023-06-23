@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -375,6 +376,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 manageLoopButton();
+            }
+        });
+
+        playbackBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
             }
         });
 /*
