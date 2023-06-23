@@ -2,6 +2,7 @@ package com.example.soundwave;
 
 import android.content.Context;
 import android.os.Environment;
+import android.renderscript.Sampler;
 import android.widget.Toast;
 
 import java.io.File;
@@ -58,7 +59,23 @@ public class WavCreator {
     }
 
     private String getFilename() {
-        String filename = tone.getFrequency() + "hz-" + tone.getDuration() + "s-" + System.currentTimeMillis() + FILE_EXTENSION;
+        SamplingRate samplingRate = tone.getSamplingRate();
+        String sampleingRateTxt = "?kHz-";
+        switch (samplingRate) {
+            case RATE_44_1_KHZ:
+                sampleingRateTxt = "44_1kHz-";
+                break;
+            case RATE_48_KHZ:
+                sampleingRateTxt = "48kHz-";
+                break;
+            case RATE_96_KHZ:
+                sampleingRateTxt = "96kHz-";
+                break;
+            case RATE_192_KHZ:
+                sampleingRateTxt = "192kHz-";
+                break;
+        }
+        String filename = tone.getFrequency() + "hz-" + tone.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
         return filename;
     }
 
@@ -69,7 +86,8 @@ public class WavCreator {
         return false;
     }
 
-    private static void writeWavHeader(OutputStream out) throws IOException {
+    private void writeWavHeader(OutputStream out) throws IOException {
+        final int samplingRate = tone.getSamplingRate().samplingRate;
         short channels = 1;
         short bitDepth = 16;
 
@@ -77,8 +95,8 @@ public class WavCreator {
                 .allocate(14)
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .putShort(channels)
-                .putInt(Constants.SAMPLE_RATE.value)
-                .putInt(Constants.SAMPLE_RATE.value * channels * (bitDepth / 8))
+                .putInt(samplingRate)
+                .putInt(samplingRate * channels * (bitDepth / 8))
                 .putShort((short) (channels * (bitDepth / 8)))
                 .putShort(bitDepth)
                 .array();

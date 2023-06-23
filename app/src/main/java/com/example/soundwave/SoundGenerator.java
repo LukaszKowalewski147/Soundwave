@@ -6,19 +6,21 @@ public class SoundGenerator {
     private final short duration;         // in s
     private final double sample[];
     private final byte outputSound[];
+    private SamplingRate samplingRate;
 
-    public SoundGenerator(int frequency, short duration) {
+    public SoundGenerator(int frequency, short duration, SamplingRate samplingRate) {
         this.frequency = frequency;
         this.duration = duration;
+        this.samplingRate = samplingRate;
 
-        samplesNumber = duration * Constants.SAMPLE_RATE.value;
+        samplesNumber = duration * samplingRate.samplingRate;
         sample = new double[samplesNumber];
         outputSound = new byte[2 * samplesNumber];
     }
 
     public Tone generateTone() {
         for (int i = 0; i < samplesNumber; ++i) {
-            sample[i] = Math.sin(2 * Math.PI * i/(Constants.SAMPLE_RATE.value/(double)frequency));
+            sample[i] = Math.sin(2 * Math.PI * i/(samplingRate.samplingRate/(double)frequency));
         }
 
         // convert to 16 bit pcm sound array
@@ -32,7 +34,7 @@ public class SoundGenerator {
         }
         fadeIn();
         fadeOut();
-        return new Tone(outputSound, frequency, duration);
+        return new Tone(outputSound, frequency, duration, samplingRate);
     }
 
     private void fadeIn() {
@@ -67,6 +69,6 @@ public class SoundGenerator {
     }
 
     private int getFadeDuration() {
-        return Constants.SAMPLE_RATE.value / 50; // 0.02s
+        return samplingRate.samplingRate / 50; // 0.02s
     }
 }

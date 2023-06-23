@@ -87,12 +87,13 @@ public class PlaybackManager implements Runnable {
 
     @Override
     public void run() {
+        final int samplingRate = tone.getSamplingRate().samplingRate;
         final int barRefreshRate = 40; // 40 ms = 25FPS
-        final int endingPoint = Constants.SAMPLE_RATE.value * tone.getDuration();
+        final int endingPoint = samplingRate * tone.getDuration();
         final int barDivider = tone.getDuration() * 100;
 
         while (manageBar) {
-            updatePlaybackBar(endingPoint, barDivider);
+            updatePlaybackBar(endingPoint, barDivider, samplingRate);
             try {
                 Thread.sleep(barRefreshRate);
             } catch (InterruptedException e) {
@@ -101,7 +102,7 @@ public class PlaybackManager implements Runnable {
         }
     }
 
-    private void updatePlaybackBar(int endingPoint, int barDivider) {
+    private void updatePlaybackBar(int endingPoint, int barDivider, int samplingRate) {
         int playbackPosition = tonePlayer.getPlaybackPosition();
         if (playbackPosition >= endingPoint) {
             if (loopEnabled) {
@@ -115,7 +116,7 @@ public class PlaybackManager implements Runnable {
         }
 
         int finalPlaybackPosition = (int) Math.round(playbackPosition / (double) barDivider);
-        int finalElapsedTime = (int) Math.floor(playbackPosition / (double) Constants.SAMPLE_RATE.value);
+        int finalElapsedTime = (int) Math.floor(playbackPosition / (double) samplingRate);
 
         setPlaybackBarValues(finalPlaybackPosition, finalElapsedTime);
     }

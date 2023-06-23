@@ -61,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
     private void loadTone() {
         int frequency = getFrequency();
         short duration = getDuration();
-        String sampleRate = samplingRatesSpinner.getSelectedItem().toString();
-        tone = new SoundGenerator(frequency, duration).generateTone();
+        SamplingRate samplingRate = getSamplingRate();
+        tone = new SoundGenerator(frequency, duration, samplingRate).generateTone();
         playbackManager.setTone(tone);
 
         frequencyDetails.setText(frequency + "Hz");
         durationDetails.setText(duration + "s");
-        samplingRateDetails.setText(sampleRate);
+        samplingRateDetails.setText(samplingRatesSpinner.getSelectedItem().toString());
         playbackTotalTime.setText(String.valueOf(duration));
+        playbackBar.setMax(samplingRate.samplingRate/100); // one step every 100 samples
     }
 
     private void managePlayPauseActivity() {
@@ -144,10 +145,28 @@ public class MainActivity extends AppCompatActivity {
         return output;
     }
 
+    private SamplingRate getSamplingRate() {
+        SamplingRate samplingRate = SamplingRate.RATE_44_1_KHZ;
+        String selectedSamplingRate = samplingRatesSpinner.getSelectedItem().toString();
+        switch (selectedSamplingRate) {
+            case "48kHz":
+                samplingRate = SamplingRate.RATE_48_KHZ;
+                break;
+            case "96kHz":
+                samplingRate = SamplingRate.RATE_96_KHZ;
+                break;
+            case "192kHz":
+                samplingRate = SamplingRate.RATE_192_KHZ;
+                break;
+        }
+        return samplingRate;
+    }
+
     private void initializePlaybackManager() {
         int frequency = getFrequency();
         short duration = getDuration();
-        tone = new SoundGenerator(frequency, duration).generateTone();
+        SamplingRate samplingRate = getSamplingRate();
+        tone = new SoundGenerator(frequency, duration, samplingRate).generateTone();
 
         Handler handler = new Handler();
         playbackManager = new PlaybackManager(this, handler, playPauseBtn, playbackBar, playbackElapsedTime);
@@ -156,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         frequencyDetails.setText(frequency + "Hz");
         durationDetails.setText(duration + "s");
         playbackTotalTime.setText(String.valueOf(duration));
+        playbackBar.setMax(samplingRate.samplingRate/100); // one step every 100 samples
     }
 
     private void initializeUIElements() {
@@ -195,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
         }
         frequencyBar.setMax(Constants.FREQ_SLIDER_MAX.value);
         durationBar.setMax(Constants.DURATION_MAX.value);
-        playbackBar.setMax(Constants.SAMPLE_RATE.value/100); // one step every 100 samples
 
         frequencyBar.setProgress(Constants.FREQ_SLIDER_START.value);
         durationBar.setProgress(Constants.DURATION_START.value);
