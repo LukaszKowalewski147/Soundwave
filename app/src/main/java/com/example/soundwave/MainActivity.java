@@ -59,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
         initializePlaybackManager();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        resetPlayback();
+    }
+
     private void loadTone() {
         int frequency = getFrequency();
         short duration = getDuration();
@@ -81,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void replayPlayback() {
+    private void resetPlayback() {
         playbackManager.resetPlayback();
     }
 
@@ -368,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
         replayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                replayPlayback();
+                resetPlayback();
             }
         });
 
