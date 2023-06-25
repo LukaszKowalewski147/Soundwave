@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar frequencyBar;
     private SeekBar durationBar;
     private SeekBar playbackBar;
+    private Spinner playbackModesSpinner;
     private Spinner samplingRatesSpinner;
     //private AppCompatButton extraBtn;
 
@@ -208,11 +209,16 @@ public class MainActivity extends AppCompatActivity {
         replayBtn = findViewById(R.id.replay_btn);
         loopBtn = findViewById(R.id.loop_btn);
         loopIndicator = findViewById(R.id.loop_indicator);
+        playbackModesSpinner = findViewById(R.id.playback_modes_spinner);
         samplingRatesSpinner = findViewById(R.id.sampling_rates_spinner);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sampling_rates_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        samplingRatesSpinner.setAdapter(adapter);
+        ArrayAdapter<CharSequence> playbackModesAdapter = ArrayAdapter.createFromResource(this, R.array.playback_modes_array, android.R.layout.simple_spinner_item);
+        playbackModesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        playbackModesSpinner.setAdapter(playbackModesAdapter);
+
+        ArrayAdapter<CharSequence> samplingRatesAdapter = ArrayAdapter.createFromResource(this, R.array.sampling_rates_array, android.R.layout.simple_spinner_item);
+        samplingRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        samplingRatesSpinner.setAdapter(samplingRatesAdapter);
 
         //extraBtn = findViewById(R.id.extra_btn);
 

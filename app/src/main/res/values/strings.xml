@@ -1,10 +1,24 @@
 <resources>
     <string name="app_name">Soundwave</string>
+    <string name="details_header">Tone details</string>
+    <string name="frequency_header">Frequency</string>
+    <string name="duration_header">Duration</string>
+    <string name="sample_rate_header">Sample rate</string>
+    <string name="options_header">Options</string>
+    <string name="playback_mode_header">Playback mode</string>
+    <string name="create_tone_header">Create tone</string>
+    <string name="apply_btn_txt">Apply</string>
+    <string name="load_tone_btn_txt">Load tone</string>
 
-        <string-array name="sampling_rates_array">
+    <string-array name="sampling_rates_array">
             <item>44.1kHz</item>
             <item>48kHz</item>
             <item>96kHz</item>
             <item>192kHz</item>
         </string-array>
+
+    <string-array name="playback_modes_array">
+        <item>Static</item>
+        <item>Stream</item>
+    </string-array>
 </resources>

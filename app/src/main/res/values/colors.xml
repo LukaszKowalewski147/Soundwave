@@ -30,4 +30,5 @@
     <color name="active_green">#00FF00</color>
     <color name="active_yellow">#FFDE00</color>
     <color name="seek_bar_thumb">#CA9BFF</color>
+    <color name="header_separator">#67603B</color>
 </resources>
