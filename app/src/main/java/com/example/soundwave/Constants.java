@@ -8,7 +8,8 @@ public enum Constants {
     FREQ_SLIDER_START (425),    // position
     DURATION_MIN (1),           // in s
     DURATION_MAX (60),          // in s
-    DURATION_START (30);        // in s
+    DURATION_START (30),        // in s
+    PLAYBACK_REFRESH_RATE (40); // 40 ms = 25FPS
 
     final int value;
 

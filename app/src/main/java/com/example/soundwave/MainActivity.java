@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void managePlayPauseActivity() {
-        boolean playing = playbackManager.managePlayPauseActivity();
-        if (playing) {
+        playbackManager.managePlayPauseActivity();
+        if (Options.playbackState == Options.PlaybackState.ON) {
             Thread playbackManagerThread = new Thread(playbackManager);
             playbackManagerThread.start();
         }
@@ -100,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
     private void manageLoopButton() {
         if (loopIndicator.getVisibility() == View.INVISIBLE) {
             loopIndicator.setVisibility(View.VISIBLE);
-            playbackManager.setLooperState(true);
+            Options.looperState = Options.LooperState.ON;
         } else {
             loopIndicator.setVisibility(View.INVISIBLE);
-            playbackManager.setLooperState(false);
+            Options.looperState = Options.LooperState.OFF;
         }
     }
 
