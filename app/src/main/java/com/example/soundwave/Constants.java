@@ -1,15 +1,15 @@
 package com.example.soundwave;
 
 public enum Constants {
-    FREQ_MIN (20),              // in Hz
-    FREQ_MAX (20000),           // in Hz
-    FREQ_SLIDER_MIN (0),        // position
-    FREQ_SLIDER_MAX (850),      // position
-    FREQ_SLIDER_START (425),    // position
-    DURATION_MIN (1),           // in s
-    DURATION_MAX (60),          // in s
-    DURATION_START (30),        // in s
-    PLAYBACK_REFRESH_RATE (40); // 40 ms = 25FPS
+    FREQUENCY_MIN(20),                      // in Hz
+    FREQUENCY_MAX(20000),                   // in Hz
+    FREQUENCY_PROGRESS_BAR_MAX(850),        // progress bar position
+    FREQUENCY_PROGRESS_BAR_DEFAULT(425),    // progress bar position
+    DURATION_MIN (1),                       // in seconds
+    DURATION_MAX (60),                      // in seconds
+    DURATION_DEFAULT(30),                   // in seconds
+    PLAYBACK_REFRESH_RATE (20),             // in ms [20 ms = 50FPS]
+    SEEKBAR_CHANGE_REFRESH_RATE (40);       // in ms [40 ms = 25FPS]
 
     final int value;
 

@@ -122,37 +122,6 @@ public class MainActivity extends AppCompatActivity {
         return (short) durationBar.getProgress();
     }
 
-    private int convertFromSlider(int sliderValue) {
-        int output = 0;
-        double fractionOutput = 0.0d;
-        double toTenthPower = 0.0d;
-
-        sliderValue += 500;
-        toTenthPower = sliderValue/500.0d;
-        fractionOutput = Math.pow(toTenthPower, 10);
-        output = (int) Math.round(fractionOutput);  // 1 is the lowest possible
-        output += 19;                               // thats why + 19 to match 20Hz minimum
-
-        if (output > Constants.FREQ_MAX.value)
-            output = Constants.FREQ_MAX.value;
-
-        return output;
-    }
-
-    private int convertToSlider(int input) {
-        int output = 0;
-        double fractionOutput = 0.0d;
-        double toTenthRoot = 0.0d;
-
-        input -= 19;
-        toTenthRoot = Math.pow(input, (double) 1/10);
-        fractionOutput = toTenthRoot * 500;
-        fractionOutput -= 500;
-        output = (int) Math.round(fractionOutput);
-
-        return output;
-    }
-
     private SamplingRate getSamplingRate() {
         SamplingRate samplingRate = SamplingRate.RATE_44_1_KHZ;
         String selectedSamplingRate = samplingRatesSpinner.getSelectedItem().toString();
@@ -223,17 +192,16 @@ public class MainActivity extends AppCompatActivity {
         //extraBtn = findViewById(R.id.extra_btn);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            frequencyBar.setMin(Constants.FREQ_SLIDER_MIN.value);
             durationBar.setMin(Constants.DURATION_MIN.value);
         }
-        frequencyBar.setMax(Constants.FREQ_SLIDER_MAX.value);
+        frequencyBar.setMax(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
         durationBar.setMax(Constants.DURATION_MAX.value);
 
-        frequencyBar.setProgress(Constants.FREQ_SLIDER_START.value);
-        durationBar.setProgress(Constants.DURATION_START.value);
+        frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        durationBar.setProgress(Constants.DURATION_DEFAULT.value);
 
-        frequencyTxt.setText(String.valueOf(convertFromSlider(Constants.FREQ_SLIDER_START.value)));
-        durationTxt.setText(String.valueOf(Constants.DURATION_START.value));
+        frequencyTxt.setText(String.valueOf(UnitsConverter.convertProgressBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
+        durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
 
         loopIndicator.setVisibility(View.INVISIBLE);
     }
@@ -242,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         frequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                frequencyTxt.setText(String.valueOf(convertFromSlider(progress)));
+                frequencyTxt.setText(String.valueOf(UnitsConverter.convertProgressBarPositionToFrequency(progress)));
             }
 
             @Override
@@ -278,17 +246,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int frequency = Integer.parseInt(frequencyTxt.getText().toString());
 
-                if (frequency >= Constants.FREQ_MIN.value && frequency <= Constants.FREQ_MAX.value) {
-                    frequencyBar.setProgress(convertToSlider(frequency));
+                if (frequency >= Constants.FREQUENCY_MIN.value && frequency <= Constants.FREQUENCY_MAX.value) {
+                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(frequency));
                     frequencyTxt.setText(String.valueOf(frequency));
                 }
-                else if (frequency > Constants.FREQ_MAX.value) {
-                    frequencyBar.setProgress(Constants.FREQ_SLIDER_MAX.value);
-                    frequencyTxt.setText(String.valueOf(Constants.FREQ_MAX.value));
+                else if (frequency > Constants.FREQUENCY_MAX.value) {
+                    frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
+                    frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MAX.value));
                 }
                 else {
-                    frequencyBar.setProgress(Constants.FREQ_SLIDER_MIN.value);
-                    frequencyTxt.setText(String.valueOf(Constants.FREQ_MIN.value));
+                    frequencyBar.setProgress(0);
+                    frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MIN.value));
                 }
 
             }
@@ -316,10 +284,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-                if (--frequency >= Constants.FREQ_MIN.value) {
-                    frequencyBar.setProgress(convertToSlider(frequency));
+                if (--frequency >= Constants.FREQUENCY_MIN.value) {
+                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(frequency));
                     frequencyTxt.setText(String.valueOf(frequency));
                 }
+            }
+        });
+
+        frequencyDecrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+                Handler handler = new Handler();
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyBar, frequencyTxt, Options.Operation.FREQUENCY_DECREMENT);
+                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                seekBarUpdaterThread.start();
+                return true;
+            }
+        });
+
+        frequencyDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                    Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+                }
+                return false;
             }
         });
 
@@ -327,10 +317,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-                if (++frequency <= Constants.FREQ_MAX.value) {
-                    frequencyBar.setProgress(convertToSlider(frequency));
+                if (++frequency <= Constants.FREQUENCY_MAX.value) {
+                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(frequency));
                     frequencyTxt.setText(String.valueOf(frequency));
                 }
+            }
+        });
+
+        frequencyIncrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+                Handler handler = new Handler();
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyBar, frequencyTxt, Options.Operation.FREQUENCY_INCREMENT);
+                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                seekBarUpdaterThread.start();
+                return true;
+            }
+        });
+
+        frequencyIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                    Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+                }
+                return false;
             }
         });
 
@@ -345,6 +357,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        durationDecrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Options.buttonDecrementDurationState = Options.ButtonLongPressState.PRESSED;
+                Handler handler = new Handler();
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, durationBar, Options.Operation.DURATION_DECREMENT);
+                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                seekBarUpdaterThread.start();
+                return true;
+            }
+        });
+
+        durationDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                    Options.buttonDecrementDurationState = Options.ButtonLongPressState.RELEASED;
+                }
+                return false;
+            }
+        });
+
         durationIncrementBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -353,6 +387,28 @@ public class MainActivity extends AppCompatActivity {
                     durationBar.setProgress(duration);
                     durationTxt.setText(String.valueOf(duration));
                 }
+            }
+        });
+
+        durationIncrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Options.buttonIncrementDurationState = Options.ButtonLongPressState.PRESSED;
+                Handler handler = new Handler();
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, durationBar, Options.Operation.DURATION_INCREMENT);
+                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                seekBarUpdaterThread.start();
+                return true;
+            }
+        });
+
+        durationIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                    Options.buttonIncrementDurationState = Options.ButtonLongPressState.RELEASED;
+                }
+                return false;
             }
         });
 
