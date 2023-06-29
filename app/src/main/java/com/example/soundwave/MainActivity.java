@@ -2,6 +2,7 @@ package com.example.soundwave;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +21,10 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ConstraintLayout sampleRateLayout;
+    private ConstraintLayout durationLayout;
+    private ConstraintLayout loadBtnLayout;
+    private ConstraintLayout playbackBarLayout;
     private AppCompatButton frequencyDecrementBtn;
     private AppCompatButton frequencyIncrementBtn;
     private AppCompatButton durationDecrementBtn;
@@ -30,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton loopBtn;
     private ImageView loopIndicator;
     private TextView frequencyDetails;
+    private TextView durationDetailsHeader;
     private TextView durationDetails;
     private TextView samplingRateDetails;
     private TextView playbackElapsedTime;
@@ -63,6 +70,39 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         resetPlayback();
+    }
+
+    private void setPlaybackMode(Options.PlaybackMode selectedPlaybackMode) {
+        if (Options.playbackMode.equals(selectedPlaybackMode))
+            return;
+        resetPlayback();
+        Options.playbackMode = selectedPlaybackMode;
+        setLayoutForPlaybackMode();
+
+        if (Options.playbackMode.equals(Options.PlaybackMode.STATIC)) {
+            initializePlaybackManager();
+        } else {
+            //TODO: tone streaming
+        }
+    }
+
+    private void setLayoutForPlaybackMode() {
+        int visibility = View.VISIBLE;
+        if (Options.playbackMode.equals(Options.PlaybackMode.STREAM)) {
+            visibility = View.GONE;
+            loopIndicator.setVisibility(visibility);
+        } else
+            loopIndicator.setVisibility(View.INVISIBLE);
+
+        sampleRateLayout.setVisibility(visibility);
+        durationLayout.setVisibility(visibility);
+        loadBtnLayout.setVisibility(visibility);
+        playbackBarLayout.setVisibility(visibility);
+        durationDetailsHeader.setVisibility(visibility);
+        durationDetails.setVisibility(visibility);
+        saveBtn.setVisibility(visibility);
+        replayBtn.setVisibility(visibility);
+        loopBtn.setVisibility(visibility);
     }
 
     private void loadTone() {
@@ -174,6 +214,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeUIElements() {
+        sampleRateLayout = findViewById(R.id.sample_rate_layout);
+        durationLayout = findViewById(R.id.duration_layout);
+        loadBtnLayout = findViewById(R.id.load_btn_layout);
+        playbackBarLayout = findViewById(R.id.playback_bar_layout);
         frequencyBar = findViewById(R.id.frequency_bar);
         durationBar = findViewById(R.id.duration_bar);
         frequencyTxt = findViewById(R.id.frequency_txt);
@@ -185,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
         loadBtn = findViewById(R.id.load_btn);
         saveBtn = findViewById(R.id.save_btn);
         frequencyDetails = findViewById(R.id.tone_details_frequency);
+        durationDetailsHeader = findViewById(R.id.tone_details_duration_txt);
         durationDetails = findViewById(R.id.tone_details_duration);
         samplingRateDetails = findViewById(R.id.tone_details_sampling);
         playbackBar = findViewById(R.id.playback_bar);
@@ -509,6 +554,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
+            }
+        });
+
+        playbackModesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String spinnerPlaybackMode = playbackModesSpinner.getSelectedItem().toString();
+                Options.PlaybackMode selectedPlaybackMode = Options.PlaybackMode.STATIC;
+                if (spinnerPlaybackMode.equals("Stream"))
+                    selectedPlaybackMode = Options.PlaybackMode.STREAM;
+                setPlaybackMode(selectedPlaybackMode);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 /*

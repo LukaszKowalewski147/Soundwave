@@ -582,44 +582,52 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline_playback">
 
-        <TextView
-            android:id="@+id/playback_elapsed_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxEms="2"
-            android:minEms="2"
-            android:text="0"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/playback_total_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxEms="2"
-            android:minEms="2"
-            android:text="30"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="HardcodedText" />
-
-        <SeekBar
-            android:id="@+id/playback_bar"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/playback_bar_layout"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:progress="50"
-            android:thumbTint="@color/transparent"
-            android:splitTrack="false"
-            android:progressTint="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/playback_total_time"
-            app:layout_constraintStart_toEndOf="@+id/playback_elapsed_time"
-            app:layout_constraintTop_toTopOf="@+id/playback_total_time" />
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/playback_elapsed_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxEms="2"
+                android:minEms="2"
+                android:text="0"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/playback_total_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxEms="2"
+                android:minEms="2"
+                android:text="30"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="HardcodedText" />
+
+            <SeekBar
+                android:id="@+id/playback_bar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:progress="50"
+                android:progressTint="@color/white"
+                android:splitTrack="false"
+                android:thumbTint="@color/transparent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/playback_total_time"
+                app:layout_constraintStart_toEndOf="@+id/playback_elapsed_time"
+                app:layout_constraintTop_toTopOf="@+id/playback_total_time" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
             android:id="@+id/replay_btn"
@@ -627,7 +635,7 @@
             android:layout_height="40dp"
             android:background="@drawable/replay_btn"
             android:layout_marginStart="40dp"
-            app:layout_constraintBottom_toTopOf="@+id/playback_bar"
+            app:layout_constraintBottom_toTopOf="@+id/playback_bar_layout"
             app:layout_constraintEnd_toStartOf="@+id/play_pause_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -638,7 +646,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/play_btn"
-            app:layout_constraintBottom_toTopOf="@+id/playback_bar"
+            app:layout_constraintBottom_toTopOf="@+id/playback_bar_layout"
             app:layout_constraintEnd_toStartOf="@+id/loop_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/replay_btn"
@@ -651,7 +659,7 @@
             android:background="@drawable/loop_btn"
             android:elevation="1dp"
             android:layout_marginEnd="40dp"
-            app:layout_constraintBottom_toTopOf="@+id/playback_bar"
+            app:layout_constraintBottom_toTopOf="@+id/playback_bar_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/play_pause_btn"

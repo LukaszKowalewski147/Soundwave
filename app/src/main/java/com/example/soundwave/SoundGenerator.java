@@ -2,8 +2,8 @@ package com.example.soundwave;
 
 public class SoundGenerator {
     private final int samplesNumber;
-    private final int frequency;        // in Hz
-    private final short duration;         // in s
+    private final int frequency;            // in Hz
+    private final short duration;           // in s
     private final double sample[];
     private final byte outputSound[];
     private SamplingRate samplingRate;
