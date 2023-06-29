@@ -3,9 +3,10 @@ package com.example.soundwave;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,10 +19,8 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppCompatButton frequencyApplyBtn;
     private AppCompatButton frequencyDecrementBtn;
     private AppCompatButton frequencyIncrementBtn;
-    private AppCompatButton durationApplyBtn;
     private AppCompatButton durationDecrementBtn;
     private AppCompatButton durationIncrementBtn;
     private AppCompatButton loadBtn;
@@ -107,6 +106,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void validateToneDetails() {
+        int frequency = 0;
+        try {
+            frequency = Integer.parseInt(frequencyTxt.getText().toString());
+            if (frequency < Constants.FREQUENCY_MIN.value)
+                frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MIN.value));
+        } catch (Exception e) {
+            frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
+        }
+        short duration = 0;
+        try {
+            duration = Short.parseShort(durationTxt.getText().toString());
+            if (duration < Constants.DURATION_MIN.value)
+                durationTxt.setText(String.valueOf(Constants.DURATION_MIN.value));
+        } catch (Exception e) {
+            durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
+        }
+    }
+
     private void extra() {
 
         //Toast.makeText(this, "threads: " + Thread.activeCount(), Toast.LENGTH_SHORT).show();
@@ -119,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private short getDuration() {
-        return (short) durationBar.getProgress();
+        return Short.parseShort(durationTxt.getText().toString());
     }
 
     private SamplingRate getSamplingRate() {
@@ -160,10 +178,8 @@ public class MainActivity extends AppCompatActivity {
         durationBar = findViewById(R.id.duration_bar);
         frequencyTxt = findViewById(R.id.frequency_txt);
         durationTxt = findViewById(R.id.duration_txt);
-        frequencyApplyBtn = findViewById(R.id.frequency_apply_btn);
         frequencyDecrementBtn = findViewById(R.id.frequency_decrement_btn);
         frequencyIncrementBtn = findViewById(R.id.frequency_increment_btn);
-        durationApplyBtn = findViewById(R.id.duration_apply_btn);
         durationDecrementBtn = findViewById(R.id.duration_decrement_btn);
         durationIncrementBtn = findViewById(R.id.duration_increment_btn);
         loadBtn = findViewById(R.id.load_btn);
@@ -191,26 +207,97 @@ public class MainActivity extends AppCompatActivity {
 
         //extraBtn = findViewById(R.id.extra_btn);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            durationBar.setMin(Constants.DURATION_MIN.value);
-        }
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        //    durationBar.setMin(Constants.DURATION_MIN.value);
+        //}
         frequencyBar.setMax(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
-        durationBar.setMax(Constants.DURATION_MAX.value);
+        durationBar.setMax(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_MAX.value));
 
         frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-        durationBar.setProgress(Constants.DURATION_DEFAULT.value);
+        durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_DEFAULT.value));
 
-        frequencyTxt.setText(String.valueOf(UnitsConverter.convertProgressBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
+        frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
         durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
 
         loopIndicator.setVisibility(View.INVISIBLE);
     }
 
     private void initializeUIListeners() {
+        frequencyTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int frequency = Integer.parseInt(s.toString());
+                    if (frequency >= Constants.FREQUENCY_MIN.value && frequency <= Constants.FREQUENCY_MAX.value)
+                        frequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
+                    else if (frequency > Constants.FREQUENCY_MAX.value)
+                        frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MAX.value));
+                    else
+                        frequencyBar.setProgress(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        frequencyTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus)
+                    validateToneDetails();
+            }
+        });
+
+        durationTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    int duration = Integer.parseInt(s.toString());
+                    if (duration >= Constants.DURATION_MIN.value && duration <= Constants.DURATION_MAX.value)
+                        durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(duration));
+                    else if (duration > Constants.DURATION_MAX.value)
+                        durationTxt.setText(String.valueOf(Constants.DURATION_MAX.value));
+                    else
+                        durationBar.setProgress(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        durationTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus)
+                    validateToneDetails();
+            }
+        });
+
         frequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                frequencyTxt.setText(String.valueOf(UnitsConverter.convertProgressBarPositionToFrequency(progress)));
+                if (fromUser)
+                    frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(progress)));
             }
 
             @Override
@@ -227,7 +314,8 @@ public class MainActivity extends AppCompatActivity {
         durationBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                durationTxt.setText(String.valueOf(progress));
+                if (fromUser)
+                    durationTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToDuration(progress)));
             }
 
             @Override
@@ -241,51 +329,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        frequencyApplyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-
-                if (frequency >= Constants.FREQUENCY_MIN.value && frequency <= Constants.FREQUENCY_MAX.value) {
-                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(frequency));
-                    frequencyTxt.setText(String.valueOf(frequency));
-                }
-                else if (frequency > Constants.FREQUENCY_MAX.value) {
-                    frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
-                    frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MAX.value));
-                }
-                else {
-                    frequencyBar.setProgress(0);
-                    frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MIN.value));
-                }
-
-            }
-        });
-
-        durationApplyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int duration = Integer.parseInt(durationTxt.getText().toString());
-
-                if (duration >= Constants.DURATION_MIN.value && duration <= Constants.DURATION_MAX.value)
-                    durationBar.setProgress(duration);
-                else if (duration > Constants.DURATION_MAX.value) {
-                    durationBar.setProgress(Constants.DURATION_MAX.value);
-                    durationTxt.setText(String.valueOf(Constants.DURATION_MAX.value));
-                }
-                else {
-                    durationBar.setProgress(Constants.DURATION_MIN.value);
-                    durationTxt.setText(String.valueOf(Constants.DURATION_MIN.value));
-                }
-            }
-        });
-
         frequencyDecrementBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int frequency = Integer.parseInt(frequencyTxt.getText().toString());
                 if (--frequency >= Constants.FREQUENCY_MIN.value) {
-                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(frequency));
+                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
                     frequencyTxt.setText(String.valueOf(frequency));
                 }
             }
@@ -296,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
                 Handler handler = new Handler();
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyBar, frequencyTxt, Options.Operation.FREQUENCY_DECREMENT);
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyTxt, Options.Operation.FREQUENCY_DECREMENT);
                 Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
                 seekBarUpdaterThread.start();
                 return true;
@@ -306,7 +355,9 @@ public class MainActivity extends AppCompatActivity {
         frequencyDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    validateToneDetails();
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
                 }
                 return false;
@@ -318,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int frequency = Integer.parseInt(frequencyTxt.getText().toString());
                 if (++frequency <= Constants.FREQUENCY_MAX.value) {
-                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(frequency));
+                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
                     frequencyTxt.setText(String.valueOf(frequency));
                 }
             }
@@ -329,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
                 Handler handler = new Handler();
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyBar, frequencyTxt, Options.Operation.FREQUENCY_INCREMENT);
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyTxt, Options.Operation.FREQUENCY_INCREMENT);
                 Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
                 seekBarUpdaterThread.start();
                 return true;
@@ -339,7 +390,9 @@ public class MainActivity extends AppCompatActivity {
         frequencyIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    validateToneDetails();
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
                 }
                 return false;
@@ -351,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int duration = Integer.parseInt(durationTxt.getText().toString());
                 if (--duration >= Constants.DURATION_MIN.value) {
-                    durationBar.setProgress(duration);
+                    durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(duration));
                     durationTxt.setText(String.valueOf(duration));
                 }
             }
@@ -362,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Options.buttonDecrementDurationState = Options.ButtonLongPressState.PRESSED;
                 Handler handler = new Handler();
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, durationBar, Options.Operation.DURATION_DECREMENT);
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, durationTxt, Options.Operation.DURATION_DECREMENT);
                 Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
                 seekBarUpdaterThread.start();
                 return true;
@@ -372,7 +425,9 @@ public class MainActivity extends AppCompatActivity {
         durationDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    validateToneDetails();
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     Options.buttonDecrementDurationState = Options.ButtonLongPressState.RELEASED;
                 }
                 return false;
@@ -384,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int duration = Integer.parseInt(durationTxt.getText().toString());
                 if (++duration <= Constants.DURATION_MAX.value) {
-                    durationBar.setProgress(duration);
+                    durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(duration));
                     durationTxt.setText(String.valueOf(duration));
                 }
             }
@@ -395,7 +450,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 Options.buttonIncrementDurationState = Options.ButtonLongPressState.PRESSED;
                 Handler handler = new Handler();
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, durationBar, Options.Operation.DURATION_INCREMENT);
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, durationTxt, Options.Operation.DURATION_INCREMENT);
                 Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
                 seekBarUpdaterThread.start();
                 return true;
@@ -405,7 +460,9 @@ public class MainActivity extends AppCompatActivity {
         durationIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction()==MotionEvent.ACTION_UP || event.getAction()==MotionEvent.ACTION_CANCEL) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    validateToneDetails();
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     Options.buttonIncrementDurationState = Options.ButtonLongPressState.RELEASED;
                 }
                 return false;
@@ -415,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
         loadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                validateToneDetails();
                 loadTone();
             }
         });

@@ -2,26 +2,16 @@ package com.example.soundwave;
 
 import android.os.Handler;
 import android.widget.EditText;
-import android.widget.SeekBar;
 
 public class SeekBarUpdater implements Runnable {
 
     private final Handler handler;
-    private final SeekBar barToUpdate;
-    private final EditText frequencyTxt;
+    private final EditText toUpdateTxt;
     private final Options.Operation operation;
 
-    public SeekBarUpdater(Handler handler, SeekBar frequencyBar, EditText frequencyTxt, Options.Operation operation) {
+    public SeekBarUpdater(Handler handler, EditText toUpdateTxt, Options.Operation operation) {
         this.handler = handler;
-        this.barToUpdate = frequencyBar;
-        this.frequencyTxt = frequencyTxt;
-        this.operation = operation;
-    }
-
-    public SeekBarUpdater(Handler handler, SeekBar durationBar, Options.Operation operation) {
-        this.handler = handler;
-        this.barToUpdate = durationBar;
-        this.frequencyTxt = null;
+        this.toUpdateTxt = toUpdateTxt;
         this.operation = operation;
     }
 
@@ -52,46 +42,45 @@ public class SeekBarUpdater implements Runnable {
     }
 
     private void changeFrequency() {
-        int progress = Integer.parseInt(frequencyTxt.getText().toString());
+        int frequency = Integer.parseInt(toUpdateTxt.getText().toString());
         switch (operation) {
             case FREQUENCY_DECREMENT:
-                --progress;
-                if (progress < Constants.FREQUENCY_MIN.value)
+                --frequency;
+                if (frequency < Constants.FREQUENCY_MIN.value)
                     return;
                 break;
             case FREQUENCY_INCREMENT:
-                ++progress;
-                if (progress > Constants.FREQUENCY_MAX.value)
+                ++frequency;
+                if (frequency > Constants.FREQUENCY_MAX.value)
                     return;
                 break;
         }
-        int finalProgress = progress;
+        int finalProgress = frequency;
         handler.post(new Runnable() {
             public void run() {
-                barToUpdate.setProgress(UnitsConverter.convertFrequencyToProgressBarPosition(finalProgress));
-                frequencyTxt.setText(String.valueOf(finalProgress));
+                toUpdateTxt.setText(String.valueOf(finalProgress));
             }
         });
     }
 
     private void changeDuration() {
-        int progress = barToUpdate.getProgress();
+        int duration = Integer.parseInt(toUpdateTxt.getText().toString());
         switch (operation) {
             case DURATION_DECREMENT:
-                --progress;
-                if (progress < 1)
+                --duration;
+                if (duration < Constants.DURATION_MIN.value)
                     return;
                 break;
             case DURATION_INCREMENT:
-                ++progress;
-                if (progress > Constants.DURATION_MAX.value)
+                ++duration;
+                if (duration > Constants.DURATION_MAX.value)
                     return;
                 break;
         }
-        int finalProgress = progress;
+        int finalProgress = duration;
         handler.post(new Runnable() {
             public void run() {
-                barToUpdate.setProgress(finalProgress);
+                toUpdateTxt.setText(String.valueOf(finalProgress));
             }
         });
     }

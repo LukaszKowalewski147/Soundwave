@@ -12,7 +12,7 @@ Maximum progress bar value has to be int and progress bar has to have enough pre
 Multiplying range [1 - 2.7] by 500 gives progress bar enough precision - [500 - 1350].
 The offset of 500 points can be subtracted giving progress bar operating range of [0 - 850]
 */
-    public static int convertProgressBarPositionToFrequency(int position) {
+    public static int convertSeekBarPositionToFrequency(int position) {
         double input = position + frequencyOffset;                      // adding offset (500) to reach [500 - 1350] range
         double targetCurveValue = 0.0d;
         int frequencyValue = 0;
@@ -30,7 +30,7 @@ The offset of 500 points can be subtracted giving progress bar operating range o
 
     // Following function logic is the inversion of logic behind
     // converting progress bar position to frequency value
-    public static int convertFrequencyToProgressBarPosition(int frequency) {
+    public static int convertFrequencyToSeekBarPosition(int frequency) {
         int input = frequency;
         int progressBarPosition = 0;
         double tenthRoot = 0.0d;
@@ -41,5 +41,13 @@ The offset of 500 points can be subtracted giving progress bar operating range o
         progressBarPosition = (int) Math.round(tenthRoot);
 
         return progressBarPosition - frequencyOffset;
+    }
+
+    public static int convertDurationToSeekBarPosition(int duration) {
+        return --duration;
+    }
+
+    public static int convertSeekBarPositionToDuration(int position) {
+        return ++position;
     }
 }

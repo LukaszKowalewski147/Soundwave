@@ -379,19 +379,6 @@
                     app:layout_constraintTop_toTopOf="@+id/frequency_txt"
                     tools:ignore="HardcodedText" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/frequency_apply_btn"
-                    android:layout_width="80dp"
-                    android:layout_height="34dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/standard_button"
-                    android:text="@string/apply_btn_txt"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="@+id/frequency_txt"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/frequency_txt" />
-
                 <SeekBar
                     android:id="@+id/frequency_bar"
                     android:layout_width="match_parent"
@@ -498,19 +485,6 @@
                     app:layout_constraintStart_toEndOf="@+id/duration_txt"
                     app:layout_constraintTop_toTopOf="@+id/duration_txt"
                     tools:ignore="HardcodedText" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/duration_apply_btn"
-                    android:layout_width="80dp"
-                    android:layout_height="34dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/standard_button"
-                    android:text="@string/apply_btn_txt"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    app:layout_constraintBottom_toBottomOf="@+id/duration_txt"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/duration_txt" />
 
                 <SeekBar
                     android:id="@+id/duration_bar"
