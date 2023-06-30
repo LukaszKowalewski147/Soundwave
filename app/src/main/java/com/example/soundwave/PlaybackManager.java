@@ -75,7 +75,7 @@ public class PlaybackManager implements Runnable {
 
     @Override
     public void run() {
-        final int samplingRate = tone.getSamplingRate().samplingRate;
+        final int samplingRate = tone.getSampleRate().sampleRate;
         final int barRefreshRate = Constants.PLAYBACK_REFRESH_RATE.value;
         final int endingPoint = samplingRate * tone.getDuration();
         final int barDivider = tone.getDuration() * 100;

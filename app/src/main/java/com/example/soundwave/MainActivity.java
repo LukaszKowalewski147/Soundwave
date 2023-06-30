@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView frequencyDetails;
     private TextView durationDetailsHeader;
     private TextView durationDetails;
-    private TextView samplingRateDetails;
+    private TextView sampleRateDetails;
     private TextView playbackElapsedTime;
     private TextView playbackTotalTime;
     private EditText frequencyTxt;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar durationBar;
     private SeekBar playbackBar;
     private Spinner playbackModesSpinner;
-    private Spinner samplingRatesSpinner;
+    private Spinner sampleRatesSpinner;
     //private AppCompatButton extraBtn;
 
     private Tone tone;
@@ -108,15 +108,15 @@ public class MainActivity extends AppCompatActivity {
     private void loadTone() {
         int frequency = getFrequency();
         short duration = getDuration();
-        SamplingRate samplingRate = getSamplingRate();
-        tone = new SoundGenerator(frequency, duration, samplingRate).generateTone();
+        SampleRate sampleRate = getSampleRate();
+        tone = new SoundGenerator(frequency, duration, sampleRate).generateTone();
         playbackManager.setTone(tone);
 
         frequencyDetails.setText(frequency + "Hz");
         durationDetails.setText(duration + "s");
-        samplingRateDetails.setText(samplingRatesSpinner.getSelectedItem().toString());
+        sampleRateDetails.setText(sampleRatesSpinner.getSelectedItem().toString());
         playbackTotalTime.setText(String.valueOf(duration));
-        playbackBar.setMax(samplingRate.samplingRate/100); // one step every 100 samples
+        playbackBar.setMax(sampleRate.sampleRate /100); // one step every 100 samples
     }
 
     private void managePlayPauseActivity() {
@@ -180,28 +180,28 @@ public class MainActivity extends AppCompatActivity {
         return Short.parseShort(durationTxt.getText().toString());
     }
 
-    private SamplingRate getSamplingRate() {
-        SamplingRate samplingRate = SamplingRate.RATE_44_1_KHZ;
-        String selectedSamplingRate = samplingRatesSpinner.getSelectedItem().toString();
-        switch (selectedSamplingRate) {
+    private SampleRate getSampleRate() {
+        SampleRate sampleRate = SampleRate.RATE_44_1_KHZ;
+        String selectedSampleRate = sampleRatesSpinner.getSelectedItem().toString();
+        switch (selectedSampleRate) {
             case "48kHz":
-                samplingRate = SamplingRate.RATE_48_KHZ;
+                sampleRate = SampleRate.RATE_48_KHZ;
                 break;
             case "96kHz":
-                samplingRate = SamplingRate.RATE_96_KHZ;
+                sampleRate = SampleRate.RATE_96_KHZ;
                 break;
             case "192kHz":
-                samplingRate = SamplingRate.RATE_192_KHZ;
+                sampleRate = SampleRate.RATE_192_KHZ;
                 break;
         }
-        return samplingRate;
+        return sampleRate;
     }
 
     private void initializePlaybackManager() {
         int frequency = getFrequency();
         short duration = getDuration();
-        SamplingRate samplingRate = getSamplingRate();
-        tone = new SoundGenerator(frequency, duration, samplingRate).generateTone();
+        SampleRate sampleRate = getSampleRate();
+        tone = new SoundGenerator(frequency, duration, sampleRate).generateTone();
 
         Handler handler = new Handler();
         playbackManager = new PlaybackManager(this, handler, playPauseBtn, playbackBar, playbackElapsedTime);
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         frequencyDetails.setText(frequency + "Hz");
         durationDetails.setText(duration + "s");
         playbackTotalTime.setText(String.valueOf(duration));
-        playbackBar.setMax(samplingRate.samplingRate/100); // one step every 100 samples
+        playbackBar.setMax(sampleRate.sampleRate /100); // one step every 100 samples
     }
 
     private void initializeUIElements() {
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         frequencyDetails = findViewById(R.id.tone_details_frequency);
         durationDetailsHeader = findViewById(R.id.tone_details_duration_txt);
         durationDetails = findViewById(R.id.tone_details_duration);
-        samplingRateDetails = findViewById(R.id.tone_details_sampling);
+        sampleRateDetails = findViewById(R.id.tone_details_sample_rate);
         playbackBar = findViewById(R.id.playback_bar);
         playbackElapsedTime = findViewById(R.id.playback_elapsed_time);
         playbackTotalTime = findViewById(R.id.playback_total_time);
@@ -240,15 +240,15 @@ public class MainActivity extends AppCompatActivity {
         loopBtn = findViewById(R.id.loop_btn);
         loopIndicator = findViewById(R.id.loop_indicator);
         playbackModesSpinner = findViewById(R.id.playback_modes_spinner);
-        samplingRatesSpinner = findViewById(R.id.sampling_rates_spinner);
+        sampleRatesSpinner = findViewById(R.id.sample_rates_spinner);
 
         ArrayAdapter<CharSequence> playbackModesAdapter = ArrayAdapter.createFromResource(this, R.array.playback_modes_array, android.R.layout.simple_spinner_item);
         playbackModesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         playbackModesSpinner.setAdapter(playbackModesAdapter);
 
-        ArrayAdapter<CharSequence> samplingRatesAdapter = ArrayAdapter.createFromResource(this, R.array.sampling_rates_array, android.R.layout.simple_spinner_item);
-        samplingRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        samplingRatesSpinner.setAdapter(samplingRatesAdapter);
+        ArrayAdapter<CharSequence> sampleRatesAdapter = ArrayAdapter.createFromResource(this, R.array.sample_rates_array, android.R.layout.simple_spinner_item);
+        sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sampleRatesSpinner.setAdapter(sampleRatesAdapter);
 
         //extraBtn = findViewById(R.id.extra_btn);
 

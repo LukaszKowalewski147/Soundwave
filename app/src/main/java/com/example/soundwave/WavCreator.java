@@ -2,7 +2,6 @@ package com.example.soundwave;
 
 import android.content.Context;
 import android.os.Environment;
-import android.renderscript.Sampler;
 import android.widget.Toast;
 
 import java.io.File;
@@ -59,7 +58,7 @@ public class WavCreator {
     }
 
     private String getFilename() {
-        SamplingRate samplingRate = tone.getSamplingRate();
+        SampleRate samplingRate = tone.getSampleRate();
         String sampleingRateTxt = "?kHz-";
         switch (samplingRate) {
             case RATE_44_1_KHZ:
@@ -87,7 +86,7 @@ public class WavCreator {
     }
 
     private void writeWavHeader(OutputStream out) throws IOException {
-        final int samplingRate = tone.getSamplingRate().samplingRate;
+        final int samplingRate = tone.getSampleRate().sampleRate;
         short channels = 1;
         short bitDepth = 16;
 

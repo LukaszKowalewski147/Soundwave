@@ -124,7 +124,7 @@
                         android:text="@string/duration_header"
                         android:textColor="@color/white"
                         android:textSize="12sp"
-                        app:layout_constraintBottom_toTopOf="@+id/tone_details_sampling_txt"
+                        app:layout_constraintBottom_toTopOf="@+id/tone_details_sample_rate_txt"
                         app:layout_constraintEnd_toStartOf="@+id/guideline_details_separator"
                         app:layout_constraintTop_toBottomOf="@+id/tone_details_frequency_txt" />
 
@@ -142,7 +142,7 @@
                         tools:ignore="HardcodedText" />
 
                     <TextView
-                        android:id="@+id/tone_details_sampling_txt"
+                        android:id="@+id/tone_details_sample_rate_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
@@ -155,7 +155,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tone_details_duration_txt" />
 
                     <TextView
-                        android:id="@+id/tone_details_sampling"
+                        android:id="@+id/tone_details_sample_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -164,7 +164,7 @@
                         android:textSize="12sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toTopOf="@+id/tone_details_sampling_txt"
+                        app:layout_constraintTop_toTopOf="@+id/tone_details_sample_rate_txt"
                         tools:ignore="HardcodedText" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -290,7 +290,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_sampling"
+                    android:src="@drawable/ic_sample_rate"
                     android:scaleType="centerCrop"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintBottom_toBottomOf="@+id/sample_rate_header"
@@ -310,7 +310,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Spinner
-                    android:id="@+id/sampling_rates_spinner"
+                    android:id="@+id/sample_rates_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"

@@ -4,28 +4,28 @@ public class SoundGenerator {
     private final int samplesNumber;
     private final int frequency;            // in Hz
     private final short duration;           // in s
-    private final double sample[];
-    private final byte outputSound[];
-    private SamplingRate samplingRate;
+    private final double[] samples;
+    private final byte[] outputSound;
+    private final SampleRate sampleRate;
 
-    public SoundGenerator(int frequency, short duration, SamplingRate samplingRate) {
+    public SoundGenerator(int frequency, short duration, SampleRate sampleRate) {
         this.frequency = frequency;
         this.duration = duration;
-        this.samplingRate = samplingRate;
+        this.sampleRate = sampleRate;
 
-        samplesNumber = duration * samplingRate.samplingRate;
-        sample = new double[samplesNumber];
-        outputSound = new byte[2 * samplesNumber];
+        samplesNumber = duration * sampleRate.sampleRate;
+        samples = new double[samplesNumber];
+        outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
     }
 
     public Tone generateTone() {
         for (int i = 0; i < samplesNumber; ++i) {
-            sample[i] = Math.sin(2 * Math.PI * i/(samplingRate.samplingRate/(double)frequency));
+            samples[i] = Math.sin(2 * Math.PI * i/(sampleRate.sampleRate /(double)frequency));
         }
 
         // convert to 16 bit pcm sound array
         int index = 0;
-        for (final double dVal : sample) {
+        for (final double dVal : samples) {
             // scale to maximum amplitude
             final short val = (short) ((dVal * 32767));
             // in 16 bit wav PCM, first byte is the low order byte
@@ -34,7 +34,11 @@ public class SoundGenerator {
         }
         fadeIn();
         fadeOut();
-        return new Tone(outputSound, frequency, duration, samplingRate);
+        return new Tone(outputSound, frequency, duration, sampleRate);
+    }
+
+    public void generateSoundSample() {
+       // TODO: generate sound sample for streaming mode
     }
 
     private void fadeIn() {
@@ -69,6 +73,6 @@ public class SoundGenerator {
     }
 
     private int getFadeDuration() {
-        return samplingRate.samplingRate / 50; // 0.02s
+        return sampleRate.sampleRate / 50; // 0.02s
     }
 }

@@ -87,7 +87,7 @@ public class TonePlayer {
                         .build())
                 .setAudioFormat(new AudioFormat.Builder()
                         .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                        .setSampleRate(tone.getSamplingRate().samplingRate)
+                        .setSampleRate(tone.getSampleRate().sampleRate)
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
                 .setTransferMode(AudioTrack.MODE_STATIC)

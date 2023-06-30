@@ -9,7 +9,7 @@
     <string name="create_tone_header">Create tone</string>
     <string name="load_tone_btn_txt">Load tone</string>
 
-    <string-array name="sampling_rates_array">
+    <string-array name="sample_rates_array">
             <item>44.1kHz</item>
             <item>48kHz</item>
             <item>96kHz</item>
