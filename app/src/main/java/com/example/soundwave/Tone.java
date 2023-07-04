@@ -1,7 +1,7 @@
 package com.example.soundwave;
 
 public class Tone {
-    private final byte sinWaveData[];
+    private final byte[] sinWaveData;
     private final int frequency;
     private final short duration;
     private final SampleRate sampleRate;

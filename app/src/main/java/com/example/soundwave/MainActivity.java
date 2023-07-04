@@ -1,9 +1,9 @@
 package com.example.soundwave;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -12,17 +12,27 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private ConstraintLayout sampleRateLayout;
     private ConstraintLayout durationLayout;
+    private ConstraintLayout secondFrequencyActivatorLayout;
+    private ConstraintLayout secondFrequencyLayout;
+    private ConstraintLayout thirdFrequencyActivatorLayout;
+    private ConstraintLayout thirdFrequencyLayout;
+    private ConstraintLayout fourthFrequencyActivatorLayout;
+    private ConstraintLayout fourthFrequencyLayout;
     private ConstraintLayout loadBtnLayout;
     private ConstraintLayout playbackBarLayout;
     private AppCompatButton frequencyDecrementBtn;
@@ -43,11 +53,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView playbackTotalTime;
     private EditText frequencyTxt;
     private EditText durationTxt;
+    private CheckBox secondFrequencyActivator;
+    private CheckBox thirdFrequencyActivator;
+    private CheckBox fourthFrequencyActivator;
     private SeekBar frequencyBar;
     private SeekBar durationBar;
     private SeekBar playbackBar;
     private Spinner playbackModesSpinner;
     private Spinner sampleRatesSpinner;
+    private NumberPicker frequencyVolume;
     //private AppCompatButton extraBtn;
 
     private Tone tone;
@@ -62,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         playbackManager = null;
 
         initializeUIElements();
+        initializeDefaultLayout();
         initializeUIListeners();
         initializePlaybackManager();
     }
@@ -106,17 +121,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadTone() {
-        int frequency = getFrequency();
-        short duration = getDuration();
-        SampleRate sampleRate = getSampleRate();
-        tone = new SoundGenerator(frequency, duration, sampleRate).generateTone();
+        tone = new SoundGenerator(getFrequency(), getDuration(), getSampleRate()).generateTone();
         playbackManager.setTone(tone);
-
-        frequencyDetails.setText(frequency + "Hz");
-        durationDetails.setText(duration + "s");
-        sampleRateDetails.setText(sampleRatesSpinner.getSelectedItem().toString());
-        playbackTotalTime.setText(String.valueOf(duration));
-        playbackBar.setMax(sampleRate.sampleRate /100); // one step every 100 samples
+        displayToneParameters(tone);
     }
 
     private void managePlayPauseActivity() {
@@ -153,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
             if (frequency < Constants.FREQUENCY_MIN.value)
                 frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MIN.value));
         } catch (Exception e) {
+            Toast.makeText(this, "Frequency error", Toast.LENGTH_SHORT).show();
             frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
         }
         short duration = 0;
@@ -161,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
             if (duration < Constants.DURATION_MIN.value)
                 durationTxt.setText(String.valueOf(Constants.DURATION_MIN.value));
         } catch (Exception e) {
+            Toast.makeText(this, "Duration error", Toast.LENGTH_SHORT).show();
             durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
         }
     }
@@ -197,25 +206,82 @@ public class MainActivity extends AppCompatActivity {
         return sampleRate;
     }
 
+    private void displayToneParameters(@NonNull Tone tone) {
+        int frequency = tone.getFrequency();
+        short duration = tone.getDuration();
+        SampleRate sampleRate = tone.getSampleRate();
+
+        String displayFrequency = frequency + getResources().getString(R.string.frequency_unit);
+        String displayDuration = duration + getResources().getString(R.string.duration_unit);
+        String displaySampleRate = sampleRatesSpinner.getSelectedItem().toString();
+        String displayTotalPlaybackTime = String.valueOf(duration);
+        int playbackBarMaxValue = sampleRate.sampleRate / 100;      // one step every 100 samples
+
+        frequencyDetails.setText(displayFrequency);
+        durationDetails.setText(displayDuration);
+        sampleRateDetails.setText(displaySampleRate);
+        playbackTotalTime.setText(displayTotalPlaybackTime);
+        playbackBar.setMax(playbackBarMaxValue);
+    }
+
     private void initializePlaybackManager() {
-        int frequency = getFrequency();
-        short duration = getDuration();
-        SampleRate sampleRate = getSampleRate();
-        tone = new SoundGenerator(frequency, duration, sampleRate).generateTone();
-
-        Handler handler = new Handler();
-        playbackManager = new PlaybackManager(this, handler, playPauseBtn, playbackBar, playbackElapsedTime);
+        tone = new SoundGenerator(getFrequency(), getDuration(), getSampleRate()).generateTone();
+        playbackManager = new PlaybackManager(this, new Handler(), playPauseBtn, playbackBar, playbackElapsedTime);
         playbackManager.setTone(tone);
+        displayToneParameters(tone);
+    }
 
-        frequencyDetails.setText(frequency + "Hz");
-        durationDetails.setText(duration + "s");
-        playbackTotalTime.setText(String.valueOf(duration));
-        playbackBar.setMax(sampleRate.sampleRate /100); // one step every 100 samples
+    private void initializeDefaultLayout() {
+        // Spinners
+        ArrayAdapter<CharSequence> playbackModesAdapter = ArrayAdapter.createFromResource(this, R.array.playback_modes_array, android.R.layout.simple_spinner_item);
+        playbackModesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        playbackModesSpinner.setAdapter(playbackModesAdapter);
+
+        ArrayAdapter<CharSequence> sampleRatesAdapter = ArrayAdapter.createFromResource(this, R.array.sample_rates_array, android.R.layout.simple_spinner_item);
+        sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sampleRatesSpinner.setAdapter(sampleRatesAdapter);
+
+        //NumberPickers
+        String[] values = new String[111];
+        for (int i = 0; i < values.length; i ++)
+            values[i] = String.valueOf(i + "%");
+        frequencyVolume.setDisplayedValues(null);
+        frequencyVolume.setMinValue(0);
+        frequencyVolume.setMaxValue(110);
+        frequencyVolume.setValue(100);
+        frequencyVolume.setDisplayedValues(values);
+        frequencyVolume.setWrapSelectorWheel(false);
+
+        // ProgressBars
+        durationBar.setMax(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_MAX.value));
+        durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_DEFAULT.value));
+
+        frequencyBar.setMax(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
+        frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+
+        // TextViews
+        durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
+        frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
+
+        // Content visibility
+        secondFrequencyLayout.setVisibility(View.GONE);
+        thirdFrequencyLayout.setVisibility(View.GONE);
+        fourthFrequencyLayout.setVisibility(View.GONE);
+        loopIndicator.setVisibility(View.INVISIBLE);
     }
 
     private void initializeUIElements() {
         sampleRateLayout = findViewById(R.id.sample_rate_layout);
         durationLayout = findViewById(R.id.duration_layout);
+        secondFrequencyActivatorLayout = findViewById(R.id.second_frequency_activator_layout);
+        secondFrequencyLayout = findViewById(R.id.second_frequency_body);
+        secondFrequencyActivator = findViewById(R.id.second_frequency_activator);
+        thirdFrequencyActivatorLayout = findViewById(R.id.third_frequency_activator_layout);
+        thirdFrequencyLayout = findViewById(R.id.third_frequency_body);
+        thirdFrequencyActivator = findViewById(R.id.third_frequency_activator);
+        fourthFrequencyActivatorLayout = findViewById(R.id.fourth_frequency_activator_layout);
+        fourthFrequencyLayout = findViewById(R.id.fourth_frequency_body);
+        fourthFrequencyActivator = findViewById(R.id.fourth_frequency_activator);
         loadBtnLayout = findViewById(R.id.load_btn_layout);
         playbackBarLayout = findViewById(R.id.playback_bar_layout);
         frequencyBar = findViewById(R.id.frequency_bar);
@@ -241,30 +307,8 @@ public class MainActivity extends AppCompatActivity {
         loopIndicator = findViewById(R.id.loop_indicator);
         playbackModesSpinner = findViewById(R.id.playback_modes_spinner);
         sampleRatesSpinner = findViewById(R.id.sample_rates_spinner);
-
-        ArrayAdapter<CharSequence> playbackModesAdapter = ArrayAdapter.createFromResource(this, R.array.playback_modes_array, android.R.layout.simple_spinner_item);
-        playbackModesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        playbackModesSpinner.setAdapter(playbackModesAdapter);
-
-        ArrayAdapter<CharSequence> sampleRatesAdapter = ArrayAdapter.createFromResource(this, R.array.sample_rates_array, android.R.layout.simple_spinner_item);
-        sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sampleRatesSpinner.setAdapter(sampleRatesAdapter);
-
+        frequencyVolume = findViewById(R.id.frequency_volume);
         //extraBtn = findViewById(R.id.extra_btn);
-
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //    durationBar.setMin(Constants.DURATION_MIN.value);
-        //}
-        frequencyBar.setMax(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
-        durationBar.setMax(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_MAX.value));
-
-        frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-        durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_DEFAULT.value));
-
-        frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
-        durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
-
-        loopIndicator.setVisibility(View.INVISIBLE);
     }
 
     private void initializeUIListeners() {
@@ -565,12 +609,50 @@ public class MainActivity extends AppCompatActivity {
                 if (spinnerPlaybackMode.equals("Stream"))
                     selectedPlaybackMode = Options.PlaybackMode.STREAM;
                 setPlaybackMode(selectedPlaybackMode);
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        secondFrequencyActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    secondFrequencyActivatorLayout.setBackgroundResource(0);
+                    secondFrequencyLayout.setVisibility(View.VISIBLE);
+                    return;
+                }
+                secondFrequencyActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
+                secondFrequencyLayout.setVisibility(View.GONE);
+            }
+        });
+
+        thirdFrequencyActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    thirdFrequencyActivatorLayout.setBackgroundResource(0);
+                    thirdFrequencyLayout.setVisibility(View.VISIBLE);
+                    return;
+                }
+                thirdFrequencyActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
+                thirdFrequencyLayout.setVisibility(View.GONE);
+            }
+        });
+
+        fourthFrequencyActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    fourthFrequencyActivatorLayout.setBackgroundResource(0);
+                    fourthFrequencyLayout.setVisibility(View.VISIBLE);
+                    return;
+                }
+                fourthFrequencyActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
+                fourthFrequencyLayout.setVisibility(View.GONE);
             }
         });
 /*
