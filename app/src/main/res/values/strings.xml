@@ -1,16 +1,17 @@
 <resources>
     <string name="app_name">Soundwave</string>
-    <string name="details_header">Tone details</string>
+    <string name="details_header">Sound details</string>
     <string name="frequency_header">Frequency</string>
-    <string name="second_frequency_header">2nd frequency</string>
-    <string name="third_frequency_header">3rd frequency</string>
-    <string name="fourth_frequency_header">4th frequency</string>
+    <string name="second_tone_header">2nd tone</string>
+    <string name="third_tione_header">3rd tone</string>
+    <string name="fourth_tone_header">4th tone</string>
     <string name="duration_header">Duration</string>
     <string name="sample_rate_header">Sample rate</string>
     <string name="options_header">Options</string>
     <string name="playback_mode_header">Playback mode</string>
-    <string name="create_tone_header">Create tone</string>
-    <string name="load_tone_btn_txt">Load tone</string>
+    <string name="create_sound_header">Create sound</string>
+    <string name="tone_volume_header">Volume</string>
+    <string name="load_sound_btn_txt">Load sound</string>
     <string name="duration_unit">s</string>
     <string name="frequency_unit">Hz</string>
 
