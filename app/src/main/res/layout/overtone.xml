@@ -7,19 +7,18 @@
     android:gravity="center"
     android:paddingTop="4dp"
     android:paddingBottom="4dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
     tools:background="@color/black">
 
     <Switch
         android:id="@+id/activator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
+        android:thumb="@drawable/custom_switch_thumb"
+        android:track="@drawable/custom_switch_track"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:thumb="@drawable/seek_bar_thumb_custom"
-        android:trackTint="@color/button_standard_start"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <LinearLayout
@@ -36,57 +35,76 @@
             android:id="@+id/index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ems="6"
+            android:gravity="center"
+            android:text="1st"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="1st" />
 
-        <TextView
-            android:id="@+id/frequency"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="7"
-            android:gravity="center"
-            android:textColor="@color/button_standard_start"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            tools:text="10000Hz" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="10000"
+                android:textColor="@color/app_yellow"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                tools:text="10000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/frequency_unit"
+                android:textColor="@color/app_yellow"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/details"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/details"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/details">
 
         <ImageView
             android:id="@+id/volume_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_volume_24"
+            android:src="@drawable/ic_volume"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white"
             tools:ignore="ContentDescription" />
 
         <SeekBar
-            android:id="@+id/volume_bar"
+            android:id="@+id/master_volume_bar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:max="150"
             android:progress="100"
-            android:progressTint="@color/button_standard_start"
-            android:thumb="@drawable/seek_bar_thumb_custom"
+            android:progressTint="@color/app_yellow_gradient_start"
+            android:thumb="@drawable/custom_seekbar_thumb"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/volume"
+            app:layout_constraintEnd_toStartOf="@id/master_volume_input"
             app:layout_constraintStart_toEndOf="@id/volume_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/volume"
+            android:id="@+id/master_volume_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="2"

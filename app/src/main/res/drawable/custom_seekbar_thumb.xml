@@ -5,12 +5,12 @@
         <gradient
             android:type="radial"
             android:startColor="@color/white"
-            android:endColor="@color/button_standard_end"
+            android:endColor="@color/app_yellow_gradient_end"
             android:gradientRadius="70%p"
             android:angle="0"/>
         <size
-            android:width="14dp"
-            android:height="14dp"/>
+            android:width="16dp"
+            android:height="16dp"/>
     </shape>
 </item>
 </layer-list>

@@ -14,8 +14,8 @@ public class PlaybackManager implements Runnable {
     private final SeekBar playbackBar;
     private final TextView playbackElapsedTime;
 
-    private Tone tone;
-    private TonePlayer tonePlayer;
+    private Sound sound;
+    private AudioPlayer tonePlayer;
 
     public PlaybackManager(Context context, Handler handler, ImageButton playPauseBtn, SeekBar playbackBar, TextView playbackElapsedTime) {
         this.context = context;
@@ -23,15 +23,15 @@ public class PlaybackManager implements Runnable {
         this.playPauseBtn = playPauseBtn;
         this.playbackBar = playbackBar;
         this.playbackElapsedTime = playbackElapsedTime;
-        tone = null;
+        sound = null;
         tonePlayer = null;
     }
 
-    public void setTone(Tone tone) {
+    public void setSound(Sound sound) {
         if (isPlaying())
             stopPlayback();
-        this.tone = tone;
-        tonePlayer = new TonePlayer(tone);
+        this.sound = sound;
+        tonePlayer = new AudioPlayer(sound);
         tonePlayer.load(context);
         resetPlaybackBarValues();
     }
@@ -67,7 +67,7 @@ public class PlaybackManager implements Runnable {
         managePlayPauseButton();
     }
 
-    private void reloadTone() {
+    private void reloadSound() {
         tonePlayer.stop();
         tonePlayer.reload();
         tonePlayer.play();
@@ -75,10 +75,10 @@ public class PlaybackManager implements Runnable {
 
     @Override
     public void run() {
-        final int samplingRate = tone.getSampleRate().sampleRate;
+        final int samplingRate = sound.getSampleRate().sampleRate;
         final int barRefreshRate = Constants.PLAYBACK_REFRESH_RATE.value;
-        final int endingPoint = samplingRate * tone.getDuration();
-        final int barDivider = tone.getDuration() * 100;
+        final int endingPoint = samplingRate * sound.getDuration();
+        final int barDivider = sound.getDuration() * 100;
 
         while (isPlaying()) {
             updatePlaybackBar(endingPoint, barDivider, samplingRate);
@@ -94,11 +94,11 @@ public class PlaybackManager implements Runnable {
         int playbackPosition = tonePlayer.getPlaybackPosition();
         if (playbackPosition >= endingPoint) {
             if (Options.looperState == Options.LooperState.ON) {
-                reloadTone();
+                reloadSound();
                 return;
             }
             playbackPosition = (int) Math.round(endingPoint / (double) barDivider);
-            setPlaybackBarValues(playbackPosition, tone.getDuration());
+            setPlaybackBarValues(playbackPosition, sound.getDuration());
             stopPlayback();
             return;
         }
@@ -131,13 +131,13 @@ public class PlaybackManager implements Runnable {
         if (isPlaying()) {
             handler.post(new Runnable() {
                 public void run() {
-                    playPauseBtn.setBackgroundResource(R.drawable.pause_btn);
+                    playPauseBtn.setBackgroundResource(R.drawable.btn_pause);
                 }
             });
         } else {
             handler.post(new Runnable() {
                 public void run() {
-                    playPauseBtn.setBackgroundResource(R.drawable.play_btn);
+                    playPauseBtn.setBackgroundResource(R.drawable.btn_play);
                 }
             });
         }

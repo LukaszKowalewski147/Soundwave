@@ -6,12 +6,12 @@ import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.widget.Toast;
 
-public class TonePlayer {
-    private final Tone tone;
+public class AudioPlayer {
+    private final Sound sound;
     private AudioTrack audioTrack;
 
-    public TonePlayer(Tone tone) {
-        this.tone = tone;
+    public AudioPlayer(Sound sound) {
+        this.sound = sound;
         audioTrack = null;
     }
 
@@ -21,7 +21,7 @@ public class TonePlayer {
             return;
         }
         audioTrack.flush();
-        audioTrack.write(tone.getSinWaveData(), 0, tone.getSinWaveData().length);
+        audioTrack.write(sound.getSinWaveData(), 0, sound.getSinWaveData().length);
         if (!isReadyToPlay()) {
             Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
             return;
@@ -87,11 +87,11 @@ public class TonePlayer {
                         .build())
                 .setAudioFormat(new AudioFormat.Builder()
                         .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                        .setSampleRate(tone.getSampleRate().sampleRate)
+                        .setSampleRate(sound.getSampleRate().sampleRate)
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
                 .setTransferMode(AudioTrack.MODE_STATIC)
-                .setBufferSizeInBytes(tone.getSinWaveData().length)
+                .setBufferSizeInBytes(sound.getSinWaveData().length)
                 .build();
     }
 

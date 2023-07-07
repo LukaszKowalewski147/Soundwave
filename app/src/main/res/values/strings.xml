@@ -1,29 +1,40 @@
 <resources>
     <string name="app_name">Soundwave</string>
+
+    <!--    Layout headers  -->
     <string name="details_header">Sound details</string>
-    <string name="frequency_header">Frequency</string>
-    <string name="second_tone_header">2nd tone</string>
-    <string name="third_tione_header">3rd tone</string>
-    <string name="fourth_tone_header">4th tone</string>
-    <string name="duration_header">Duration</string>
-    <string name="sample_rate_header">Sample rate</string>
     <string name="options_header">Options</string>
-    <string name="playback_mode_header">Playback mode</string>
     <string name="create_sound_header">Create sound</string>
-    <string name="tone_volume_header">Volume</string>
+    <string name="overtones_header">Overtones</string>
+
+    <string name="playback_mode_header">Playback mode</string>
+    <string name="tone_2_header">2nd tone</string>
+    <string name="tone_3_header">3rd tone</string>
+    <string name="tone_4_header">4th tone</string>
     <string name="load_sound_btn_txt">Load sound</string>
+
+    <string name="sample_rate_header">Sample rate</string>
+    <string name="duration_header">Duration</string>
+    <string name="frequency_header">Frequency</string>
     <string name="duration_unit">s</string>
     <string name="frequency_unit">Hz</string>
 
-    <string-array name="sample_rates_array">
-            <item>44.1kHz</item>
-            <item>48kHz</item>
-            <item>96kHz</item>
-            <item>192kHz</item>
-        </string-array>
-
+    <!--    Spinners    -->
     <string-array name="playback_modes_array">
         <item>Static</item>
         <item>Stream</item>
     </string-array>
+
+    <string-array name="sample_rates_array">
+        <item>44.1kHz</item>
+        <item>48kHz</item>
+        <item>96kHz</item>
+        <item>192kHz</item>
+    </string-array>
+
+    <string-array name="overtones_presets_array">
+        <item>Custom</item>
+        <item>Piano</item>
+    </string-array>
+
 </resources>

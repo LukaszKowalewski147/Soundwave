@@ -17,30 +17,29 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private ConstraintLayout sampleRateLayout;
     private ConstraintLayout durationLayout;
-    private ConstraintLayout secondFrequencyActivatorLayout;
-    private ConstraintLayout secondFrequencyLayout;
-    private ConstraintLayout thirdFrequencyActivatorLayout;
-    private ConstraintLayout thirdFrequencyLayout;
-    private ConstraintLayout fourthFrequencyActivatorLayout;
-    private ConstraintLayout fourthFrequencyLayout;
+    private ConstraintLayout tone2ActivatorLayout;
+    private ConstraintLayout tone2Layout;
+    private ConstraintLayout tone3ActivatorLayout;
+    private ConstraintLayout tone3Layout;
+    private ConstraintLayout tone4ActivatorLayout;
+    private ConstraintLayout tone4Layout;
     private ConstraintLayout loadBtnLayout;
     private ConstraintLayout playbackBarLayout;
-    private AppCompatButton frequencyDecrementBtn;
-    private AppCompatButton frequencyIncrementBtn;
-    private AppCompatButton durationDecrementBtn;
-    private AppCompatButton durationIncrementBtn;
+    private ImageButton durationDecrementBtn;
+    private ImageButton durationIncrementBtn;
     private AppCompatButton loadBtn;
-    private AppCompatButton saveBtn;
+    private ImageButton saveBtn;
     private ImageButton playPauseBtn;
     private ImageButton replayBtn;
     private ImageButton loopBtn;
@@ -51,20 +50,18 @@ public class MainActivity extends AppCompatActivity {
     private TextView sampleRateDetails;
     private TextView playbackElapsedTime;
     private TextView playbackTotalTime;
-    private EditText frequencyTxt;
     private EditText durationTxt;
-    private CheckBox secondFrequencyActivator;
-    private CheckBox thirdFrequencyActivator;
-    private CheckBox fourthFrequencyActivator;
-    private SeekBar frequencyBar;
+    private CheckBox tone2Activator;
+    private CheckBox tone3Activator;
+    private CheckBox tone4Activator;
     private SeekBar durationBar;
     private SeekBar playbackBar;
     private Spinner playbackModesSpinner;
     private Spinner sampleRatesSpinner;
-    private NumberPicker frequencyVolume;
     //private AppCompatButton extraBtn;
 
-    private Tone tone;
+    private Sound sound;
+    private ToneManager[] toneManagers;
     private PlaybackManager playbackManager;
 
     @Override
@@ -72,13 +69,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tone = null;
+        sound = null;
+        toneManagers = null;
         playbackManager = null;
 
         initializeUIElements();
         initializeDefaultLayout();
-        initializeUIListeners();
+        initializeToneManagers();
         initializePlaybackManager();
+        initializeUIListeners();
     }
 
     @Override
@@ -120,10 +119,10 @@ public class MainActivity extends AppCompatActivity {
         loopBtn.setVisibility(visibility);
     }
 
-    private void loadTone() {
-        tone = new SoundGenerator(getFrequency(), getDuration(), getSampleRate()).generateTone();
-        playbackManager.setTone(tone);
-        displayToneParameters(tone);
+    private void loadSound() {
+        sound = new SoundGenerator(getTones(), getDuration(), getSampleRate()).generateSound();
+        playbackManager.setSound(sound);
+        displaySoundParameters(sound);
     }
 
     private void managePlayPauseActivity() {
@@ -138,9 +137,9 @@ public class MainActivity extends AppCompatActivity {
         playbackManager.resetPlayback();
     }
 
-    private void saveTone() {
-        WavCreator wavCreator = new WavCreator(this, tone);
-        wavCreator.saveTone();
+    private void saveSound() {
+        WavCreator wavCreator = new WavCreator(this, sound);
+        wavCreator.saveSound();
     }
 
     private void manageLoopButton() {
@@ -154,15 +153,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void validateToneDetails() {
-        int frequency = 0;
-        try {
-            frequency = Integer.parseInt(frequencyTxt.getText().toString());
-            if (frequency < Constants.FREQUENCY_MIN.value)
-                frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MIN.value));
-        } catch (Exception e) {
-            Toast.makeText(this, "Frequency error", Toast.LENGTH_SHORT).show();
-            frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
-        }
         short duration = 0;
         try {
             duration = Short.parseShort(durationTxt.getText().toString());
@@ -181,12 +171,26 @@ public class MainActivity extends AppCompatActivity {
         playbackManager.extra();
     }
 
-    private int getFrequency() {
-        return Integer.parseInt(frequencyTxt.getText().toString());
-    }
-
     private short getDuration() {
         return Short.parseShort(durationTxt.getText().toString());
+    }
+
+    private Tone[] getTones() {
+        ArrayList<Tone> tonesList = new ArrayList<Tone>();
+        byte[] sineWaveData = new byte[1];
+        sineWaveData[0] = 1;
+        tonesList.add(new Tone(sineWaveData, 400, 1));
+        if (tone2Activator.isChecked()) {
+            tonesList.add(new Tone(sineWaveData,800, 1));
+        }/*
+        if (thirdFrequencyActivator.isChecked()) {
+            tonesList.add(new Tone(getFrequency(2), 1.0d));
+        }
+        if (fourthFrequencyActivator.isChecked()) {
+            tonesList.add(new Tone(getFrequency(3), 1.0d));
+        }*/
+        Tone[] tones = tonesList.toArray(new Tone[tonesList.size()]);
+        return tones;
     }
 
     private SampleRate getSampleRate() {
@@ -206,10 +210,10 @@ public class MainActivity extends AppCompatActivity {
         return sampleRate;
     }
 
-    private void displayToneParameters(@NonNull Tone tone) {
-        int frequency = tone.getFrequency();
-        short duration = tone.getDuration();
-        SampleRate sampleRate = tone.getSampleRate();
+    private void displaySoundParameters(@NonNull Sound sound) {
+        int frequency = sound.getFrequency();
+        short duration = sound.getDuration();
+        SampleRate sampleRate = sound.getSampleRate();
 
         String displayFrequency = frequency + getResources().getString(R.string.frequency_unit);
         String displayDuration = duration + getResources().getString(R.string.duration_unit);
@@ -225,10 +229,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializePlaybackManager() {
-        tone = new SoundGenerator(getFrequency(), getDuration(), getSampleRate()).generateTone();
+        sound = new SoundGenerator(getTones(), getDuration(), getSampleRate()).generateSound();
         playbackManager = new PlaybackManager(this, new Handler(), playPauseBtn, playbackBar, playbackElapsedTime);
-        playbackManager.setTone(tone);
-        displayToneParameters(tone);
+        playbackManager.setSound(sound);
+        displaySoundParameters(sound);
+    }
+
+    private void initializeToneManagers() {
+        toneManagers = new ToneManager[Constants.TONES_NUMBER.value];
+        for (int i = 0; i < toneManagers.length; ++i) {
+            int toneIndex = i + 1;
+            String ID = "tone_" + toneIndex;
+            int resID = getResources().getIdentifier(ID, "id", getPackageName());
+            View toneView = findViewById(resID);
+            toneManagers[i] = new ToneManager(this, toneView, toneIndex);
+        }
     }
 
     private void initializeDefaultLayout() {
@@ -241,55 +256,36 @@ public class MainActivity extends AppCompatActivity {
         sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sampleRatesSpinner.setAdapter(sampleRatesAdapter);
 
-        //NumberPickers
-        String[] values = new String[111];
-        for (int i = 0; i < values.length; i ++)
-            values[i] = String.valueOf(i + "%");
-        frequencyVolume.setDisplayedValues(null);
-        frequencyVolume.setMinValue(0);
-        frequencyVolume.setMaxValue(110);
-        frequencyVolume.setValue(100);
-        frequencyVolume.setDisplayedValues(values);
-        frequencyVolume.setWrapSelectorWheel(false);
-
         // ProgressBars
         durationBar.setMax(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_MAX.value));
         durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_DEFAULT.value));
 
-        frequencyBar.setMax(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
-        frequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-
         // TextViews
         durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
-        frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value)));
 
         // Content visibility
-        secondFrequencyLayout.setVisibility(View.GONE);
-        thirdFrequencyLayout.setVisibility(View.GONE);
-        fourthFrequencyLayout.setVisibility(View.GONE);
+        tone2Layout.setVisibility(View.GONE);
+        //tone3Layout.setVisibility(View.GONE);
+        //tone4Layout.setVisibility(View.GONE);
         loopIndicator.setVisibility(View.INVISIBLE);
     }
 
     private void initializeUIElements() {
         sampleRateLayout = findViewById(R.id.sample_rate_layout);
         durationLayout = findViewById(R.id.duration_layout);
-        secondFrequencyActivatorLayout = findViewById(R.id.second_frequency_activator_layout);
-        secondFrequencyLayout = findViewById(R.id.second_frequency_body);
-        secondFrequencyActivator = findViewById(R.id.second_frequency_activator);
-        thirdFrequencyActivatorLayout = findViewById(R.id.third_frequency_activator_layout);
-        thirdFrequencyLayout = findViewById(R.id.third_frequency_body);
-        thirdFrequencyActivator = findViewById(R.id.third_frequency_activator);
-        fourthFrequencyActivatorLayout = findViewById(R.id.fourth_frequency_activator_layout);
-        fourthFrequencyLayout = findViewById(R.id.fourth_frequency_body);
-        fourthFrequencyActivator = findViewById(R.id.fourth_frequency_activator);
+        tone2ActivatorLayout = findViewById(R.id.tone_2_activator_layout);
+        tone2Layout = findViewById(R.id.tone_2);
+        tone2Activator = findViewById(R.id.tone_2_activator);
+    /*    tone3ActivatorLayout = findViewById(R.id.tone_3_activator_layout);
+        tone3Layout = findViewById(R.id.tone_3);
+        tone3Activator = findViewById(R.id.tone_3_activator);
+        tone4ActivatorLayout = findViewById(R.id.tone_4_activator_layout);
+        tone4Layout = findViewById(R.id.tone_4);
+        tone4Activator = findViewById(R.id.tone_4_activator);   */
         loadBtnLayout = findViewById(R.id.load_btn_layout);
         playbackBarLayout = findViewById(R.id.playback_bar_layout);
-        frequencyBar = findViewById(R.id.frequency_bar);
         durationBar = findViewById(R.id.duration_bar);
-        frequencyTxt = findViewById(R.id.frequency_txt);
-        durationTxt = findViewById(R.id.duration_txt);
-        frequencyDecrementBtn = findViewById(R.id.frequency_decrement_btn);
-        frequencyIncrementBtn = findViewById(R.id.frequency_increment_btn);
+        durationTxt = findViewById(R.id.duration_input);
         durationDecrementBtn = findViewById(R.id.duration_decrement_btn);
         durationIncrementBtn = findViewById(R.id.duration_increment_btn);
         loadBtn = findViewById(R.id.load_btn);
@@ -307,46 +303,10 @@ public class MainActivity extends AppCompatActivity {
         loopIndicator = findViewById(R.id.loop_indicator);
         playbackModesSpinner = findViewById(R.id.playback_modes_spinner);
         sampleRatesSpinner = findViewById(R.id.sample_rates_spinner);
-        frequencyVolume = findViewById(R.id.frequency_volume);
         //extraBtn = findViewById(R.id.extra_btn);
     }
 
     private void initializeUIListeners() {
-        frequencyTxt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                try {
-                    int frequency = Integer.parseInt(s.toString());
-                    if (frequency >= Constants.FREQUENCY_MIN.value && frequency <= Constants.FREQUENCY_MAX.value)
-                        frequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
-                    else if (frequency > Constants.FREQUENCY_MAX.value)
-                        frequencyTxt.setText(String.valueOf(Constants.FREQUENCY_MAX.value));
-                    else
-                        frequencyBar.setProgress(0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        frequencyTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus)
-                    validateToneDetails();
-            }
-        });
-
         durationTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -382,24 +342,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        frequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser)
-                    frequencyTxt.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(progress)));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
         durationBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -415,76 +357,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-            }
-        });
-
-        frequencyDecrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-                if (--frequency >= Constants.FREQUENCY_MIN.value) {
-                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
-                    frequencyTxt.setText(String.valueOf(frequency));
-                }
-            }
-        });
-
-        frequencyDecrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-                Handler handler = new Handler();
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyTxt, Options.Operation.FREQUENCY_DECREMENT);
-                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-                seekBarUpdaterThread.start();
-                return true;
-            }
-        });
-
-        frequencyDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                    validateToneDetails();
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
-                }
-                return false;
-            }
-        });
-
-        frequencyIncrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int frequency = Integer.parseInt(frequencyTxt.getText().toString());
-                if (++frequency <= Constants.FREQUENCY_MAX.value) {
-                    frequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
-                    frequencyTxt.setText(String.valueOf(frequency));
-                }
-            }
-        });
-
-        frequencyIncrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-                Handler handler = new Handler();
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(handler, frequencyTxt, Options.Operation.FREQUENCY_INCREMENT);
-                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-                seekBarUpdaterThread.start();
-                return true;
-            }
-        });
-
-        frequencyIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                    validateToneDetails();
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
-                }
-                return false;
             }
         });
 
@@ -562,14 +434,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 validateToneDetails();
-                loadTone();
+                loadSound();
             }
         });
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTone();
+                saveSound();
             }
         });
 
@@ -617,44 +489,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        secondFrequencyActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        tone2Activator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    secondFrequencyActivatorLayout.setBackgroundResource(0);
-                    secondFrequencyLayout.setVisibility(View.VISIBLE);
+                    tone2ActivatorLayout.setBackgroundResource(0);
+                    tone2Layout.setVisibility(View.VISIBLE);
                     return;
                 }
-                secondFrequencyActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
-                secondFrequencyLayout.setVisibility(View.GONE);
+                tone2ActivatorLayout.setBackgroundResource(R.color.tone_not_active);
+                tone2Layout.setVisibility(View.GONE);
+            }
+        });
+/*
+        tone3Activator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    tone3ActivatorLayout.setBackgroundResource(0);
+                    tone3Layout.setVisibility(View.VISIBLE);
+                    return;
+                }
+                tone3ActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
+                tone3Layout.setVisibility(View.GONE);
             }
         });
 
-        thirdFrequencyActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        tone4Activator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    thirdFrequencyActivatorLayout.setBackgroundResource(0);
-                    thirdFrequencyLayout.setVisibility(View.VISIBLE);
+                    tone4ActivatorLayout.setBackgroundResource(0);
+                    tone4Layout.setVisibility(View.VISIBLE);
                     return;
                 }
-                thirdFrequencyActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
-                thirdFrequencyLayout.setVisibility(View.GONE);
+                tone4ActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
+                tone4Layout.setVisibility(View.GONE);
             }
-        });
-
-        fourthFrequencyActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    fourthFrequencyActivatorLayout.setBackgroundResource(0);
-                    fourthFrequencyLayout.setVisibility(View.VISIBLE);
-                    return;
-                }
-                fourthFrequencyActivatorLayout.setBackgroundResource(R.color.frequency_not_active);
-                fourthFrequencyLayout.setVisibility(View.GONE);
-            }
-        });
+        });*/
 /*
         extraBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,6 +6,6 @@
     <corners android:radius="18dp"/>
     <gradient android:type="linear"
         android:angle="270"
-        android:startColor="@color/button_standard_start"
-        android:endColor="@color/button_standard_end"/>
+        android:startColor="@color/app_yellow_gradient_start"
+        android:endColor="@color/app_yellow_gradient_end"/>
 </shape>

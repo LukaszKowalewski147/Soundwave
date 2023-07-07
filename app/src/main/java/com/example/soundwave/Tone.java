@@ -1,31 +1,26 @@
 package com.example.soundwave;
 
 public class Tone {
-    private final byte[] sinWaveData;
-    private final int frequency;
-    private final short duration;
-    private final SampleRate sampleRate;
 
-    public Tone(byte[] sinWave, int frequency, short duration, SampleRate sampleRate) {
-        this.sinWaveData = sinWave;
-        this.frequency = frequency;
-        this.duration = duration;
-        this.sampleRate = sampleRate;
+    private final byte[] sinWaveData;
+    private final int fundamentalFrequency;
+    private final int amplitude;
+
+    public Tone(byte[] sinWaveData, int fundamentalFrequency, int amplitude) {
+        this.sinWaveData = sinWaveData;
+        this.fundamentalFrequency = fundamentalFrequency;
+        this.amplitude = amplitude;
     }
 
     public byte[] getSinWaveData() {
         return sinWaveData;
     }
 
-    public int getFrequency() {
-        return frequency;
+    public int getFundamentalFrequency() {
+        return fundamentalFrequency;
     }
 
-    public short getDuration() {
-        return duration;
-    }
-
-    public SampleRate getSampleRate() {
-        return sampleRate;
+    public int getAmplitude() {
+        return amplitude;
     }
 }

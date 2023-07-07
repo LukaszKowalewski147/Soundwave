@@ -1,15 +1,17 @@
 package com.example.soundwave;
 
+import java.util.Arrays;
+
 public class SoundGenerator {
+    private final SampleRate sampleRate;
+    private final Tone[] tones;
+    private final short duration;               // in s
     private final int samplesNumber;
-    private final int frequency;            // in Hz
-    private final short duration;           // in s
     private final double[] samples;
     private final byte[] outputSound;
-    private final SampleRate sampleRate;
 
-    public SoundGenerator(int frequency, short duration, SampleRate sampleRate) {
-        this.frequency = frequency;
+    public SoundGenerator(Tone[] tones, short duration, SampleRate sampleRate) {
+        this.tones = tones;
         this.duration = duration;
         this.sampleRate = sampleRate;
 
@@ -18,9 +20,19 @@ public class SoundGenerator {
         outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
     }
 
-    public Tone generateTone() {
+    public Sound generateSound() {
+        Arrays.fill(samples, 0.0d);
+        double sampleRateInHz = sampleRate.sampleRate;
+
+        for (Tone tone : tones) {
+            int frequency = tone.getFundamentalFrequency();
+            for (int j = 0; j < samplesNumber; ++j) {
+                samples[j] += Math.sin(2 * Math.PI * j / (sampleRateInHz / frequency));
+            }
+        }
+
         for (int i = 0; i < samplesNumber; ++i) {
-            samples[i] = Math.sin(2 * Math.PI * i/(sampleRate.sampleRate /(double)frequency));
+            samples[i] = samples[i] / tones.length;
         }
 
         // convert to 16 bit pcm sound array
@@ -34,7 +46,7 @@ public class SoundGenerator {
         }
         fadeIn();
         fadeOut();
-        return new Tone(outputSound, frequency, duration, sampleRate);
+        return new Sound(outputSound, 405, duration, sampleRate);
     }
 
     public void generateSoundSample() {

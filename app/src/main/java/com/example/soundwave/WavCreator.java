@@ -16,17 +16,17 @@ import java.nio.ByteOrder;
 public class WavCreator {
 
     private static final String FILE_EXTENSION = ".wav";
-    private static final String FILE_FOLDER = "myTones";
+    private static final String FILE_FOLDER = "mySounds";
 
     private Context context;
-    private Tone tone;
+    private Sound sound;
 
-    public WavCreator(Context context, Tone tone) {
+    public WavCreator(Context context, Sound sound) {
         this.context = context;
-        this.tone = tone;
+        this.sound = sound;
     }
 
-    public void saveTone() {
+    public void saveSound() {
         FileOutputStream out = null;
         if (isExternalStorageAvailable())
         {
@@ -36,7 +36,7 @@ public class WavCreator {
             try {
                 out = new FileOutputStream(wavFile);
                 writeWavHeader(out);
-                out.write(tone.getSinWaveData());
+                out.write(sound.getSinWaveData());
                 updateWavHeader(wavFile);
                 Toast.makeText(context, "Zapisano do: " + context.getExternalFilesDir(FILE_FOLDER), Toast.LENGTH_LONG).show();
             } catch (FileNotFoundException e) {
@@ -58,7 +58,7 @@ public class WavCreator {
     }
 
     private String getFilename() {
-        SampleRate samplingRate = tone.getSampleRate();
+        SampleRate samplingRate = sound.getSampleRate();
         String sampleingRateTxt = "?kHz-";
         switch (samplingRate) {
             case RATE_44_1_KHZ:
@@ -74,7 +74,7 @@ public class WavCreator {
                 sampleingRateTxt = "192kHz-";
                 break;
         }
-        String filename = tone.getFrequency() + "hz-" + tone.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
+        String filename = sound.getFrequency() + "hz-" + sound.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
         return filename;
     }
 
@@ -86,7 +86,7 @@ public class WavCreator {
     }
 
     private void writeWavHeader(OutputStream out) throws IOException {
-        final int samplingRate = tone.getSampleRate().sampleRate;
+        final int samplingRate = sound.getSampleRate().sampleRate;
         short channels = 1;
         short bitDepth = 16;
 
