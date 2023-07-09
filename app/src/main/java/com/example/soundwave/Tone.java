@@ -2,25 +2,25 @@ package com.example.soundwave;
 
 public class Tone {
 
-    private final byte[] sinWaveData;
+    private final double[] samples;
     private final int fundamentalFrequency;
-    private final int amplitude;
+    private final double volume;
 
-    public Tone(byte[] sinWaveData, int fundamentalFrequency, int amplitude) {
-        this.sinWaveData = sinWaveData;
+    public Tone(double[] samples, int fundamentalFrequency, double volume) {
+        this.samples = samples;
         this.fundamentalFrequency = fundamentalFrequency;
-        this.amplitude = amplitude;
+        this.volume = volume;
     }
 
-    public byte[] getSinWaveData() {
-        return sinWaveData;
+    public double[] getSamples() {
+        return samples;
     }
 
     public int getFundamentalFrequency() {
         return fundamentalFrequency;
     }
 
-    public int getAmplitude() {
-        return amplitude;
+    public double getVolume() {
+        return volume;
     }
 }

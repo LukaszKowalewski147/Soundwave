@@ -28,8 +28,13 @@ public class OvertoneManager {
 
     public SineWave getSineWave() {
         int frequency = Integer.parseInt(this.frequency.getText().toString());
-        int amplitude = Integer.parseInt(amplitudeInput.getText().toString());
+        double amplitude = getAmplitude();
         return new SineWave(frequency, amplitude);
+    }
+
+    private double getAmplitude() {
+        int displayAmplitude = Integer.parseInt(amplitudeInput.getText().toString());
+        return (double) displayAmplitude / 100.0d;
     }
 
     private void initializeUIElements() {
@@ -52,6 +57,8 @@ public class OvertoneManager {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 amplitudeInput.setText(String.valueOf(progress));
+                if (progress == 0)
+                    activator.setChecked(false);
             }
 
             @Override

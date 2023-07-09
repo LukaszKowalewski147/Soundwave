@@ -3,9 +3,9 @@ package com.example.soundwave;
 public class SineWave {
 
     private final int frequency;
-    private final int amplitude;
+    private final double amplitude;
 
-    public SineWave(int frequency, int amplitude) {
+    public SineWave(int frequency, double amplitude) {
         this.frequency = frequency;
         this.amplitude = amplitude;
     }
@@ -14,7 +14,7 @@ public class SineWave {
         return frequency;
     }
 
-    public int getAmplitude() {
+    public double getAmplitude() {
         return amplitude;
     }
 }

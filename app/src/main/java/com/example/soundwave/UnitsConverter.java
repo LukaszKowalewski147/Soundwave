@@ -22,8 +22,8 @@ The offset of 500 points can be subtracted giving progress bar operating range o
         frequencyValue = (int) Math.round(targetCurveValue);            // min = 1Hz for the first progress bar position
         frequencyValue += frequencyMinValueEqualizer;                   // that's why adding equalizer (19) to reach 20Hz minimum
 
-        if (frequencyValue > Constants.FREQUENCY_MAX.value)             // crop excessive frequency value because
-            frequencyValue = Constants.FREQUENCY_MAX.value;             // max = 20608Hz for the last progress bar position
+        if (frequencyValue > Config.FREQUENCY_MAX.value)             // crop excessive frequency value because
+            frequencyValue = Config.FREQUENCY_MAX.value;             // max = 20608Hz for the last progress bar position
 
         return frequencyValue;
     }

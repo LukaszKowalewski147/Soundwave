@@ -2,13 +2,13 @@ package com.example.soundwave;
 
 public class Sound {
     private final byte[] sinWaveData;
-    private final int frequency;
+    private final int numberOfTones;
     private final short duration;
     private final SampleRate sampleRate;
 
-    public Sound(byte[] sinWave, int frequency, short duration, SampleRate sampleRate) {
+    public Sound(byte[] sinWave, int numberOfTones, short duration, SampleRate sampleRate) {
         this.sinWaveData = sinWave;
-        this.frequency = frequency;
+        this.numberOfTones = numberOfTones;
         this.duration = duration;
         this.sampleRate = sampleRate;
     }
@@ -17,8 +17,8 @@ public class Sound {
         return sinWaveData;
     }
 
-    public int getFrequency() {
-        return frequency;
+    public int getNumberOfTones() {
+        return numberOfTones;
     }
 
     public short getDuration() {

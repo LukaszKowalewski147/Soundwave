@@ -1,6 +1,6 @@
 package com.example.soundwave;
 
-public enum Constants {
+public enum Config {
     FREQUENCY_MIN(20),                      // in Hz
     FREQUENCY_MAX(20000),                   // in Hz
     FREQUENCY_PROGRESS_BAR_MAX(850),        // progress bar position
@@ -11,11 +11,11 @@ public enum Constants {
     PLAYBACK_REFRESH_RATE(20),              // in ms [20 ms = 50FPS]
     SEEKBAR_CHANGE_REFRESH_RATE(40),        // in ms [40 ms = 25FPS]
     TONES_NUMBER(2),
-    OVERTONES_NUMBER(3);
+    OVERTONES_NUMBER(15);
 
     final int value;
 
-    Constants(int value) {
+    Config(int value) {
         this.value = value;
     }
     }

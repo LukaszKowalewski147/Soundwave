@@ -46,12 +46,12 @@ public class SeekBarUpdater implements Runnable {
         switch (operation) {
             case FREQUENCY_DECREMENT:
                 --frequency;
-                if (frequency < Constants.FREQUENCY_MIN.value)
+                if (frequency < Config.FREQUENCY_MIN.value)
                     return;
                 break;
             case FREQUENCY_INCREMENT:
                 ++frequency;
-                if (frequency > Constants.FREQUENCY_MAX.value)
+                if (frequency > Config.FREQUENCY_MAX.value)
                     return;
                 break;
         }
@@ -68,12 +68,12 @@ public class SeekBarUpdater implements Runnable {
         switch (operation) {
             case DURATION_DECREMENT:
                 --duration;
-                if (duration < Constants.DURATION_MIN.value)
+                if (duration < Config.DURATION_MIN.value)
                     return;
                 break;
             case DURATION_INCREMENT:
                 ++duration;
-                if (duration > Constants.DURATION_MAX.value)
+                if (duration > Config.DURATION_MAX.value)
                     return;
                 break;
         }
@@ -105,7 +105,7 @@ public class SeekBarUpdater implements Runnable {
     }
 
     private int getRefreshRate() {
-        int refreshRate = Constants.SEEKBAR_CHANGE_REFRESH_RATE.value;
+        int refreshRate = Config.SEEKBAR_CHANGE_REFRESH_RATE.value;
         if (operation == Options.Operation.DURATION_DECREMENT || operation == Options.Operation.DURATION_INCREMENT)
             refreshRate *= 2;
         return refreshRate;

@@ -22,8 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
 
     private ConstraintLayout sampleRateLayout;
@@ -120,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadSound() {
-        sound = new SoundGenerator(getTones(), getDuration(), getSampleRate()).generateSound();
+        sound = new SoundGenerator(getDuration(), getSampleRate()).generateSound(getTones());
         playbackManager.setSound(sound);
         displaySoundParameters(sound);
     }
@@ -156,11 +154,11 @@ public class MainActivity extends AppCompatActivity {
         short duration = 0;
         try {
             duration = Short.parseShort(durationTxt.getText().toString());
-            if (duration < Constants.DURATION_MIN.value)
-                durationTxt.setText(String.valueOf(Constants.DURATION_MIN.value));
+            if (duration < Config.DURATION_MIN.value)
+                durationTxt.setText(String.valueOf(Config.DURATION_MIN.value));
         } catch (Exception e) {
             Toast.makeText(this, "Duration error", Toast.LENGTH_SHORT).show();
-            durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
+            durationTxt.setText(String.valueOf(Config.DURATION_DEFAULT.value));
         }
     }
 
@@ -176,21 +174,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Tone[] getTones() {
-        ArrayList<Tone> tonesList = new ArrayList<Tone>();
-        byte[] sineWaveData = new byte[1];
-        sineWaveData[0] = 1;
-        tonesList.add(new Tone(sineWaveData, 400, 1));
-        if (tone2Activator.isChecked()) {
-            tonesList.add(new Tone(sineWaveData,800, 1));
-        }/*
-        if (thirdFrequencyActivator.isChecked()) {
-            tonesList.add(new Tone(getFrequency(2), 1.0d));
+        Tone[] tones = new Tone[getNumberOfTones()];
+        for (int i = 0; i < tones.length; i++) {
+            tones[i] = SoundGenerator.generateTone(toneManagers[i].getSineWaves());
         }
-        if (fourthFrequencyActivator.isChecked()) {
-            tonesList.add(new Tone(getFrequency(3), 1.0d));
-        }*/
-        Tone[] tones = tonesList.toArray(new Tone[tonesList.size()]);
         return tones;
+    }
+
+    private int getNumberOfTones() {
+        int numberOfTones = 1;
+        if (tone2Activator.isChecked())
+            ++numberOfTones;
+        return  numberOfTones;
     }
 
     private SampleRate getSampleRate() {
@@ -211,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displaySoundParameters(@NonNull Sound sound) {
-        int frequency = sound.getFrequency();
+        int frequency = sound.getNumberOfTones();
         short duration = sound.getDuration();
         SampleRate sampleRate = sound.getSampleRate();
 
@@ -229,14 +224,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializePlaybackManager() {
-        sound = new SoundGenerator(getTones(), getDuration(), getSampleRate()).generateSound();
+        sound = new SoundGenerator(getDuration(), getSampleRate()).generateSound(getTones());
         playbackManager = new PlaybackManager(this, new Handler(), playPauseBtn, playbackBar, playbackElapsedTime);
         playbackManager.setSound(sound);
         displaySoundParameters(sound);
     }
 
     private void initializeToneManagers() {
-        toneManagers = new ToneManager[Constants.TONES_NUMBER.value];
+        toneManagers = new ToneManager[Config.TONES_NUMBER.value];
         for (int i = 0; i < toneManagers.length; ++i) {
             int toneIndex = i + 1;
             String ID = "tone_" + toneIndex;
@@ -257,11 +252,11 @@ public class MainActivity extends AppCompatActivity {
         sampleRatesSpinner.setAdapter(sampleRatesAdapter);
 
         // ProgressBars
-        durationBar.setMax(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_MAX.value));
-        durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(Constants.DURATION_DEFAULT.value));
+        durationBar.setMax(UnitsConverter.convertDurationToSeekBarPosition(Config.DURATION_MAX.value));
+        durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(Config.DURATION_DEFAULT.value));
 
         // TextViews
-        durationTxt.setText(String.valueOf(Constants.DURATION_DEFAULT.value));
+        durationTxt.setText(String.valueOf(Config.DURATION_DEFAULT.value));
 
         // Content visibility
         tone2Layout.setVisibility(View.GONE);
@@ -322,10 +317,10 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 try {
                     int duration = Integer.parseInt(s.toString());
-                    if (duration >= Constants.DURATION_MIN.value && duration <= Constants.DURATION_MAX.value)
+                    if (duration >= Config.DURATION_MIN.value && duration <= Config.DURATION_MAX.value)
                         durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(duration));
-                    else if (duration > Constants.DURATION_MAX.value)
-                        durationTxt.setText(String.valueOf(Constants.DURATION_MAX.value));
+                    else if (duration > Config.DURATION_MAX.value)
+                        durationTxt.setText(String.valueOf(Config.DURATION_MAX.value));
                     else
                         durationBar.setProgress(0);
                 } catch (Exception e) {
@@ -364,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int duration = Integer.parseInt(durationTxt.getText().toString());
-                if (--duration >= Constants.DURATION_MIN.value) {
+                if (--duration >= Config.DURATION_MIN.value) {
                     durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(duration));
                     durationTxt.setText(String.valueOf(duration));
                 }
@@ -399,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int duration = Integer.parseInt(durationTxt.getText().toString());
-                if (++duration <= Constants.DURATION_MAX.value) {
+                if (++duration <= Config.DURATION_MAX.value) {
                     durationBar.setProgress(UnitsConverter.convertDurationToSeekBarPosition(duration));
                     durationTxt.setText(String.valueOf(duration));
                 }

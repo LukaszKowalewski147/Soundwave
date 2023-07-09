@@ -4,14 +4,12 @@ import java.util.Arrays;
 
 public class SoundGenerator {
     private final SampleRate sampleRate;
-    private final Tone[] tones;
     private final short duration;               // in s
     private final int samplesNumber;
     private final double[] samples;
     private final byte[] outputSound;
 
-    public SoundGenerator(Tone[] tones, short duration, SampleRate sampleRate) {
-        this.tones = tones;
+    public SoundGenerator(short duration, SampleRate sampleRate) {
         this.duration = duration;
         this.sampleRate = sampleRate;
 
@@ -20,19 +18,32 @@ public class SoundGenerator {
         outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
     }
 
-    public Sound generateSound() {
+    public Sound generateSound(Tone[] tones) {
         Arrays.fill(samples, 0.0d);
-        double sampleRateInHz = sampleRate.sampleRate;
+        double soundVolume = tones[0].getVolume();
 
         for (Tone tone : tones) {
-            int frequency = tone.getFundamentalFrequency();
-            for (int j = 0; j < samplesNumber; ++j) {
-                samples[j] += Math.sin(2 * Math.PI * j / (sampleRateInHz / frequency));
+            double[] toneData = tone.getSamples();
+            for (int i = 0; i < samplesNumber; ++i) {
+                samples[i] += toneData[i];
             }
+            if (tone.getVolume() > soundVolume)
+                soundVolume = tone.getVolume();
         }
 
+        // find max volume in samples
+        double maxVolumeSample = samples[0];
+        for (int i = 1; i < samplesNumber; ++i) {
+            if (samples[i] > maxVolumeSample)
+                maxVolumeSample = samples[i];
+        }
+
+
+        double compressionRate = maxVolumeSample / soundVolume;
+
+        // compress to target volume
         for (int i = 0; i < samplesNumber; ++i) {
-            samples[i] = samples[i] / tones.length;
+            samples[i] = samples[i] / compressionRate;
         }
 
         // convert to 16 bit pcm sound array
@@ -46,11 +57,58 @@ public class SoundGenerator {
         }
         fadeIn();
         fadeOut();
-        return new Sound(outputSound, 405, duration, sampleRate);
+        return new Sound(outputSound, 406, duration, sampleRate);
+    }
+
+    public static Tone generateTone(SineWave[] sineWaves) {
+        int sampleRateInHz = Options.soundSampleRate;
+        int duration = Options.soundDuration;
+        int samplesNum = duration * sampleRateInHz;
+
+        int[] frequencies = new int[sineWaves.length];
+        double[] amplitudes = new double[sineWaves.length];
+        double[] sampls = new double[samplesNum];
+
+        for (int i = 0; i < sineWaves.length; ++i) {
+            frequencies[i] = sineWaves[i].getFrequency();
+            amplitudes[i] = sineWaves[i].getAmplitude();
+        }
+
+        double volume = amplitudes[0];
+
+        // add fundamental frequency data
+        for (int i = 0; i < samplesNum; ++i) {
+            sampls[i] = volume * (Math.sin(2 * Math.PI * i / (sampleRateInHz / (double) frequencies[0])));
+        }
+
+        // add harmonics data
+        if (sineWaves.length > 1) {
+            for (int i = 1; i < sineWaves.length; ++i) {
+                for (int j = 0; j < samplesNum; ++j) {
+                    sampls[j] += volume * amplitudes[i] * (Math.sin(2 * Math.PI * j / (sampleRateInHz / (double) frequencies[i])));
+                }
+            }
+        }
+
+        // find max volume in samples
+        double maxVolumeSample = sampls[0];
+        for (int i = 1; i < samplesNum; ++i) {
+           if (sampls[i] > maxVolumeSample)
+               maxVolumeSample = sampls[i];
+        }
+
+        double compressionRate = maxVolumeSample / volume;
+
+        // compress to target volume
+        for (int i = 0; i < samplesNum; ++i) {
+            sampls[i] = sampls[i] / compressionRate;
+        }
+
+        return new Tone(sampls, frequencies[0], volume);
     }
 
     public void generateSoundSample() {
-       // TODO: generate sound sample for streaming mode
+        // TODO: generate sound sample for streaming mode
     }
 
     private void fadeIn() {

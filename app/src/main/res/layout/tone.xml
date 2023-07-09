@@ -180,7 +180,7 @@
         <include
             android:id="@+id/overtone_3"
             layout="@layout/overtone" />
-        <!--
+
                 <include
                     android:id="@+id/overtone_4"
                     layout="@layout/overtone" />
@@ -228,7 +228,7 @@
                 <include
                     android:id="@+id/overtone_15"
                     layout="@layout/overtone" />
-        -->
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,7 +37,6 @@ public class ToneManager {
     private CheckBox overtonesActivator;
     private Spinner overtonesPreset;
     private LinearLayout overtonesLayout;
-    private ArrayList<SineWave> overtones;
 
     private int fundamentalFrequencyInHz;
 
@@ -52,8 +51,15 @@ public class ToneManager {
         initializeUIListeners();
     }
 
-    public void getTone() {
-        Tone tone = new Tone(new byte[1], getFrequency(), getAmplitude());
+    public SineWave[] getSineWaves() {
+        int activeOvertonesNumber = getActiveOvertonesNumber();
+        SineWave[] sineWaves = new SineWave[activeOvertonesNumber + 1];
+        sineWaves[0] = new SineWave(fundamentalFrequencyInHz, getAmplitude());
+        if (activeOvertonesNumber > 0) {
+            SineWave[] overtones = getOvertonesSineWaves(activeOvertonesNumber);
+            System.arraycopy(overtones, 0, sineWaves, 1, overtones.length);
+        }
+        return sineWaves;
     }
 
     private int getFrequency() {
@@ -61,9 +67,32 @@ public class ToneManager {
         //TODO: return tone frequency
     }
 
-    private int getAmplitude() {
-        return 0;
-        //TODO: return tone amplitude
+    private double getAmplitude() {
+        int displayAmplitude = Integer.parseInt(masterAmplitudeInput.getText().toString());
+        return (double) displayAmplitude / 100.0d;
+    }
+
+    private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
+        SineWave[] overtones = new SineWave[activeOvertonesNumber];
+        int overtoneIndex = 0;
+        for (OvertoneManager overtoneManager : overtoneManagers) {
+            if (overtoneManager.isActive()) {
+                overtones[overtoneIndex] = overtoneManager.getSineWave();
+                ++overtoneIndex;
+            }
+        }
+        return overtones;
+    }
+
+    private int getActiveOvertonesNumber() {
+        int activeOvertonesNumber = 0;
+        if (!overtonesActivator.isChecked())
+            return activeOvertonesNumber;
+        for (OvertoneManager overtoneManager : overtoneManagers) {
+            if (overtoneManager.isActive())
+                ++activeOvertonesNumber;
+        }
+        return activeOvertonesNumber;
     }
 
     private void setFundamentalFrequency() {
@@ -84,7 +113,7 @@ public class ToneManager {
     }
 
     private void initializeOvertoneManagers() {
-        overtoneManagers = new OvertoneManager[Constants.OVERTONES_NUMBER.value];
+        overtoneManagers = new OvertoneManager[Config.OVERTONES_NUMBER.value];
         for (int i = 0; i < overtoneManagers.length; ++i) {
             int overtoneIndex = i + 1;
             int overtoneFrequency = fundamentalFrequencyInHz * (overtoneIndex + 1);
@@ -96,10 +125,10 @@ public class ToneManager {
     }
 
     private void initializeUIValues() {
-        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         fundamentalFrequencyInput.setText(String.valueOf(displayFrequency));
-        fundamentalFrequencyBar.setMax(Constants.FREQUENCY_PROGRESS_BAR_MAX.value);
-        fundamentalFrequencyBar.setProgress(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        fundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
+        fundamentalFrequencyBar.setProgress(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         masterAmplitudeBar.setProgress(100);
         masterAmplitudeInput.setText(String.valueOf(masterAmplitudeBar.getProgress()));
 
@@ -130,10 +159,10 @@ public class ToneManager {
             public void afterTextChanged(Editable s) {
                 try {
                     int frequency = Integer.parseInt(s.toString());
-                    if (frequency >= Constants.FREQUENCY_MIN.value && frequency <= Constants.FREQUENCY_MAX.value)
+                    if (frequency >= Config.FREQUENCY_MIN.value && frequency <= Config.FREQUENCY_MAX.value)
                         fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
-                    else if (frequency > Constants.FREQUENCY_MAX.value)
-                        fundamentalFrequencyInput.setText(String.valueOf(Constants.FREQUENCY_MAX.value));
+                    else if (frequency > Config.FREQUENCY_MAX.value)
+                        fundamentalFrequencyInput.setText(String.valueOf(Config.FREQUENCY_MAX.value));
                     else
                         fundamentalFrequencyBar.setProgress(0);
                 } catch (Exception e) {
@@ -177,7 +206,7 @@ public class ToneManager {
             @Override
             public void onClick(View v) {
                 int frequency = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
-                if (--frequency >= Constants.FREQUENCY_MIN.value) {
+                if (--frequency >= Config.FREQUENCY_MIN.value) {
                     fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
                     fundamentalFrequencyInput.setText(String.valueOf(frequency));
                 }
@@ -211,7 +240,7 @@ public class ToneManager {
             @Override
             public void onClick(View v) {
                 int frequency = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
-                if (++frequency <= Constants.FREQUENCY_MAX.value) {
+                if (++frequency <= Config.FREQUENCY_MAX.value) {
                     fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
                     fundamentalFrequencyInput.setText(String.valueOf(frequency));
                 }
@@ -273,11 +302,11 @@ public class ToneManager {
     }
 
     private void validateFundamentalFrequencyInput() {
-        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Constants.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         try {
             displayFrequency = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
-            if (displayFrequency < Constants.FREQUENCY_MIN.value)
-                fundamentalFrequencyInput.setText(String.valueOf(Constants.FREQUENCY_MIN.value));
+            if (displayFrequency < Config.FREQUENCY_MIN.value)
+                fundamentalFrequencyInput.setText(String.valueOf(Config.FREQUENCY_MIN.value));
         } catch (Exception e) {
             Toast.makeText(context, "Frequency error", Toast.LENGTH_SHORT).show();
             fundamentalFrequencyInput.setText(String.valueOf(displayFrequency));
@@ -291,6 +320,6 @@ public class ToneManager {
         } catch (Exception e) {
             return false;
         }
-        return frequency >= Constants.FREQUENCY_MIN.value && frequency <= Constants.FREQUENCY_MAX.value;
+        return frequency >= Config.FREQUENCY_MIN.value && frequency <= Config.FREQUENCY_MAX.value;
     }
 }
