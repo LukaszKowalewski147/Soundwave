@@ -2,7 +2,7 @@
     <string name="app_name">Soundwave</string>
 
     <!--    Layout headers  -->
-    <string name="details_header">Sound details</string>
+    <string name="sound_details_header">Sound details</string>
     <string name="options_header">Options</string>
     <string name="create_sound_header">Create sound</string>
     <string name="overtones_header">Overtones</string>
@@ -16,6 +16,7 @@
     <string name="sample_rate_header">Sample rate</string>
     <string name="duration_header">Duration</string>
     <string name="frequency_header">Frequency</string>
+    <string name="tones_number_header">Tones number</string>
     <string name="duration_unit">s</string>
     <string name="frequency_unit">Hz</string>
 

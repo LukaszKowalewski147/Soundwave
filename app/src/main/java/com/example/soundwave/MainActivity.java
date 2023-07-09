@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton replayBtn;
     private ImageButton loopBtn;
     private ImageView loopIndicator;
-    private TextView frequencyDetails;
+    private TextView tonesNumberDetails;
     private TextView durationDetailsHeader;
     private TextView durationDetails;
     private TextView sampleRateDetails;
@@ -206,17 +206,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displaySoundParameters(@NonNull Sound sound) {
-        int frequency = sound.getNumberOfTones();
+        int tonesNumber = sound.getNumberOfTones();
         short duration = sound.getDuration();
         SampleRate sampleRate = sound.getSampleRate();
 
-        String displayFrequency = frequency + getResources().getString(R.string.frequency_unit);
+        String displayFrequency = String.valueOf(tonesNumber);
         String displayDuration = duration + getResources().getString(R.string.duration_unit);
         String displaySampleRate = sampleRatesSpinner.getSelectedItem().toString();
         String displayTotalPlaybackTime = String.valueOf(duration);
         int playbackBarMaxValue = sampleRate.sampleRate / 100;      // one step every 100 samples
 
-        frequencyDetails.setText(displayFrequency);
+        tonesNumberDetails.setText(displayFrequency);
         durationDetails.setText(displayDuration);
         sampleRateDetails.setText(displaySampleRate);
         playbackTotalTime.setText(displayTotalPlaybackTime);
@@ -285,10 +285,10 @@ public class MainActivity extends AppCompatActivity {
         durationIncrementBtn = findViewById(R.id.duration_increment_btn);
         loadBtn = findViewById(R.id.load_btn);
         saveBtn = findViewById(R.id.save_btn);
-        frequencyDetails = findViewById(R.id.tone_details_frequency);
-        durationDetailsHeader = findViewById(R.id.tone_details_duration_txt);
-        durationDetails = findViewById(R.id.tone_details_duration);
-        sampleRateDetails = findViewById(R.id.tone_details_sample_rate);
+        tonesNumberDetails = findViewById(R.id.sound_details_tones_number);
+        durationDetailsHeader = findViewById(R.id.sound_details_duration_txt);
+        durationDetails = findViewById(R.id.sound_details_duration);
+        sampleRateDetails = findViewById(R.id.sound_details_sample_rate);
         playbackBar = findViewById(R.id.playback_bar);
         playbackElapsedTime = findViewById(R.id.playback_elapsed_time);
         playbackTotalTime = findViewById(R.id.playback_total_time);

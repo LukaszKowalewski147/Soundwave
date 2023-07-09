@@ -37,8 +37,7 @@ public class SoundGenerator {
             if (samples[i] > maxVolumeSample)
                 maxVolumeSample = samples[i];
         }
-
-
+        
         double compressionRate = maxVolumeSample / soundVolume;
 
         // compress to target volume
@@ -57,7 +56,7 @@ public class SoundGenerator {
         }
         fadeIn();
         fadeOut();
-        return new Sound(outputSound, 406, duration, sampleRate);
+        return new Sound(outputSound, tones.length, duration, sampleRate);
     }
 
     public static Tone generateTone(SineWave[] sineWaves) {

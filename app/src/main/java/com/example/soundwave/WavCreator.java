@@ -74,7 +74,7 @@ public class WavCreator {
                 sampleingRateTxt = "192kHz-";
                 break;
         }
-        String filename = sound.getNumberOfTones() + "hz-" + sound.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
+        String filename = sound.getNumberOfTones() + "tone-" + sound.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
         return filename;
     }
 

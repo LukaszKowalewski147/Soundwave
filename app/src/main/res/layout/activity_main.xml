@@ -46,7 +46,7 @@
                 app:layout_constraintGuide_percent="0.5" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/details_layout"
+                android:id="@+id/sound_details_layout"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginEnd="4dp"
@@ -57,11 +57,11 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/details_header"
+                    android:id="@+id/sound_details_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/details_header"
+                    android:text="@string/sound_details_header"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -76,13 +76,13 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
                     android:background="@color/header_separator"
-                    app:layout_constraintTop_toBottomOf="@id/details_header" />
+                    app:layout_constraintTop_toBottomOf="@id/sound_details_header" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/details_header">
+                    app:layout_constraintTop_toBottomOf="@+id/sound_details_header">
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline_details_separator"
@@ -92,55 +92,7 @@
                         app:layout_constraintGuide_percent="0.5" />
 
                     <TextView
-                        android:id="@+id/tone_details_frequency_txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:text="@string/frequency_header"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toTopOf="@+id/tone_details_duration_txt"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tone_details_frequency"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toTopOf="@+id/tone_details_frequency_txt"
-                        tools:text="500Hz" />
-
-                    <TextView
-                        android:id="@+id/tone_details_duration_txt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:text="@string/duration_header"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toTopOf="@+id/tone_details_sample_rate_txt"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toBottomOf="@+id/tone_details_frequency_txt" />
-
-                    <TextView
-                        android:id="@+id/tone_details_duration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toTopOf="@+id/tone_details_duration_txt"
-                        tools:text="30s" />
-
-                    <TextView
-                        android:id="@+id/tone_details_sample_rate_txt"
+                        android:id="@+id/sound_details_sample_rate_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
@@ -148,21 +100,69 @@
                         android:text="@string/sample_rate_header"
                         android:textColor="@color/white"
                         android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toBottomOf="@+id/tone_details_duration_txt" />
+                        app:layout_constraintBottom_toTopOf="@id/sound_details_duration_txt"
+                        app:layout_constraintEnd_toStartOf="@id/guideline_details_separator"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tone_details_sample_rate"
+                        android:id="@+id/sound_details_sample_rate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="@+id/guideline_details_separator"
-                        app:layout_constraintTop_toTopOf="@+id/tone_details_sample_rate_txt"
+                        app:layout_constraintStart_toStartOf="@id/guideline_details_separator"
+                        app:layout_constraintTop_toTopOf="@id/sound_details_sample_rate_txt"
                         tools:text="44.1kHz" />
+
+                    <TextView
+                        android:id="@+id/sound_details_duration_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:text="@string/duration_header"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toTopOf="@id/sound_details_tones_number_txt"
+                        app:layout_constraintEnd_toStartOf="@id/guideline_details_separator"
+                        app:layout_constraintTop_toBottomOf="@id/sound_details_sample_rate_txt" />
+
+                    <TextView
+                        android:id="@+id/sound_details_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@id/guideline_details_separator"
+                        app:layout_constraintTop_toTopOf="@id/sound_details_duration_txt"
+                        tools:text="30s" />
+
+                    <TextView
+                        android:id="@+id/sound_details_tones_number_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:text="@string/tones_number_header"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/guideline_details_separator"
+                        app:layout_constraintTop_toBottomOf="@id/sound_details_duration_txt" />
+
+                    <TextView
+                        android:id="@+id/sound_details_tones_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="@id/guideline_details_separator"
+                        app:layout_constraintTop_toTopOf="@id/sound_details_tones_number_txt"
+                        tools:text="1" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
