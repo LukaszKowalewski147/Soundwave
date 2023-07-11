@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -17,8 +18,6 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 public class ToneManager {
 
@@ -60,6 +59,10 @@ public class ToneManager {
             System.arraycopy(overtones, 0, sineWaves, 1, overtones.length);
         }
         return sineWaves;
+    }
+
+    public static void changeToCustomPreset(int toneIndex) {
+
     }
 
     private int getFrequency() {
@@ -120,7 +123,7 @@ public class ToneManager {
             String ID = "overtone_" + overtoneIndex;
             int resID = context.getResources().getIdentifier(ID, "id", context.getPackageName());
             View overtoneView = toneView.findViewById(resID);
-            overtoneManagers[i] = new OvertoneManager(overtoneView, overtoneIndex, overtoneFrequency);
+            overtoneManagers[i] = new OvertoneManager(overtoneView, overtoneIndex, overtoneFrequency, getPresetForTone(), index);
         }
     }
 
@@ -299,6 +302,40 @@ public class ToneManager {
                 overtonesPreset.setVisibility(View.GONE);
             }
         });
+
+        overtonesPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Preset targetOvertonesPreset = Options.convertStringToPreset(overtonesPreset.getSelectedItem().toString());
+                Preset currentOvertonesPreset = getPresetForTone();
+                if (targetOvertonesPreset == currentOvertonesPreset)
+                    return;
+                switch (index) {
+                    case 1:
+                        Options.tone1Preset = targetOvertonesPreset;
+                        break;
+                    case 2:
+                        Options.tone2Preset = targetOvertonesPreset;
+                        break;
+                }
+                initializeOvertoneManagers();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private Preset getPresetForTone() {
+        switch (index) {
+            case 1:
+                return Options.tone1Preset;
+            case 2:
+                return Options.tone2Preset;
+        }
+        return Preset.FLAT;
     }
 
     private void validateFundamentalFrequencyInput() {

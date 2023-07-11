@@ -5,12 +5,14 @@ public class Sound {
     private final int numberOfTones;
     private final short duration;
     private final SampleRate sampleRate;
+    int tmp_debug_volume;
 
-    public Sound(byte[] sinWave, int numberOfTones, short duration, SampleRate sampleRate) {
+    public Sound(byte[] sinWave, int numberOfTones, short duration, SampleRate sampleRate, int tmp_debug_volume) {
         this.sinWaveData = sinWave;
         this.numberOfTones = numberOfTones;
         this.duration = duration;
         this.sampleRate = sampleRate;
+        this.tmp_debug_volume = tmp_debug_volume;
     }
 
     public byte[] getSinWaveData() {

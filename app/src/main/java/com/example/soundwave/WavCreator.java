@@ -28,10 +28,9 @@ public class WavCreator {
 
     public void saveSound() {
         FileOutputStream out = null;
-        if (isExternalStorageAvailable())
-        {
+        if (isExternalStorageAvailable()) {
             String fileName = getFilename();
-            Toast.makeText(context, "Nazwa pliku: " + fileName, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Nazwa pliku: " + fileName, Toast.LENGTH_SHORT).show();
             File wavFile = new File(context.getExternalFilesDir(FILE_FOLDER), fileName);
             try {
                 out = new FileOutputStream(wavFile);
@@ -75,6 +74,7 @@ public class WavCreator {
                 break;
         }
         String filename = sound.getNumberOfTones() + "tone-" + sound.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
+        String vol_debug_filename = sound.getNumberOfTones() + "tone-" + sound.getDuration() + "s-" + sampleingRateTxt + "vol" + sound.tmp_debug_volume + FILE_EXTENSION;
         return filename;
     }
 

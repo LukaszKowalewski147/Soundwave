@@ -8,17 +8,21 @@ import android.widget.TextView;
 public class OvertoneManager {
 
     private final View overtoneView;
+    private final int overtoneIndex;
+    private final int toneIndex;
 
     private Switch activator;
     private SeekBar amplitudeBar;
     private TextView amplitudeInput;
-    private TextView index;
+    private TextView indexView;
     private TextView frequency;
 
-    public OvertoneManager(View overtoneView, int index, int frequency) {
+    public OvertoneManager(View overtoneView, int index, int frequency, Preset preset, int toneIndex) {
         this.overtoneView = overtoneView;
+        this.overtoneIndex = index - 1;
+        this.toneIndex = toneIndex;
         initializeUIElements();
-        initializeUIValues(index, frequency);
+        initializeUIValues(index, frequency, preset);
         initializeUIListeners();
     }
 
@@ -41,14 +45,14 @@ public class OvertoneManager {
         activator = overtoneView.findViewById(R.id.activator);
         amplitudeBar = overtoneView.findViewById(R.id.master_volume_bar);
         amplitudeInput = overtoneView.findViewById(R.id.master_volume_input);
-        index = overtoneView.findViewById(R.id.index);
+        indexView = overtoneView.findViewById(R.id.index);
         frequency = overtoneView.findViewById(R.id.frequency);
     }
 
-    private void initializeUIValues(int index, int frequency) {
-        this.index.setText(getDisplayIndex(index));
+    private void initializeUIValues(int index, int frequency, Preset preset) {
+        this.indexView.setText(getDisplayIndex(index));
         this.frequency.setText(String.valueOf(frequency));
-        amplitudeBar.setProgress(100);
+        amplitudeBar.setProgress(preset.amplitudes[overtoneIndex]);
         amplitudeInput.setText(String.valueOf(amplitudeBar.getProgress()));
     }
 
@@ -57,8 +61,19 @@ public class OvertoneManager {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 amplitudeInput.setText(String.valueOf(progress));
-                if (progress == 0)
-                    activator.setChecked(false);
+                if (fromUser) {
+                    switch (toneIndex) {
+                        case 1:
+                            Options.tone1Preset = Preset.FLAT;
+                            Preset.FLAT.amplitudes[overtoneIndex] = progress;
+                            break;
+                        case 2:
+                            Options.tone2Preset = Preset.FLAT;
+                            Preset.FLAT.amplitudes[overtoneIndex] = progress;
+                            break;
+                    }
+                    if (progress == 0) activator.setChecked(false);
+                }
             }
 
             @Override
