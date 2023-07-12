@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/bottom_nav_tone_creator"
+        android:id="@+id/tone_creator"
+        android:icon="@drawable/ic_tone_creator2"/>
+    <item android:title="@string/bottom_nav_tone_mixer"
+        android:id="@+id/tone_mixer"
+        android:icon="@drawable/ic_tone_mixer"/>
+    <item android:title="@string/bottom_nav_dynamic_playback"
+        android:id="@+id/dynamic_playback"
+        android:icon="@drawable/ic_dynamic_playback2"/>
+    <item android:title="@string/bottom_nav_my_tones"
+        android:id="@+id/my_tones"
+        android:icon="@drawable/ic_my_tones2"/>
+</menu>
