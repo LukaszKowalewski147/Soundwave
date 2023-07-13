@@ -22,5 +22,9 @@
     <color name="app_yellow_gradient_end">#EDC80B</color>
     <color name="app_magblue_start">#DB14FF</color>
     <color name="app_magblue_end">#00B7FF</color>
+    <color name="app_red_gradient_start">#FF4646</color>
+    <color name="app_red_gradient_end">#C80000</color>
+    <color name="app_gray_gradient_start">#C8C8C8</color>
+    <color name="app_gray_gradient_end">#808080</color>
 
 </resources>

@@ -3,6 +3,8 @@
 
     <!--    Layout headers  -->
     <string name="sound_details_header">Sound details</string>
+    <string name="tone_details_header">Tone details</string>
+    <string name="control_panel_header">Control panel</string>
     <string name="options_header">Options</string>
     <string name="create_sound_header">Create sound</string>
     <string name="overtones_header">Overtones</string>
@@ -11,16 +13,38 @@
     <string name="tone_2_header">2nd tone</string>
     <string name="tone_3_header">3rd tone</string>
     <string name="tone_4_header">4th tone</string>
-    <string name="load_sound_btn_txt">Load sound</string>
+
+    <!--    Buttons         -->
+    <string name="load_sound_btn">Load sound</string>
+    <string name="generate_btn">Generate</string>
+    <string name="play_btn">Play</string>
+    <string name="stop_btn">Stop</string>
+    <string name="save_btn">Save</string>
+    <string name="reset_btn">Reset</string>
 
     <string name="sample_rate_header">Sample rate</string>
     <string name="duration_header">Duration</string>
     <string name="frequency_header">Frequency</string>
+    <string name="envelope_header">Envelope</string>
+    <string name="envelope_attack_header">Attack</string>
+    <string name="envelope_decay_header">Decay</string>
+    <string name="envelope_sustain_header">Sustain</string>
+    <string name="envelope_release_header">Release</string>
+    <string name="timbre_header">Timbre</string>
     <string name="tones_number_header">Tones number</string>
-    <string name="duration_unit">s</string>
-    <string name="frequency_unit">Hz</string>
 
-    <!--    Spinners    -->
+    <!--    Units           -->
+    <string name="percent_unit">%</string>
+    <string name="second_unit">s</string>
+    <string name="millisecond_unit">ms</string>
+    <string name="hertz_unit">Hz</string>
+
+    <!--    Spinners        -->
+    <string name="bottom_nav_tone_creator">Creator</string>
+    <string name="bottom_nav_tone_mixer">Mixer</string>
+    <string name="bottom_nav_dynamic_playback">Generator</string>
+    <string name="bottom_nav_my_tones">My tones</string>
+
     <string-array name="playback_modes_array">
         <item>Static</item>
         <item>Stream</item>
@@ -42,5 +66,7 @@
         <item>Trumpet</item>
         <item>Custom</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
