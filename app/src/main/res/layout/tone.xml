@@ -4,231 +4,143 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="4dp"
-    android:paddingEnd="4dp"
-    android:paddingBottom="4dp"
-    tools:background="@color/black">
+    android:layout_margin="8dp"
+    android:background="@drawable/background_shadow_item"
+    android:padding="8dp">
 
     <ImageView
-        android:id="@+id/frequency_icon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/tone_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:scaleX="0.5"
         android:scaleY="0.5"
-        android:src="@drawable/ic_frequency"
-        app:layout_constraintBottom_toBottomOf="@+id/fundamental_frequency_input"
-        app:layout_constraintEnd_toEndOf="@+id/frequency_decrement_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fundamental_frequency_input"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:text="@string/frequency_header"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/fundamental_frequency_input"
-        app:layout_constraintStart_toEndOf="@+id/frequency_icon"
-        app:layout_constraintTop_toTopOf="@+id/fundamental_frequency_input" />
-
-    <EditText
-        android:id="@+id/fundamental_frequency_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:inputType="numberSigned"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_play_note"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="Autofill,LabelFor"
-        tools:text="500" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:text="@string/frequency_unit"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/fundamental_frequency_input"
-        app:layout_constraintStart_toEndOf="@+id/fundamental_frequency_input"
-        app:layout_constraintTop_toTopOf="@+id/fundamental_frequency_input" />
-
-    <SeekBar
-        android:id="@+id/fundamental_frequency_bar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:progress="50"
-        android:progressTint="@color/app_yellow_gradient_start"
-        android:thumb="@drawable/custom_seekbar_thumb"
-        app:layout_constraintBottom_toBottomOf="@+id/frequency_decrement_btn"
-        app:layout_constraintEnd_toStartOf="@id/frequency_increment_btn"
-        app:layout_constraintStart_toEndOf="@id/frequency_decrement_btn"
-        app:layout_constraintTop_toTopOf="@+id/frequency_decrement_btn" />
-
-    <ImageButton
-        android:id="@+id/frequency_decrement_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:selectableItemBackground"
-        android:src="@drawable/btn_decrement"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fundamental_frequency_input" />
-
-    <ImageButton
-        android:id="@+id/frequency_increment_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:selectableItemBackground"
-        android:src="@drawable/btn_increment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fundamental_frequency_input" />
-
-    <ImageView
-        android:id="@+id/volume_icon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:scaleX="0.7"
-        android:scaleY="0.7"
-        android:src="@drawable/ic_volume"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="@+id/frequency_decrement_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frequency_decrement_btn"
+        app:tint="@color/white"
         tools:ignore="ContentDescription" />
 
-    <SeekBar
-        android:id="@+id/master_volume_bar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:progress="100"
-        android:progressTint="@color/app_yellow_gradient_start"
-        android:thumb="@drawable/custom_seekbar_thumb"
-        app:layout_constraintBottom_toBottomOf="@+id/volume_icon"
-        app:layout_constraintEnd_toEndOf="@id/fundamental_frequency_bar"
-        app:layout_constraintStart_toStartOf="@+id/fundamental_frequency_bar"
-        app:layout_constraintTop_toTopOf="@id/volume_icon" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ems="14"
+        android:text="My first tone"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="@id/tone_icon"
+        app:layout_constraintStart_toEndOf="@id/tone_icon"
+        app:layout_constraintTop_toTopOf="@id/tone_icon"
+        tools:text="My first tone" />
 
     <TextView
-        android:id="@+id/master_volume_input"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:ems="2"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/master_volume_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/fundamental_frequency_bar"
-        app:layout_constraintTop_toTopOf="@+id/master_volume_bar"
-        tools:text="100" />
-
-    <CheckBox
-        android:id="@+id/overtones_activator"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="16dp"
-        android:buttonTint="@color/app_yellow"
-        android:paddingStart="19dp"
-        android:text="@string/overtones_header"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/master_volume_bar"
-        tools:ignore="RtlSymmetry" />
-
-    <Spinner
-        android:id="@+id/overtones_preset"
+        android:id="@+id/tone_details_frequency_header"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="@id/overtones_activator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/overtones_activator" />
-
-    <LinearLayout
-        android:id="@+id/overtones_layout"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/frequency_header"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tone_icon" />
+
+    <TextView
+        android:id="@+id/tone_details_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_frequency_header"
+        app:layout_constraintTop_toTopOf="@id/tone_details_frequency_header"
+        tools:text="432Hz (A4)" />
+
+    <TextView
+        android:id="@+id/tone_details_envelope_preset_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/envelope_header"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tone_details_frequency_header" />
+
+    <TextView
+        android:id="@+id/tone_details_envelope_preset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
+        app:layout_constraintTop_toTopOf="@id/tone_details_envelope_preset_header"
+        tools:text="Acoustic guitar" />
+
+    <TextView
+        android:id="@+id/tone_details_timbre_preset_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timbre_header"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tone_details_envelope_preset_header" />
+
+    <TextView
+        android:id="@+id/tone_details_timbre_preset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
+        app:layout_constraintTop_toTopOf="@id/tone_details_timbre_preset_header"
+        tools:text="Acoustic guitar" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/tone_more_info_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/overtones_activator"
-        tools:visibility="gone">
+        android:background="@drawable/background_btn_standard"
+        android:text="@string/more_info_btn"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tone_details_timbre_preset" />
 
-        <include
-            android:id="@+id/overtone_1"
-            layout="@layout/overtone" />
+    <ImageButton
+        android:id="@+id/tone_delete_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/desc_delete_tone_btn"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/overtone_2"
-            layout="@layout/overtone" />
+    <ImageButton
+        android:id="@+id/tone_play_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/desc_play_tone_btn"
+        android:scaleX="1.3"
+        android:scaleY="1.3"
+        android:src="@drawable/ic_play_tone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tone_edit_btn"
+        app:tint="@color/white" />
 
-        <include
-            android:id="@+id/overtone_3"
-            layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_4"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_5"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_6"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_7"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_8"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_9"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_10"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_11"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_12"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_13"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_14"
-                    layout="@layout/overtone" />
-
-                <include
-                    android:id="@+id/overtone_15"
-                    layout="@layout/overtone" />
-
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/tone_edit_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/desc_edit_tone_btn"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

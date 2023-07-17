@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    tools:background="@color/black">
+
+    <Switch
+        android:id="@+id/overtone_creator_activator"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:checked="true"
+        android:thumb="@drawable/custom_switch_thumb"
+        android:track="@drawable/custom_switch_track"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/overtone_creator_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ems="6"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/overtone_creator_activator"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1st" />
+
+    <TextView
+        android:id="@+id/overtone_creator_frequency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/app_yellow"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/overtone_creator_index"
+        app:layout_constraintStart_toStartOf="@id/overtone_creator_index"
+        app:layout_constraintTop_toBottomOf="@id/overtone_creator_index"
+        tools:text="10000Hz" />
+
+    <ImageView
+        android:id="@+id/overtone_creator_volume_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_volume"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/overtone_creator_index"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/overtone_creator_volume_bar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:max="150"
+        android:progress="100"
+        android:progressTint="@color/app_yellow_gradient_start"
+        android:thumb="@drawable/custom_seekbar_thumb"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/overtone_creator_volume_input"
+        app:layout_constraintStart_toEndOf="@id/overtone_creator_volume_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/overtone_creator_volume_input"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:ems="2"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="100" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
