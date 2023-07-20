@@ -11,9 +11,9 @@ import com.example.soundwave.model.entity.Music;
 
 import java.util.List;
 
-@Dao
+//@Dao
 public interface MusicDao {
-
+/*
     @Insert
     void insert(Music music);
 
@@ -27,5 +27,5 @@ public interface MusicDao {
     void deleteAllMusic();
 
     @Query("SELECT * FROM music_table ORDER BY id DESC")
-    LiveData<List<Music>> getAllMusic();
+    LiveData<List<Music>> getAllMusic();*/
 }

@@ -3,9 +3,9 @@ package com.example.soundwave.model.entity;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "music_table")
+//@Entity(tableName = "music_table")
 public class Music {
-
+/*
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -25,5 +25,5 @@ public class Music {
 
     public float[] getSamples() {
         return samples;
-    }
+    }*/
 }

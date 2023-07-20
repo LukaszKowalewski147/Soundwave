@@ -14,13 +14,18 @@ public class Tone {
     private final int fundamentalFrequency;
 
     private final double volume;
+/*
+    private final double[] samples;
 
-    private final float[] samples;
-
-    public Tone(int fundamentalFrequency, double volume, float[] samples) {
+    public Tone(int fundamentalFrequency, double volume, double[] samples) {
         this.fundamentalFrequency = fundamentalFrequency;
         this.volume = volume;
         this.samples = samples;
+    }
+*/
+    public Tone(int fundamentalFrequency, double volume) {
+        this.fundamentalFrequency = fundamentalFrequency;
+        this.volume = volume;
     }
 
     public void setId(int id) {
@@ -38,8 +43,8 @@ public class Tone {
     public double getVolume() {
         return volume;
     }
-
-    public float[] getSamples() {
+/*
+    public double[] getSamples() {
         return samples;
-    }
+    }*/
 }
