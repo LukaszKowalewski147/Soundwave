@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_shadow_layout"
     tools:background="@color/dark_gray"
-    tools:context=".ToneCreatorFragment">
+    tools:context=".view.ToneCreatorFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/tone_creator_guideline_creator_bottom"

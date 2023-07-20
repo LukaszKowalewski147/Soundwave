@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_shadow_layout"
     tools:background="@color/dark_gray"
-    tools:context=".ToneStreamingFragment">
+    tools:context=".view.ToneStreamingFragment">
 
     <TextView
         android:id="@+id/tone_streaming_header"

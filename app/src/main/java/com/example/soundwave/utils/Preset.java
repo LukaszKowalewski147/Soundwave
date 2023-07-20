@@ -1,4 +1,4 @@
-package com.example.soundwave;
+package com.example.soundwave.utils;
 
 public enum Preset {
     // {15 overtones}
@@ -9,7 +9,7 @@ public enum Preset {
     CUSTOM_TONE_1(new int[]{100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100}),
     CUSTOM_TONE_2(new int[]{100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100});
 
-    final int[] amplitudes;
+    public final int[] amplitudes;
 
     Preset(int[] amplitudes) {
         this.amplitudes = amplitudes;

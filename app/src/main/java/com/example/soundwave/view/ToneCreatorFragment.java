@@ -1,4 +1,4 @@
-package com.example.soundwave;
+package com.example.soundwave.view;
 
 import android.os.Bundle;
 
@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.NumberPicker;
 
+import com.example.soundwave.utils.Config;
+import com.example.soundwave.R;
+import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
 
 public class ToneCreatorFragment extends Fragment {

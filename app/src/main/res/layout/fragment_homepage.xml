@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_shadow_layout"
     tools:background="@color/dark_gray"
-    tools:context=".HomepageFragment">
+    tools:context=".view.HomepageFragment">
 
     <TextView
         android:id="@+id/home_my_tones_header"

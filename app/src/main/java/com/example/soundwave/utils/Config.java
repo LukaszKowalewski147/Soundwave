@@ -1,4 +1,4 @@
-package com.example.soundwave;
+package com.example.soundwave.utils;
 
 public enum Config {
     FREQUENCY_MIN(20),                      // in Hz
@@ -13,7 +13,7 @@ public enum Config {
     TONES_NUMBER(2),
     OVERTONES_NUMBER(15);
 
-    final int value;
+    public final int value;
 
     Config(int value) {
         this.value = value;

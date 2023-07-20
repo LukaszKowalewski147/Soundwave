@@ -1,4 +1,6 @@
-package com.example.soundwave;
+package com.example.soundwave.utils;
+
+import com.example.soundwave.utils.Config;
 
 public class UnitsConverter {
 
