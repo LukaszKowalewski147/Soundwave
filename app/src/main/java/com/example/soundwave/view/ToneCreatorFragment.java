@@ -3,34 +3,34 @@ package com.example.soundwave.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
+import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
 public class ToneCreatorFragment extends Fragment {
 
     private FragmentToneCreatorBinding binding;
-
-    public ToneCreatorFragment() {
-
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private ToneCreatorViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //View view = inflater.inflate(R.layout.fragment_tone_creator, container, false);  - old
         binding = FragmentToneCreatorBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(ToneCreatorViewModel.class);
         initializeDefaultLayout();
         return binding.getRoot();
     }
@@ -39,6 +39,15 @@ public class ToneCreatorFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void initializeObservers() {
+        viewModel.getEnvelopeAttack().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                binding.toneCreatorEnvelopeAttack.setText(viewModel.getEnvelopeAttack().getValue());
+            }
+        });
     }
 
     private void initializeDefaultLayout() {
