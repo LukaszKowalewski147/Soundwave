@@ -15,9 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.SeekBar;
 
+import com.example.soundwave.SeekBarUpdater;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
+import com.example.soundwave.utils.Options;
+import com.example.soundwave.utils.Preset;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
@@ -42,10 +47,73 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void initializeObservers() {
-        viewModel.getEnvelopeAttack().observe(this, new Observer<String>() {
+        viewModel.getEnvelopeAttack().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorEnvelopeAttack.setText(String.valueOf(viewModel.getEnvelopeAttack().getValue()));
+            }
+        });
+
+        viewModel.getEnvelopeDecay().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorEnvelopeDecay.setText(String.valueOf(viewModel.getEnvelopeDecay().getValue()));
+            }
+        });
+
+        viewModel.getEnvelopeSustainLevel().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(viewModel.getEnvelopeSustainLevel().getValue()));
+            }
+        });
+
+        viewModel.getEnvelopeSustainDuration().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(viewModel.getEnvelopeSustainDuration().getValue()));
+            }
+        });
+
+        viewModel.getEnvelopeRelease().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorEnvelopeRelease.setText(String.valueOf(viewModel.getEnvelopeRelease().getValue()));
+            }
+        });
+
+        viewModel.getFundamentalFrequency().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(viewModel.getFundamentalFrequency().getValue()));
+            }
+        });
+
+        viewModel.getFundamentalFrequencyBar().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorFundamentalFrequencyBar.setProgress(viewModel.getFundamentalFrequencyBar().getValue());
+            }
+        });
+
+        viewModel.getScale().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                binding.toneCreatorEnvelopeAttack.setText(viewModel.getEnvelopeAttack().getValue());
+                binding.toneCreatorScaleInput.setText(String.valueOf(viewModel.getScale().getValue()));
+            }
+        });
+
+        viewModel.getMasterVolume().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorMasterVolumeInput.setText(String.valueOf(viewModel.getMasterVolume().getValue()));
+            }
+        });
+
+        viewModel.getMasterVolumeBar().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                binding.toneCreatorMasterVolumeBar.setProgress(viewModel.getMasterVolumeBar().getValue());
             }
         });
     }
