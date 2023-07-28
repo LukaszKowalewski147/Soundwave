@@ -114,142 +114,252 @@
                     app:layout_constraintStart_toEndOf="@id/tone_creator_envelope_icon"
                     app:layout_constraintTop_toTopOf="@id/tone_creator_envelope_icon" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:id="@+id/tone_creator_envelope_parameters"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/envelope_attack_header"
-                    android:textAllCaps="true"
-                    android:textColor="@color/app_yellow"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tone_creator_envelope_attack"
-                    app:layout_constraintStart_toStartOf="@id/tone_creator_envelope_attack"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_attack" />
-
-                <EditText
-                    android:id="@+id/tone_creator_envelope_attack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="4"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/tone_creator_envelope_decay"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_icon"
-                    tools:text="100ms" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/envelope_decay_header"
-                    android:textAllCaps="true"
-                    android:textColor="@color/app_yellow"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tone_creator_envelope_decay"
-                    app:layout_constraintStart_toStartOf="@id/tone_creator_envelope_decay"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_decay" />
-
-                <EditText
-                    android:id="@+id/tone_creator_envelope_decay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="4"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/tone_creator_envelope_sustain_level"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@id/tone_creator_envelope_attack"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_envelope_attack"
-                    tools:text="250ms" />
-
-                <TextView
-                    android:id="@+id/tone_creator_envelope_sustain_level_header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="4"
-                    android:gravity="center"
-                    android:lines="2"
-                    android:text="@string/envelope_sustain_level_header"
-                    android:textAllCaps="true"
-                    android:textColor="@color/app_yellow"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tone_creator_envelope_sustain_level"
-                    app:layout_constraintStart_toStartOf="@id/tone_creator_envelope_sustain_level"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_sustain_level" />
-
-                <EditText
-                    android:id="@+id/tone_creator_envelope_sustain_level"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="4"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/tone_creator_envelope_sustain_duration"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@id/tone_creator_envelope_decay"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_envelope_attack"
-                    tools:text="40%" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="5"
-                    android:gravity="center"
-                    android:lines="2"
-                    android:text="@string/envelope_sustain_duration_header"
-                    android:textAllCaps="true"
-                    android:textColor="@color/app_yellow"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tone_creator_envelope_sustain_duration"
-                    app:layout_constraintStart_toStartOf="@id/tone_creator_envelope_sustain_duration"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_sustain_duration" />
-
-                <EditText
-                    android:id="@+id/tone_creator_envelope_sustain_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="4"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/tone_creator_envelope_release"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@id/tone_creator_envelope_sustain_level"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_envelope_attack"
-                    tools:text="1000ms" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/envelope_release_header"
-                    android:textAllCaps="true"
-                    android:textColor="@color/app_yellow"
-                    android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tone_creator_envelope_release"
-                    app:layout_constraintStart_toStartOf="@id/tone_creator_envelope_release"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_release" />
-
-                <EditText
-                    android:id="@+id/tone_creator_envelope_release"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="4"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
+                    android:fadingEdgeLength="16dp"
+                    android:requiresFadingEdge="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@id/tone_creator_envelope_sustain_duration"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_envelope_attack"
-                    tools:text="200ms" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_icon">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <EditText
+                                    android:id="@+id/tone_creator_envelope_attack"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    tools:text="100" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="@string/millisecond_unit"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="5"
+                                android:gravity="center"
+                                android:text="@string/envelope_attack_header"
+                                android:textAllCaps="true"
+                                android:textColor="@color/app_yellow"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <EditText
+                                    android:id="@+id/tone_creator_envelope_decay"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    tools:text="250" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="@string/millisecond_unit"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="5"
+                                android:gravity="center"
+                                android:text="@string/envelope_decay_header"
+                                android:textAllCaps="true"
+                                android:textColor="@color/app_yellow"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <EditText
+                                    android:id="@+id/tone_creator_envelope_sustain_level"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    tools:text="40" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="@string/percent_unit"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="5"
+                                android:gravity="center"
+                                android:lines="2"
+                                android:text="@string/envelope_sustain_level_header"
+                                android:textAllCaps="true"
+                                android:textColor="@color/app_yellow"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <EditText
+                                    android:id="@+id/tone_creator_envelope_sustain_duration"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    tools:text="1000" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="@string/millisecond_unit"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="5"
+                                android:gravity="center"
+                                android:lines="2"
+                                android:text="@string/envelope_sustain_duration_header"
+                                android:textAllCaps="true"
+                                android:textColor="@color/app_yellow"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <EditText
+                                    android:id="@+id/tone_creator_envelope_release"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    tools:text="200" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="@string/millisecond_unit"
+                                    android:textColor="@color/white"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ems="5"
+                                android:gravity="center"
+                                android:text="@string/envelope_release_header"
+                                android:textAllCaps="true"
+                                android:textColor="@color/app_yellow"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
 
                 <ImageView
                     android:id="@+id/tone_creator_frequency_icon"
@@ -261,7 +371,7 @@
                     android:scaleY="0.5"
                     android:src="@drawable/ic_frequency"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_sustain_level_header" />
+                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_parameters" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -279,7 +389,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:inputType="numberSigned"
+                    android:inputType="number"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -287,7 +397,19 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tone_creator_frequency_icon"
-                    tools:text="500Hz" />
+                    tools:text="500" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="1dp"
+                    android:text="@string/hertz_unit"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@id/tone_creator_fundamental_frequency_input"
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_fundamental_frequency_input"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_fundamental_frequency_input"/>
 
                 <EditText
                     android:id="@+id/tone_creator_scale_input"
