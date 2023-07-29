@@ -129,14 +129,14 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);
 
         //  Envelope
-        binding.toneCreatorEnvelopeAttack.setText("100ms");
-        binding.toneCreatorEnvelopeDecay.setText("250ms");
-        binding.toneCreatorEnvelopeSustainLevel.setText("40%");
-        binding.toneCreatorEnvelopeSustainDuration.setText("1000ms");
-        binding.toneCreatorEnvelopeRelease.setText("200ms");
+        binding.toneCreatorEnvelopeAttack.setText("100");
+        binding.toneCreatorEnvelopeDecay.setText("250");
+        binding.toneCreatorEnvelopeSustainLevel.setText("40");
+        binding.toneCreatorEnvelopeSustainDuration.setText("1000");
+        binding.toneCreatorEnvelopeRelease.setText("200");
 
         //  Fundamental frequency
-        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        int displayFrequency = UnitsConverter.convertSeekBarProgressToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(displayFrequency));
         binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
         binding.toneCreatorFundamentalFrequencyBar.setProgress(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
@@ -150,5 +150,296 @@ public class ToneCreatorFragment extends Fragment {
         // Layout visibility
         binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
         binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
+    }
+
+    private void initializeUIListeners() {
+        binding.toneCreatorEnvelopeAttack.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeAttack(s.toString());
+            }
+        });
+
+        binding.toneCreatorEnvelopeDecay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeDecay(s.toString());
+            }
+        });
+
+        binding.toneCreatorEnvelopeSustainLevel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeSustainLevel(s.toString());
+            }
+        });
+
+        binding.toneCreatorEnvelopeSustainDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeSustainDuration(s.toString());
+            }
+        });
+
+        binding.toneCreatorEnvelopeRelease.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeRelease(s.toString());
+            }
+        });
+
+        binding.toneCreatorFundamentalFrequencyInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateFundamentalFrequency(s.toString());
+            }
+        });
+
+        binding.toneCreatorFundamentalFrequencyInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus)
+                    viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
+            }
+        });
+
+        binding.toneCreatorFundamentalFrequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    viewModel.updateFundamentalFrequencySeekBarPosition(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        binding.toneCreatorFrequencyDecrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.decrementOnceFundamentalFrequency();
+            }
+        });
+
+        binding.toneCreatorFrequencyDecrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                viewModel.decrementConstantlyFundamentalFrequency();
+                return true;
+            }
+        });
+
+        binding.toneCreatorFrequencyDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+                }
+                return false;
+            }
+        });
+
+        binding.toneCreatorFrequencyIncrementBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.incrementOnceFundamentalFrequency();
+            }
+        });
+
+        binding.toneCreatorFrequencyIncrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                viewModel.incrementConstantlyFundamentalFrequency();
+                return true;
+            }
+        });
+
+        binding.toneCreatorFrequencyIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+                }
+                return false;
+            }
+        });
+
+        binding.toneCreatorMasterVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateMasterVolumeSeekBarPosition(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        binding.toneCreatorOvertonesActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
+                    binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
+                    return;
+                }
+                binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
+                binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
+            }
+        });
+
+        binding.toneCreatorOvertonesPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Preset targetOvertonesPreset = Options.convertStringToPreset(overtonesPreset.getSelectedItem().toString());
+                Preset currentOvertonesPreset = getPresetForTone();
+                if (targetOvertonesPreset == currentOvertonesPreset)
+                    return;
+                Options.tone1Preset = targetOvertonesPreset;
+
+                initializeOvertoneManagers();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        loadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateToneDetails();
+                loadSound();
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveSound();
+            }
+        });
+
+        playPauseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                managePlayPauseActivity();
+            }
+        });
+
+        replayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetPlayback();
+            }
+        });
+
+        loopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                manageLoopButton();
+            }
+        });
+
+        playbackBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        playbackModesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String spinnerPlaybackMode = playbackModesSpinner.getSelectedItem().toString();
+                Options.PlaybackMode selectedPlaybackMode = Options.PlaybackMode.STATIC;
+                if (spinnerPlaybackMode.equals("Stream"))
+                    selectedPlaybackMode = Options.PlaybackMode.STREAM;
+                setPlaybackMode(selectedPlaybackMode);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }
