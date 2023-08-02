@@ -19,6 +19,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.soundwave.utils.Config;
+import com.example.soundwave.utils.Options;
+import com.example.soundwave.utils.Preset;
+import com.example.soundwave.utils.UnitsConverter;
+
 public class ToneManager {
 
     private final Context context;
@@ -43,7 +48,7 @@ public class ToneManager {
         this.context = context;
         this.toneView = toneView;
         this.index = index;
-        initializeUIElements();
+        //initializeUIElements();
         initializeUIValues();
         setFundamentalFrequency();
         initializeOvertoneManagers();
@@ -102,19 +107,19 @@ public class ToneManager {
         validateFundamentalFrequencyInput();
         fundamentalFrequencyInHz = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
     }
-
+/*
     private void initializeUIElements() {
         fundamentalFrequencyInput = toneView.findViewById(R.id.fundamental_frequency_input);
         fundamentalFrequencyBar = toneView.findViewById(R.id.fundamental_frequency_bar);
         frequencyDecrementBtn = toneView.findViewById(R.id.frequency_decrement_btn);
         frequencyIncrementBtn = toneView.findViewById(R.id.frequency_increment_btn);
         masterAmplitudeBar = toneView.findViewById(R.id.master_volume_bar);
-        masterAmplitudeInput = toneView.findViewById(R.id.master_volume_input);
+        masterAmplitudeInput = toneView.findViewById(R.id.overtone_volume_input);
         overtonesActivator = toneView.findViewById(R.id.overtones_activator);
         overtonesPreset = toneView.findViewById(R.id.overtones_preset);
         overtonesLayout = toneView.findViewById(R.id.overtones_layout);
     }
-
+*/
     private void initializeOvertoneManagers() {
         overtoneManagers = new OvertoneManager[Config.OVERTONES_NUMBER.value];
         for (int i = 0; i < overtoneManagers.length; ++i) {
@@ -123,12 +128,12 @@ public class ToneManager {
             String ID = "overtone_" + overtoneIndex;
             int resID = context.getResources().getIdentifier(ID, "id", context.getPackageName());
             View overtoneView = toneView.findViewById(resID);
-            overtoneManagers[i] = new OvertoneManager(overtoneView, overtoneIndex, overtoneFrequency, getPresetForTone(), index);
+            overtoneManagers[i] = new OvertoneManager(overtoneView, overtoneIndex, overtoneFrequency, getPresetForTone());
         }
     }
 
     private void initializeUIValues() {
-        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        int displayFrequency = UnitsConverter.convertSeekBarProgressToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         fundamentalFrequencyInput.setText(String.valueOf(displayFrequency));
         fundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
         fundamentalFrequencyBar.setProgress(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
@@ -163,7 +168,7 @@ public class ToneManager {
                 try {
                     int frequency = Integer.parseInt(s.toString());
                     if (frequency >= Config.FREQUENCY_MIN.value && frequency <= Config.FREQUENCY_MAX.value)
-                        fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
+                        fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarProgress(frequency));
                     else if (frequency > Config.FREQUENCY_MAX.value)
                         fundamentalFrequencyInput.setText(String.valueOf(Config.FREQUENCY_MAX.value));
                     else
@@ -191,7 +196,7 @@ public class ToneManager {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser)
-                    fundamentalFrequencyInput.setText(String.valueOf(UnitsConverter.convertSeekBarPositionToFrequency(progress)));
+                    fundamentalFrequencyInput.setText(String.valueOf(UnitsConverter.convertSeekBarProgressToFrequency(progress)));
             }
 
             @Override
@@ -210,7 +215,7 @@ public class ToneManager {
             public void onClick(View v) {
                 int frequency = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
                 if (--frequency >= Config.FREQUENCY_MIN.value) {
-                    fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
+                    fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarProgress(frequency));
                     fundamentalFrequencyInput.setText(String.valueOf(frequency));
                 }
             }
@@ -220,9 +225,9 @@ public class ToneManager {
             @Override
             public boolean onLongClick(View v) {
                 Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), fundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
-                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-                seekBarUpdaterThread.start();
+                //SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), fundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
+                //Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                //seekBarUpdaterThread.start();
                 return true;
             }
         });
@@ -244,7 +249,7 @@ public class ToneManager {
             public void onClick(View v) {
                 int frequency = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
                 if (++frequency <= Config.FREQUENCY_MAX.value) {
-                    fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarPosition(frequency));
+                    fundamentalFrequencyBar.setProgress(UnitsConverter.convertFrequencyToSeekBarProgress(frequency));
                     fundamentalFrequencyInput.setText(String.valueOf(frequency));
                 }
             }
@@ -254,9 +259,9 @@ public class ToneManager {
             @Override
             public boolean onLongClick(View v) {
                 Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), fundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
-                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-                seekBarUpdaterThread.start();
+                //SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), fundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
+                //Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                //seekBarUpdaterThread.start();
                 return true;
             }
         });
@@ -306,16 +311,16 @@ public class ToneManager {
         overtonesPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Preset targetOvertonesPreset = Options.convertStringToPreset(overtonesPreset.getSelectedItem().toString());
+                Preset targetOvertonesPreset = UnitsConverter.convertStringToPreset(overtonesPreset.getSelectedItem().toString());
                 Preset currentOvertonesPreset = getPresetForTone();
                 if (targetOvertonesPreset == currentOvertonesPreset)
                     return;
                 switch (index) {
                     case 1:
-                        Options.tone1Preset = targetOvertonesPreset;
+                        Options.overtonePreset = targetOvertonesPreset;
                         break;
                     case 2:
-                        Options.tone2Preset = targetOvertonesPreset;
+                        Options.overtonePreset = targetOvertonesPreset;
                         break;
                 }
                 initializeOvertoneManagers();
@@ -331,15 +336,15 @@ public class ToneManager {
     private Preset getPresetForTone() {
         switch (index) {
             case 1:
-                return Options.tone1Preset;
+                return Options.overtonePreset;
             case 2:
-                return Options.tone2Preset;
+                return Options.overtonePreset;
         }
         return Preset.FLAT;
     }
 
     private void validateFundamentalFrequencyInput() {
-        int displayFrequency = UnitsConverter.convertSeekBarPositionToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
+        int displayFrequency = UnitsConverter.convertSeekBarProgressToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         try {
             displayFrequency = Integer.parseInt(fundamentalFrequencyInput.getText().toString());
             if (displayFrequency < Config.FREQUENCY_MIN.value)

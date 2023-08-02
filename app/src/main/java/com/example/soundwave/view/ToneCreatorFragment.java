@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,7 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
-import com.example.soundwave.SeekBarUpdater;
+import com.example.soundwave.databinding.OvertoneCreatorBinding;
+import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;
@@ -29,14 +29,18 @@ import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
 public class ToneCreatorFragment extends Fragment {
 
-    private FragmentToneCreatorBinding binding;
     private ToneCreatorViewModel viewModel;
+    private FragmentToneCreatorBinding binding;
+    private OvertoneCreatorBinding[] overtoneBindings;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentToneCreatorBinding.inflate(inflater, container, false);
+        initializeOvertoneBindings();
         viewModel = new ViewModelProvider(this).get(ToneCreatorViewModel.class);
         initializeDefaultLayout();
+        initializeObservers();
+        initializeUIListeners();
         return binding.getRoot();
     }
 
@@ -44,78 +48,67 @@ public class ToneCreatorFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        overtoneBindings = null;
+    }
+
+    private void initializeOvertoneBindings() {
+        overtoneBindings = new OvertoneCreatorBinding[Config.OVERTONES_NUMBER.value];
+        overtoneBindings[0] = binding.toneCreatorOvertone0;
+        overtoneBindings[1] = binding.toneCreatorOvertone1;
+        overtoneBindings[2] = binding.toneCreatorOvertone2;
+        overtoneBindings[3] = binding.toneCreatorOvertone3;
+        overtoneBindings[4] = binding.toneCreatorOvertone4;
+        overtoneBindings[5] = binding.toneCreatorOvertone5;
+        overtoneBindings[6] = binding.toneCreatorOvertone6;
+        overtoneBindings[7] = binding.toneCreatorOvertone7;
+        overtoneBindings[8] = binding.toneCreatorOvertone8;
+        overtoneBindings[9] = binding.toneCreatorOvertone9;
+        overtoneBindings[10] = binding.toneCreatorOvertone10;
+        overtoneBindings[11] = binding.toneCreatorOvertone11;
+        overtoneBindings[12] = binding.toneCreatorOvertone12;
+        overtoneBindings[13] = binding.toneCreatorOvertone13;
+        overtoneBindings[14] = binding.toneCreatorOvertone14;
     }
 
     private void initializeObservers() {
-        viewModel.getEnvelopeAttack().observe(this, new Observer<Integer>() {
+        viewModel.getFundamentalFrequency().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer s) {
-                binding.toneCreatorEnvelopeAttack.setText(String.valueOf(viewModel.getEnvelopeAttack().getValue()));
+                binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(s));
             }
         });
 
-        viewModel.getEnvelopeDecay().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorEnvelopeDecay.setText(String.valueOf(viewModel.getEnvelopeDecay().getValue()));
-            }
-        });
-
-        viewModel.getEnvelopeSustainLevel().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(viewModel.getEnvelopeSustainLevel().getValue()));
-            }
-        });
-
-        viewModel.getEnvelopeSustainDuration().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(viewModel.getEnvelopeSustainDuration().getValue()));
-            }
-        });
-
-        viewModel.getEnvelopeRelease().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorEnvelopeRelease.setText(String.valueOf(viewModel.getEnvelopeRelease().getValue()));
-            }
-        });
-
-        viewModel.getFundamentalFrequency().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(viewModel.getFundamentalFrequency().getValue()));
-            }
-        });
-
-        viewModel.getFundamentalFrequencyBar().observe(this, new Observer<Integer>() {
+        viewModel.getFundamentalFrequencyBar().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer s) {
                 binding.toneCreatorFundamentalFrequencyBar.setProgress(viewModel.getFundamentalFrequencyBar().getValue());
+                binding.toneCreatorScaleInput.setText(String.valueOf(viewModel.getScale()));
             }
         });
 
-        viewModel.getScale().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                binding.toneCreatorScaleInput.setText(String.valueOf(viewModel.getScale().getValue()));
-            }
-        });
-
-        viewModel.getMasterVolume().observe(this, new Observer<Integer>() {
+        viewModel.getMasterVolume().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer s) {
-                binding.toneCreatorMasterVolumeInput.setText(String.valueOf(viewModel.getMasterVolume().getValue()));
+                binding.toneCreatorMasterVolumeInput.setText(String.valueOf(s));
+                binding.toneCreatorMasterVolumeBar.setProgress(s);
             }
         });
 
-        viewModel.getMasterVolumeBar().observe(this, new Observer<Integer>() {
+        viewModel.getOvertones().observe(getViewLifecycleOwner(), new Observer<Overtone[]>() {
             @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorMasterVolumeBar.setProgress(viewModel.getMasterVolumeBar().getValue());
+            public void onChanged(Overtone[] overtones) {
+                for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
+                    updateOvertoneView(i, overtones[i]);
+                }
             }
         });
+    }
+
+    private void updateOvertoneView(int overtoneIndex, Overtone overtone) {
+        overtoneBindings[overtoneIndex].overtoneCreatorActivator.setChecked(overtone.isActive());
+        overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(String.valueOf(overtone.getFrequency()));
+        overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(String.valueOf(overtone.getAmplitude()));
+        overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.setProgress(overtone.getAmplitude());
     }
 
     private void initializeDefaultLayout() {
@@ -129,23 +122,31 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);
 
         //  Envelope
-        binding.toneCreatorEnvelopeAttack.setText("100");
-        binding.toneCreatorEnvelopeDecay.setText("250");
-        binding.toneCreatorEnvelopeSustainLevel.setText("40");
-        binding.toneCreatorEnvelopeSustainDuration.setText("1000");
-        binding.toneCreatorEnvelopeRelease.setText("200");
-
+        binding.toneCreatorEnvelopeAttack.setText(String.valueOf(Config.ENVELOPE_ATTACK_DEFAULT.value));
+        binding.toneCreatorEnvelopeDecay.setText(String.valueOf(Config.ENVELOPE_DECAY_DEFAULT.value));
+        binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value));
+        binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value));
+        binding.toneCreatorEnvelopeRelease.setText(String.valueOf(Config.ENVELOPE_RELEASE_DEFAULT.value));
+/*
         //  Fundamental frequency
         int displayFrequency = UnitsConverter.convertSeekBarProgressToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
         binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(displayFrequency));
         binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
         binding.toneCreatorFundamentalFrequencyBar.setProgress(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-        binding.toneCreatorScaleInput.setText("C#4");
+        binding.toneCreatorScaleInput.setText("B#4");
         // TODO: scale input
 
         //  Volume
         binding.toneCreatorMasterVolumeBar.setProgress(100);
-        binding.toneCreatorMasterVolumeInput.setText(String.valueOf(binding.toneCreatorMasterVolumeBar.getProgress()));
+        binding.toneCreatorMasterVolumeInput.setText(String.valueOf(100));
+*/
+        binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
+
+        // Overtone indexes
+        for (int i = 0; i < overtoneBindings.length; i++) {
+            int overtoneIndex = i + 1;
+            overtoneBindings[i].overtoneCreatorIndex.setText(String.valueOf(overtoneIndex));
+        }
 
         // Layout visibility
         binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
@@ -355,6 +356,7 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorOvertonesActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertonesState(isChecked);
                 if (isChecked) {
                     binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
                     binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
@@ -368,13 +370,10 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorOvertonesPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Preset targetOvertonesPreset = Options.convertStringToPreset(overtonesPreset.getSelectedItem().toString());
-                Preset currentOvertonesPreset = getPresetForTone();
-                if (targetOvertonesPreset == currentOvertonesPreset)
+                Preset targetOvertonesPreset = UnitsConverter.convertStringToPreset(binding.toneCreatorOvertonesPreset.getSelectedItem().toString());
+                if (targetOvertonesPreset == Options.overtonePreset)
                     return;
-                Options.tone1Preset = targetOvertonesPreset;
-
-                initializeOvertoneManagers();
+                viewModel.updateOvertonesPreset(targetOvertonesPreset);
             }
 
             @Override
@@ -383,62 +382,390 @@ public class ToneCreatorFragment extends Fragment {
             }
         });
 
-        loadBtn.setOnClickListener(new View.OnClickListener() {
+        overtoneBindings[0].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(0, isChecked);
+            }
+        });
+
+        overtoneBindings[1].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(1, isChecked);
+            }
+        });
+
+        overtoneBindings[2].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(2, isChecked);
+            }
+        });
+
+        overtoneBindings[3].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(3, isChecked);
+            }
+        });
+
+        overtoneBindings[4].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(4, isChecked);
+            }
+        });
+
+        overtoneBindings[5].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(5, isChecked);
+            }
+        });
+
+        overtoneBindings[6].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(6, isChecked);
+            }
+        });
+
+        overtoneBindings[7].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(7, isChecked);
+            }
+        });
+
+        overtoneBindings[8].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(8, isChecked);
+            }
+        });
+
+        overtoneBindings[9].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(9, isChecked);
+            }
+        });
+
+        overtoneBindings[10].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(10, isChecked);
+            }
+        });
+
+        overtoneBindings[11].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(11, isChecked);
+            }
+        });
+
+        overtoneBindings[12].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(12, isChecked);
+            }
+        });
+
+        overtoneBindings[13].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(13, isChecked);
+            }
+        });
+
+        overtoneBindings[14].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                viewModel.updateOvertoneState(14, isChecked);
+            }
+        });
+
+        overtoneBindings[0].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(0, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[1].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(1, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        overtoneBindings[2].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(2, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[3].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(3, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[4].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(4, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[5].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(5, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[6].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(6, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[7].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(7, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[8].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(8, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[9].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(9, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[10].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(10, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[11].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(11, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[12].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(12, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[13].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(13, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        overtoneBindings[14].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                viewModel.updateOvertoneAmplitude(14, progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        binding.toneCreatorGenerateToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateToneDetails();
-                loadSound();
+                viewModel.generateTone();
             }
         });
 
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        binding.toneCreatorPlayToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveSound();
+                viewModel.playTone();
             }
         });
 
-        playPauseBtn.setOnClickListener(new View.OnClickListener() {
+        binding.toneCreatorSaveToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                managePlayPauseActivity();
+                viewModel.saveTone();
             }
         });
 
-        replayBtn.setOnClickListener(new View.OnClickListener() {
+        binding.toneCreatorResetToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetPlayback();
-            }
-        });
-
-        loopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                manageLoopButton();
-            }
-        });
-
-        playbackBar.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
-
-        playbackModesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String spinnerPlaybackMode = playbackModesSpinner.getSelectedItem().toString();
-                Options.PlaybackMode selectedPlaybackMode = Options.PlaybackMode.STATIC;
-                if (spinnerPlaybackMode.equals("Stream"))
-                    selectedPlaybackMode = Options.PlaybackMode.STREAM;
-                setPlaybackMode(selectedPlaybackMode);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+                viewModel.resetTone();
             }
         });
     }

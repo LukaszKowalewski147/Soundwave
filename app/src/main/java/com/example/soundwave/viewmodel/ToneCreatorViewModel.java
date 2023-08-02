@@ -2,33 +2,41 @@ package com.example.soundwave.viewmodel;
 
 import android.app.Application;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.soundwave.OvertoneManager;
+import com.example.soundwave.SineWave;
+import com.example.soundwave.model.entity.Overtone;
+import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.Config;
-import com.example.soundwave.utils.SuffixManager;
+import com.example.soundwave.utils.Options;
+import com.example.soundwave.utils.Preset;
 import com.example.soundwave.utils.UnitsConverter;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
 
     private SoundwaveRepo repository;
 
-    private MutableLiveData<Integer> envelopeAttack = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeDecay = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeSustainLevel = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeSustainDuration = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeRelease = new MutableLiveData<>();
+    private MutableLiveData<Tone> tone = new MutableLiveData<>();
+    private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
     private MutableLiveData<Integer> fundamentalFrequency = new MutableLiveData<>();
     private MutableLiveData<Integer> fundamentalFrequencyBar = new MutableLiveData<>();
-    private MutableLiveData<String> scale = new MutableLiveData<>();
     private MutableLiveData<Integer> masterVolume = new MutableLiveData<>();
-    private MutableLiveData<Integer> masterVolumeBar = new MutableLiveData<>();
+    private String scale;
+
+    private int envelopeAttack;
+    private int envelopeDecay;
+    private int envelopeSustainLevel;
+    private int envelopeSustainDuration;
+    private int envelopeRelease;
+    private int frequency;
+    private int masterVolumeBar;
+    private boolean overtonesActivator;
 
     public ToneCreatorViewModel(@NonNull Application application) {
         super(application);
@@ -36,23 +44,23 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         initializeDefaultValues();
     }
 
-    public LiveData<Integer> getEnvelopeAttack() {
+    public int getEnvelopeAttack() {
         return envelopeAttack;
     }
 
-    public LiveData<Integer> getEnvelopeDecay() {
+    public int getEnvelopeDecay() {
         return envelopeDecay;
     }
 
-    public LiveData<Integer> getEnvelopeSustainLevel() {
+    public int getEnvelopeSustainLevel() {
         return envelopeSustainLevel;
     }
 
-    public LiveData<Integer> getEnvelopeSustainDuration() {
+    public int getEnvelopeSustainDuration() {
         return envelopeSustainDuration;
     }
 
-    public LiveData<Integer> getEnvelopeRelease() {
+    public int getEnvelopeRelease() {
         return envelopeRelease;
     }
 
@@ -60,20 +68,68 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return fundamentalFrequency;
     }
 
-    public LiveData<Integer> getFundamentalFrequencyBar() {
-        return fundamentalFrequencyBar;
-    }
-
-    public LiveData<String> getScale() {
-        return scale;
-    }
-
     public LiveData<Integer> getMasterVolume() {
         return masterVolume;
     }
 
-    public LiveData<Integer> getMasterVolumeBar() {
+    public String getScale() {
+        return scale;
+    }
+
+    public LiveData<Integer> getFundamentalFrequencyBar() {
+        return fundamentalFrequencyBar;
+    }
+
+    public int getMasterVolumeBar() {
         return masterVolumeBar;
+    }
+
+    public LiveData<Overtone[]> getOvertones() {
+        return overtones;
+    }
+
+    public SineWave[] getSineWaves() {
+        int activeOvertonesNumber = getActiveOvertonesNumber();
+        SineWave[] sineWaves = new SineWave[activeOvertonesNumber + 1];
+        sineWaves[0] = new SineWave(fundamentalFrequency.getValue(), getAmplitude());
+        if (activeOvertonesNumber > 0) {
+            SineWave[] overtones = getOvertonesSineWaves(activeOvertonesNumber);
+            System.arraycopy(overtones, 0, sineWaves, 1, overtones.length);
+        }
+        return sineWaves;
+    }
+
+    private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
+        /*
+        SineWave[] overtones = new SineWave[activeOvertonesNumber];
+        int overtoneIndex = 0;
+
+        if (overtone1.getValue().isActive()) {
+            overtones[overtoneIndex] = overtone1.getValue().getSineWave();
+            ++overtoneIndex;
+        }
+
+        for (OvertoneManager overtoneManager : overtoneManagers) {
+            if (overtoneManager.isActive()) {
+                overtones[overtoneIndex] = overtoneManager.getSineWave();
+                ++overtoneIndex;
+            }
+        }
+        return overtones;*/
+        return null;
+    }
+
+    private int getActiveOvertonesNumber() {
+        int activeOvertonesNumber = 0;
+
+        if (!overtonesActivator)
+            return activeOvertonesNumber;
+
+        return activeOvertonesNumber;
+    }
+
+    private double getAmplitude() {
+        return (double) masterVolume.getValue() / 100.0d;
     }
 
     public void updateEnvelopeAttack(String input) {
@@ -82,18 +138,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userAttackDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeAttack.setValue(Config.ENVELOPE_ATTACK_DEFAULT.value);
+            envelopeAttack = Config.ENVELOPE_ATTACK_DEFAULT.value;
             return;
         }
         if (userAttackDuration >= 0 && userAttackDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeAttack.setValue(userAttackDuration);
+            envelopeAttack = userAttackDuration;
             return;
         }
         if (userAttackDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeAttack.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            envelopeAttack = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
             return;
         }
-        envelopeAttack.setValue(0);
+        envelopeAttack = 0;
     }
 
     public void updateEnvelopeDecay(String input) {
@@ -102,18 +158,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userDecayDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeDecay.setValue(Config.ENVELOPE_DECAY_DEFAULT.value);
+            envelopeDecay = Config.ENVELOPE_DECAY_DEFAULT.value;
             return;
         }
         if (userDecayDuration >= 0 && userDecayDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeDecay.setValue(userDecayDuration);
+            envelopeDecay = userDecayDuration;
             return;
         }
         if (userDecayDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeDecay.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            envelopeDecay = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
             return;
         }
-        envelopeDecay.setValue(0);
+        envelopeDecay = 0;
     }
 
     public void updateEnvelopeSustainLevel(String input) {
@@ -122,18 +178,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userSustainLevel = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeSustainLevel.setValue(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value);
+            envelopeSustainLevel = Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value;
             return;
         }
         if (userSustainLevel >= 0 && userSustainLevel <= 100) {
-            envelopeSustainLevel.setValue(userSustainLevel);
+            envelopeSustainLevel = userSustainLevel;
             return;
         }
         if (userSustainLevel > 100) {
-            envelopeSustainLevel.setValue(100);
+            envelopeSustainLevel = 100;
             return;
         }
-        envelopeSustainLevel.setValue(0);
+        envelopeSustainLevel = 0;
     }
 
     public void updateEnvelopeSustainDuration(String input) {
@@ -142,18 +198,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userSustainDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeSustainDuration.setValue(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value);
+            envelopeSustainDuration = Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value;
             return;
         }
         if (userSustainDuration >= 0 && userSustainDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeSustainDuration.setValue(userSustainDuration);
+            envelopeSustainDuration = userSustainDuration;
             return;
         }
         if (userSustainDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeSustainDuration.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            envelopeSustainDuration = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
             return;
         }
-        envelopeSustainDuration.setValue(0);
+        envelopeSustainDuration = 0;
     }
 
     public void updateEnvelopeRelease(String input) {
@@ -162,18 +218,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userReleaseDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeRelease.setValue(Config.ENVELOPE_RELEASE_DEFAULT.value);
+            envelopeRelease = Config.ENVELOPE_RELEASE_DEFAULT.value;
             return;
         }
         if (userReleaseDuration >= 0 && userReleaseDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeRelease.setValue(userReleaseDuration);
+            envelopeRelease = userReleaseDuration;
             return;
         }
         if (userReleaseDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeRelease.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            envelopeRelease = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
             return;
         }
-        envelopeRelease.setValue(0);
+        envelopeRelease = 0;
     }
 
     public void updateFundamentalFrequency(String input) {
@@ -185,6 +241,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
             return;
         }
+        if (userFrequency == frequency)                                     // TODO: endless update loop breaker
+            return;
         if (userFrequency < Config.FREQUENCY_MIN.value) {
             setFundamentalFrequencyBar(Config.FREQUENCY_MIN.value);
             setScale(Config.FREQUENCY_MIN.value);
@@ -195,8 +253,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void updateFundamentalFrequencySeekBarPosition(int progress) {
-        fundamentalFrequency.setValue(UnitsConverter.convertSeekBarProgressToFrequency(progress));
-        setScale(fundamentalFrequency.getValue());
+        setFrequencyComplex(UnitsConverter.convertSeekBarProgressToFrequency(progress));
     }
 
     public void decrementOnceFundamentalFrequency() {
@@ -248,44 +305,102 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             setFrequencyComplex(Config.FREQUENCY_MIN.value);
     }
 
-    private void initializeOvertoneManagers() {
-        overtoneManagers = new OvertoneManager[Config.OVERTONES_NUMBER.value];
-        for (int i = 0; i < overtoneManagers.length; ++i) {
-            int overtoneIndex = i + 1;
-            int overtoneFrequency = fundamentalFrequencyInHz * (overtoneIndex + 1);
-            String ID = "overtone_" + overtoneIndex;
-            int resID = context.getResources().getIdentifier(ID, "id", context.getPackageName());
-            View overtoneView = toneView.findViewById(resID);
-            overtoneManagers[i] = new OvertoneManager(overtoneView, overtoneIndex, overtoneFrequency, getPresetForTone(), index);
+    public void updateOvertonesState(boolean isActive) {
+        overtonesActivator = isActive;
+    }
+
+    public void updateOvertonesPreset(Preset preset) {
+        Options.overtonePreset = preset;
+        Overtone[] newPresetOvertones = overtones.getValue();
+        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
+            newPresetOvertones[i] = new Overtone(i, newPresetOvertones[i].getFrequency(), Options.overtonePreset.amplitudes[i], newPresetOvertones[i].isActive());
+        overtones.setValue(newPresetOvertones);
+    }
+
+    public void updateOvertoneAmplitude(int index, int amplitude) {
+        Overtone[] updatedOvertones = overtones.getValue();
+        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
+            if (i == index)
+                updatedOvertones[i] = new Overtone(i, updatedOvertones[i].getFrequency(), amplitude, updatedOvertones[i].isActive());
         }
+        overtones.setValue(updatedOvertones);
+    }
+
+    public void updateOvertoneState(int index, boolean isActive) {
+        Overtone[] updatedOvertones = overtones.getValue();
+        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
+            if (i == index)
+                updatedOvertones[i] = new Overtone(i, updatedOvertones[i].getFrequency(), updatedOvertones[i].getAmplitude(), isActive);
+        }
+        overtones.setValue(updatedOvertones);
+    }
+
+    public void generateTone() {
+
+    }
+
+    public void playTone() {
+
+    }
+
+    public void saveTone() {
+
+    }
+
+    public void resetTone() {
+
     }
 
     private void initializeDefaultValues() {
-        envelopeAttack.setValue(SuffixManager.addMillisecondSuffix(Config.ENVELOPE_ATTACK_DEFAULT.value));
-        envelopeDecay.setValue(SuffixManager.addMillisecondSuffix(Config.ENVELOPE_DECAY_DEFAULT.value));
-        envelopeSustainLevel.setValue(SuffixManager.addPercentSuffix(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value));
-        envelopeSustainDuration.setValue(SuffixManager.addMillisecondSuffix(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value));
-        envelopeRelease.setValue(SuffixManager.addMillisecondSuffix(Config.ENVELOPE_RELEASE_DEFAULT.value));
-        //fundamentalFrequency.setValue();
-        fundamentalFrequencySeekBarPosition.setValue(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-        //scale.setValue();
-        //masterVolume.setValue();
-        masterVolumeSeekBarPosition.setValue(100);
+        setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
+        setMasterVolume(100);
+        setDefaultOvertones();
+        setTone();
+    }
+
+    private void setTone() {
+        tone.setValue(new Tone(fundamentalFrequency.getValue(), masterVolume.getValue()));
+    }
+
+    private void setDefaultOvertones() {
+        Options.overtonePreset = Preset.FLAT;
+        Overtone[] defaultOvertones = new Overtone[Config.OVERTONES_NUMBER.value];
+        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
+            int overtoneFrequency = fundamentalFrequency.getValue() * (i + 2);
+            defaultOvertones[i] = new Overtone(i, overtoneFrequency, Options.overtonePreset.amplitudes[i], true);
+        }
+        overtones.setValue(defaultOvertones);
+    }
+
+    private void updateOvertonesFrequency() {
+        Overtone[] updatedOvertones = overtones.getValue();
+        if (updatedOvertones == null)
+            return;
+        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
+            int overtoneFrequency = fundamentalFrequency.getValue() * (i + 2);
+            updatedOvertones[i] = new Overtone(i, overtoneFrequency, updatedOvertones[i].getAmplitude(), updatedOvertones[i].isActive());
+        }
+        overtones.setValue(updatedOvertones);
+    }
+
+    private void setMasterVolume(int volume) {
+        masterVolume.setValue(volume);
+        masterVolumeBar = volume;
     }
 
     private void setFrequencyComplex(int frequency) {
-        fundamentalFrequency.setValue(frequency);
         setFundamentalFrequencyBar(frequency);
         setScale(frequency);
+        fundamentalFrequency.setValue(frequency);
+        updateOvertonesFrequency();
     }
 
     private void setFundamentalFrequencyBar(int frequency) {
-        int frequencyBarPosition = UnitsConverter.convertFrequencyToSeekBarProgress(frequency);
-        fundamentalFrequencyBar.setValue(frequencyBarPosition);
+        fundamentalFrequencyBar.setValue(UnitsConverter.convertFrequencyToSeekBarProgress(frequency));
     }
 
     private void setScale(int frequency) {
-        scale.setValue("B#4");
+        scale = "B#4";
         //TODO: calculate and set proper scale based on frequency parameter
     }
 }

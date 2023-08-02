@@ -44,4 +44,14 @@ public class UnitsConverter {
 
         return seekBarProgress - frequencyOffset;
     }
+
+    public static Preset convertStringToPreset(String presetString) {
+        switch (presetString) {
+            case "Custom":
+                return Preset.FLAT;
+            case "Acoustic guitar":
+                return Preset.ACOUSTIC_GUITAR;
+        }
+        return Preset.FLAT;
+    }
 }

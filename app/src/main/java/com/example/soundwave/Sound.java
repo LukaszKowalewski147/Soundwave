@@ -1,5 +1,7 @@
 package com.example.soundwave;
 
+import com.example.soundwave.utils.SampleRate;
+
 public class Sound {
     private final byte[] sinWaveData;
     private final int numberOfTones;

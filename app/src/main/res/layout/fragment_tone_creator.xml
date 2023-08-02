@@ -539,6 +539,10 @@
                     tools:visibility="gone">
 
                     <include
+                        android:id="@+id/tone_creator_overtone_0"
+                        layout="@layout/overtone_creator" />
+
+                    <include
                         android:id="@+id/tone_creator_overtone_1"
                         layout="@layout/overtone_creator" />
 
@@ -592,10 +596,6 @@
 
                     <include
                         android:id="@+id/tone_creator_overtone_14"
-                        layout="@layout/overtone_creator" />
-
-                    <include
-                        android:id="@+id/tone_creator_overtone_15"
                         layout="@layout/overtone_creator" />
 
                 </LinearLayout>

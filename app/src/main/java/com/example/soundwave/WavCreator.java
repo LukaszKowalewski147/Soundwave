@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.example.soundwave.utils.SampleRate;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
