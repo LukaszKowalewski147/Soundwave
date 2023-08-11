@@ -15,7 +15,8 @@ import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.Options;
-import com.example.soundwave.utils.Preset;
+import com.example.soundwave.utils.PresetEnvelope;
+import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.UnitsConverter;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
