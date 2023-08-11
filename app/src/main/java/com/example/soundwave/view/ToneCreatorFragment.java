@@ -22,7 +22,7 @@ import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;
-import com.example.soundwave.utils.Preset;
+import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
@@ -159,6 +159,17 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void initializeUIListeners() {
+        binding.toneCreatorEnvelopePresetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                viewModel.updateEnvelopePreset(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         binding.toneCreatorEnvelopeAttack.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -375,10 +386,7 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorOvertonesPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Preset targetOvertonesPreset = UnitsConverter.convertStringToPreset(binding.toneCreatorOvertonesPreset.getSelectedItem().toString());
-                if (targetOvertonesPreset == Options.overtonePreset)
-                    return;
-                viewModel.updateOvertonesPreset(targetOvertonesPreset);
+                viewModel.updateOvertonesPreset(position);
             }
 
             @Override

@@ -45,13 +45,43 @@ public class UnitsConverter {
         return seekBarProgress - frequencyOffset;
     }
 
-    public static Preset convertStringToPreset(String presetString) {
-        switch (presetString) {
-            case "Custom":
-                return Preset.FLAT;
-            case "Acoustic guitar":
-                return Preset.ACOUSTIC_GUITAR;
+    public static PresetOvertones convertPositionToPresetOvertones(int position) {
+        switch (position) {
+            case 0:
+                return PresetOvertones.FLAT;
+            case 1:
+                return PresetOvertones.PIANO;
+            case 2:
+                return PresetOvertones.ACOUSTIC_GUITAR;
+            case 3:
+                return PresetOvertones.BASS_GUITAR;
+            case 4:
+                return PresetOvertones.ELECTRIC_GUITAR;
+            case 5:
+                return PresetOvertones.FLUTE;
+            case 6:
+                return PresetOvertones.TRUMPET;
+            case 7:
+                return PresetOvertones.CUSTOM;
         }
-        return Preset.FLAT;
+        return PresetOvertones.FLAT;
+    }
+
+    public static PresetEnvelope convertPositionToPresetEnvelope(int position) {
+        switch (position) {
+            case 0:
+                return PresetEnvelope.FLAT;
+            case 1:
+                return PresetEnvelope.PIANO;
+            case 2:
+                return PresetEnvelope.GUITAR;
+            case 3:
+                return PresetEnvelope.FLUTE;
+            case 4:
+                return PresetEnvelope.TRUMPET;
+            case 5:
+                return PresetEnvelope.CUSTOM;
+        }
+        return PresetEnvelope.FLAT;
     }
 }

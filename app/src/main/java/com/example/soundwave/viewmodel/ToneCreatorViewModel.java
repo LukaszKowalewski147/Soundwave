@@ -8,7 +8,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.soundwave.OvertoneManager;
 import com.example.soundwave.SineWave;
 import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.model.entity.Tone;
@@ -43,26 +42,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         super(application);
         repository = new SoundwaveRepo(application);
         initializeDefaultValues();
-    }
-
-    public int getEnvelopeAttack() {
-        return envelopeAttack;
-    }
-
-    public int getEnvelopeDecay() {
-        return envelopeDecay;
-    }
-
-    public int getEnvelopeSustainLevel() {
-        return envelopeSustainLevel;
-    }
-
-    public int getEnvelopeSustainDuration() {
-        return envelopeSustainDuration;
-    }
-
-    public int getEnvelopeRelease() {
-        return envelopeRelease;
     }
 
     public LiveData<Integer> getFundamentalFrequency() {
@@ -131,6 +110,13 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private double getAmplitude() {
         return (double) masterVolume.getValue() / 100.0d;
+    }
+
+    public void updateEnvelopePreset(int position) {
+        PresetEnvelope targetEnvelopePreset = UnitsConverter.convertPositionToPresetEnvelope(position);
+        if (targetEnvelopePreset == Options.envelopePreset)
+            return;
+        setEnvelopeComplex(targetEnvelopePreset);
     }
 
     public void updateEnvelopeAttack(String input) {
@@ -242,7 +228,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
             return;
         }
-        if (userFrequency == frequency)                                     // TODO: endless update loop breaker
+        if (userFrequency == frequency)
             return;
         if (userFrequency < Config.FREQUENCY_MIN.value) {
             setFundamentalFrequencyBar(Config.FREQUENCY_MIN.value);
@@ -310,11 +296,16 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         overtonesActivator = isActive;
     }
 
-    public void updateOvertonesPreset(Preset preset) {
-        Options.overtonePreset = preset;
+    public void updateOvertonesPreset(int position) {
+        PresetOvertones targetOvertonesPreset = UnitsConverter.convertPositionToPresetOvertones(position);
+        if (targetOvertonesPreset == Options.overtonePreset)
+            return;
+
+        Options.overtonePreset = targetOvertonesPreset;
+
         Overtone[] newPresetOvertones = overtones.getValue();
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
-            newPresetOvertones[i] = new Overtone(i, newPresetOvertones[i].getFrequency(), Options.overtonePreset.amplitudes[i], newPresetOvertones[i].isActive());
+            newPresetOvertones[i] = new Overtone(i, newPresetOvertones[i].getFrequency(), targetOvertonesPreset.amplitudes[i], newPresetOvertones[i].isActive());
         overtones.setValue(newPresetOvertones);
     }
 
@@ -353,6 +344,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void initializeDefaultValues() {
+        setEnvelopeComplex(PresetEnvelope.FLAT);
         setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
         setMasterVolume(100);
         setDefaultOvertones();
@@ -364,7 +356,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void setDefaultOvertones() {
-        Options.overtonePreset = Preset.FLAT;
+        Options.overtonePreset = PresetOvertones.FLAT;
         Overtone[] defaultOvertones = new Overtone[Config.OVERTONES_NUMBER.value];
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
             int overtoneFrequency = fundamentalFrequency.getValue() * (i + 2);
@@ -387,6 +379,19 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private void setMasterVolume(int volume) {
         masterVolume.setValue(volume);
         masterVolumeBar = volume;
+    }
+
+    private void setEnvelopeComplex(PresetEnvelope preset) {
+        Options.envelopePreset = preset;
+
+        if (preset == PresetEnvelope.CUSTOM)
+            return;
+
+        envelopeAttack = preset.values[0];
+        envelopeDecay = preset.values[1];
+        envelopeSustainLevel = preset.values[2];
+        envelopeSustainDuration = preset.values[3];
+        envelopeRelease = preset.values[4];
     }
 
     private void setFrequencyComplex(int frequency) {
