@@ -117,6 +117,10 @@ public class ToneCreatorFragment extends Fragment {
         sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.toneCreatorSampleRatesSpinner.setAdapter(sampleRatesAdapter);
 
+        ArrayAdapter<CharSequence> envelopePresetAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.envelope_presets_array, android.R.layout.simple_spinner_item);
+        envelopePresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.toneCreatorEnvelopePresetSpinner.setAdapter(envelopePresetAdapter);
+
         ArrayAdapter<CharSequence> overtonesPresetAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.overtones_presets_array, android.R.layout.simple_spinner_item);
         overtonesPresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);

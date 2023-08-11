@@ -62,6 +62,14 @@
         <item>192kHz</item>
     </string-array>
 
+    <string-array name="envelope_presets_array">
+        <item>Piano</item>
+        <item>Guitar</item>
+        <item>Flute</item>
+        <item>Trumpet</item>
+        <item>Custom</item>
+    </string-array>
+
     <string-array name="overtones_presets_array">
         <item>Flat</item>
         <item>Piano</item>
