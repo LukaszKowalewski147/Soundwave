@@ -74,7 +74,8 @@ public class ToneCreatorFragment extends Fragment {
         viewModel.getFundamentalFrequency().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer s) {
-                binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(s));
+                if (!binding.toneCreatorFundamentalFrequencyInput.getText().toString().equals(String.valueOf(s)))
+                    binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(s));
             }
         });
 

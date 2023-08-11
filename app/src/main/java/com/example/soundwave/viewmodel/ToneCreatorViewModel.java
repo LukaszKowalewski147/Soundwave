@@ -389,6 +389,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void setFrequencyComplex(int frequency) {
+        this.frequency = frequency;
         setFundamentalFrequencyBar(frequency);
         setScale(frequency);
         fundamentalFrequency.setValue(frequency);
