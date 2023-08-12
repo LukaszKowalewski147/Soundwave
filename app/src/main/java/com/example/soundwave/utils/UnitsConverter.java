@@ -102,4 +102,26 @@ public class UnitsConverter {
         }
         return 0;
     }
+
+    public static int convertPresetOvertonesToPosition(PresetOvertones preset) {
+        switch (preset) {
+            case FLAT:
+                return 0;
+            case PIANO:
+                return 1;
+            case ACOUSTIC_GUITAR:
+                return 2;
+            case BASS_GUITAR:
+                return 3;
+            case ELECTRIC_GUITAR:
+                return 4;
+            case FLUTE:
+                return 5;
+            case TRUMPET:
+                return 6;
+            case CUSTOM:
+                return 7;
+        }
+        return 0;
+    }
 }

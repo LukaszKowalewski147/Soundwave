@@ -141,6 +141,7 @@ public class ToneCreatorFragment extends Fragment {
                 for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
                     updateOvertoneView(i, overtones[i]);
                 }
+                binding.toneCreatorOvertonesPreset.setSelection(viewModel.getOvertonesPresetPosition());
             }
         });
     }
@@ -554,7 +555,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[0].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(0, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(0, progress);
             }
 
             @Override
@@ -571,7 +573,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[1].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(1, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(1, progress);
             }
 
             @Override
@@ -587,7 +590,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[2].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(2, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(2, progress);
             }
 
             @Override
@@ -604,7 +608,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[3].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(3, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(3, progress);
             }
 
             @Override
@@ -621,7 +626,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[4].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(4, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(4, progress);
             }
 
             @Override
@@ -638,7 +644,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[5].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(5, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(5, progress);
             }
 
             @Override
@@ -655,7 +662,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[6].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(6, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(6, progress);
             }
 
             @Override
@@ -672,7 +680,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[7].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(7, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(7, progress);
             }
 
             @Override
@@ -689,7 +698,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[8].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(8, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(8, progress);
             }
 
             @Override
@@ -706,7 +716,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[9].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(9, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(9, progress);
             }
 
             @Override
@@ -723,7 +734,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[10].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(10, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(10, progress);
             }
 
             @Override
@@ -740,7 +752,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[11].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(11, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(11, progress);
             }
 
             @Override
@@ -757,7 +770,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[12].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(12, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(12, progress);
             }
 
             @Override
@@ -774,7 +788,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[13].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(13, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(13, progress);
             }
 
             @Override
@@ -791,7 +806,8 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[14].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateOvertoneAmplitude(14, progress);
+                if (fromUser)
+                    viewModel.updateOvertoneAmplitude(14, progress);
             }
 
             @Override

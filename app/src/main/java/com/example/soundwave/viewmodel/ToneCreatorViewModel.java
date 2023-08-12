@@ -93,6 +93,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return masterVolumeBar;
     }
 
+    public int getOvertonesPresetPosition() {
+        return UnitsConverter.convertPresetOvertonesToPosition(Options.overtonePreset);
+    }
+
     public SineWave[] getSineWaves() {
         int activeOvertonesNumber = getActiveOvertonesNumber();
         SineWave[] sineWaves = new SineWave[activeOvertonesNumber + 1];
@@ -105,7 +109,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void updateEnvelopePreset(int position) {
-        // TODO: change preset to CUSTOM in spinner after manually changing any envelope parameter, it happens only in viewmodel now
         PresetEnvelope targetEnvelopePreset = UnitsConverter.convertPositionToPresetEnvelope(position);
         if (targetEnvelopePreset == Options.envelopePreset)
             return;
@@ -343,6 +346,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void updateOvertoneAmplitude(int index, int amplitude) {
+        Options.overtonePreset = PresetOvertones.CUSTOM;
         Overtone[] updatedOvertones = overtones.getValue();
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
             if (i == index)
