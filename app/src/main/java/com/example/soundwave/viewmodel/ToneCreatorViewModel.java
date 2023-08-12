@@ -380,6 +380,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     }
 
+    public String getIndexWithSuffix(int index) {
+        switch (index) {
+            case 1:
+                return index + "st";
+            case 2:
+                return index + "nd";
+            case 3:
+                return index + "rd";
+        }
+        return index + "th";
+    }
+
     private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
         /*
         SineWave[] overtones = new SineWave[activeOvertonesNumber];

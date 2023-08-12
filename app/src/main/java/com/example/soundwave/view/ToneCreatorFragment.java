@@ -148,7 +148,7 @@ public class ToneCreatorFragment extends Fragment {
 
     private void updateOvertoneView(int overtoneIndex, Overtone overtone) {
         overtoneBindings[overtoneIndex].overtoneCreatorActivator.setChecked(overtone.isActive());
-        overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(String.valueOf(overtone.getFrequency()));
+        overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(String.valueOf(overtone.getFrequency()) + "Hz");
         overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(String.valueOf(overtone.getAmplitude()));
         overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.setProgress(overtone.getAmplitude());
     }
@@ -196,8 +196,7 @@ public class ToneCreatorFragment extends Fragment {
 
         // Overtone indexes
         for (int i = 0; i < overtoneBindings.length; i++) {
-            int overtoneIndex = i + 1;
-            overtoneBindings[i].overtoneCreatorIndex.setText(String.valueOf(overtoneIndex));
+            overtoneBindings[i].overtoneCreatorIndex.setText(viewModel.getIndexWithSuffix(i + 1));
         }
 
         // Layout visibility
