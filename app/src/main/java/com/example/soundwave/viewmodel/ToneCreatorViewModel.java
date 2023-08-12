@@ -118,6 +118,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userAttackDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            if (input.isEmpty())            // letting the user delete all digits and type from scratch
+                return;
             envelopeAttack.setValue(Config.ENVELOPE_ATTACK_DEFAULT.value);
             setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
@@ -144,6 +146,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userDecayDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            if (input.isEmpty())            // letting the user delete all digits and type from scratch
+                return;
             envelopeDecay.setValue(Config.ENVELOPE_DECAY_DEFAULT.value);
             setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
@@ -170,6 +174,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userSustainLevel = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            if (input.isEmpty())            // letting the user delete all digits and type from scratch
+                return;
             envelopeSustainLevel.setValue(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value);
             setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
@@ -196,6 +202,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userSustainDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            if (input.isEmpty())            // letting the user delete all digits and type from scratch
+                return;
             envelopeSustainDuration.setValue(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value);
             setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
@@ -222,6 +230,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userReleaseDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            if (input.isEmpty())            // letting the user delete all digits and type from scratch
+                return;
             envelopeRelease.setValue(Config.ENVELOPE_RELEASE_DEFAULT.value);
             setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
