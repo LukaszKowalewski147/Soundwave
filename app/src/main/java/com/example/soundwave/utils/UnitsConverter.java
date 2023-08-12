@@ -84,4 +84,22 @@ public class UnitsConverter {
         }
         return PresetEnvelope.FLAT;
     }
+
+    public static int convertPresetEnvelopeToPosition(PresetEnvelope preset) {
+        switch (preset) {
+            case FLAT:
+                return 0;
+            case PIANO:
+                return 1;
+            case GUITAR:
+                return 2;
+            case FLUTE:
+                return 3;
+            case TRUMPET:
+                return 4;
+            case CUSTOM:
+                return 5;
+        }
+        return 0;
+    }
 }

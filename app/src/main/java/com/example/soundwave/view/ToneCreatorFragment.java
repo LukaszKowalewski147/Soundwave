@@ -71,6 +71,46 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void initializeObservers() {
+        viewModel.getEnvelopeAttack().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (!binding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(integer)))
+                    binding.toneCreatorEnvelopeAttack.setText(String.valueOf(integer));
+            }
+        });
+
+        viewModel.getEnvelopeDecay().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (!binding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(integer)))
+                    binding.toneCreatorEnvelopeDecay.setText(String.valueOf(integer));
+            }
+        });
+
+        viewModel.getEnvelopeSustainLevel().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (!binding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(integer)))
+                    binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(integer));
+            }
+        });
+
+        viewModel.getEnvelopeSustainDuration().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (!binding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(integer)))
+                    binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(integer));
+            }
+        });
+
+        viewModel.getEnvelopeRelease().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (!binding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(integer)))
+                    binding.toneCreatorEnvelopeRelease.setText(String.valueOf(integer));
+            }
+        });
+
         viewModel.getFundamentalFrequency().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer s) {
@@ -127,11 +167,17 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);
 
         //  Envelope
-        binding.toneCreatorEnvelopeAttack.setText(String.valueOf(Config.ENVELOPE_ATTACK_DEFAULT.value));
-        binding.toneCreatorEnvelopeDecay.setText(String.valueOf(Config.ENVELOPE_DECAY_DEFAULT.value));
-        binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value));
-        binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value));
-        binding.toneCreatorEnvelopeRelease.setText(String.valueOf(Config.ENVELOPE_RELEASE_DEFAULT.value));
+        /*binding.toneCreatorEnvelopeAttack.setText(String.valueOf(Options.envelopePreset.values[0]));
+        binding.toneCreatorEnvelopeDecay.setText(String.valueOf(Options.envelopePreset.values[1]));
+        binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(Options.envelopePreset.values[2]));
+        binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(Options.envelopePreset.values[3]));
+        binding.toneCreatorEnvelopeRelease.setText(String.valueOf(Options.envelopePreset.values[4]));
+        viewModel.updateEnvelopeAttack(binding.toneCreatorEnvelopeAttack.getText().toString());
+        viewModel.updateEnvelopeDecay(binding.toneCreatorEnvelopeDecay.getText().toString());
+        viewModel.updateEnvelopeSustainLevel(binding.toneCreatorEnvelopeSustainLevel.getText().toString());
+        viewModel.updateEnvelopeSustainDuration(binding.toneCreatorEnvelopeSustainDuration.getText().toString());
+        viewModel.updateEnvelopeRelease(binding.toneCreatorEnvelopeRelease.getText().toString());
+        viewModel.updateEnvelopePreset(0);*/
 /*
         //  Fundamental frequency
         int displayFrequency = UnitsConverter.convertSeekBarProgressToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
@@ -184,6 +230,7 @@ public class ToneCreatorFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 viewModel.updateEnvelopeAttack(s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
 
@@ -201,6 +248,7 @@ public class ToneCreatorFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 viewModel.updateEnvelopeDecay(s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
 
@@ -218,6 +266,7 @@ public class ToneCreatorFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 viewModel.updateEnvelopeSustainLevel(s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
 
@@ -235,6 +284,7 @@ public class ToneCreatorFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 viewModel.updateEnvelopeSustainDuration(s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
 
@@ -252,6 +302,7 @@ public class ToneCreatorFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 viewModel.updateEnvelopeRelease(s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
 

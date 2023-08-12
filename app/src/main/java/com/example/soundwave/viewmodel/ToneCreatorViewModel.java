@@ -22,20 +22,21 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private SoundwaveRepo repository;
 
-    private MutableLiveData<Tone> tone = new MutableLiveData<>();
-    private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
+    private MutableLiveData<Integer> envelopeAttack = new MutableLiveData<>();
+    private MutableLiveData<Integer> envelopeDecay = new MutableLiveData<>();
+    private MutableLiveData<Integer> envelopeSustainLevel = new MutableLiveData<>();
+    private MutableLiveData<Integer> envelopeSustainDuration = new MutableLiveData<>();
+    private MutableLiveData<Integer> envelopeRelease = new MutableLiveData<>();
+
     private MutableLiveData<Integer> fundamentalFrequency = new MutableLiveData<>();
     private MutableLiveData<Integer> fundamentalFrequencyBar = new MutableLiveData<>();
     private MutableLiveData<Integer> masterVolume = new MutableLiveData<>();
-    private String scale;
+    private MutableLiveData<Tone> tone = new MutableLiveData<>();
+    private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
 
-    private int envelopeAttack;
-    private int envelopeDecay;
-    private int envelopeSustainLevel;
-    private int envelopeSustainDuration;
-    private int envelopeRelease;
     private int frequency;
     private int masterVolumeBar;
+    private String scale;
     private boolean overtonesActivator;
 
     public ToneCreatorViewModel(@NonNull Application application) {
@@ -44,28 +45,52 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         initializeDefaultValues();
     }
 
+    public LiveData<Integer> getEnvelopeAttack() {
+        return envelopeAttack;
+    }
+
+    public LiveData<Integer> getEnvelopeDecay() {
+        return envelopeDecay;
+    }
+
+    public LiveData<Integer> getEnvelopeSustainLevel() {
+        return envelopeSustainLevel;
+    }
+
+    public LiveData<Integer> getEnvelopeSustainDuration() {
+        return envelopeSustainDuration;
+    }
+
+    public LiveData<Integer> getEnvelopeRelease() {
+        return envelopeRelease;
+    }
+
     public LiveData<Integer> getFundamentalFrequency() {
         return fundamentalFrequency;
-    }
-
-    public LiveData<Integer> getMasterVolume() {
-        return masterVolume;
-    }
-
-    public String getScale() {
-        return scale;
     }
 
     public LiveData<Integer> getFundamentalFrequencyBar() {
         return fundamentalFrequencyBar;
     }
 
-    public int getMasterVolumeBar() {
-        return masterVolumeBar;
+    public LiveData<Integer> getMasterVolume() {
+        return masterVolume;
     }
 
     public LiveData<Overtone[]> getOvertones() {
         return overtones;
+    }
+
+    public int getEnvelopePresetPosition() {
+        return UnitsConverter.convertPresetEnvelopeToPosition(Options.envelopePreset);
+    }
+
+    public String getScale() {
+        return scale;
+    }
+
+    public int getMasterVolumeBar() {
+        return masterVolumeBar;
     }
 
     public SineWave[] getSineWaves() {
@@ -79,40 +104,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return sineWaves;
     }
 
-    private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
-        /*
-        SineWave[] overtones = new SineWave[activeOvertonesNumber];
-        int overtoneIndex = 0;
-
-        if (overtone1.getValue().isActive()) {
-            overtones[overtoneIndex] = overtone1.getValue().getSineWave();
-            ++overtoneIndex;
-        }
-
-        for (OvertoneManager overtoneManager : overtoneManagers) {
-            if (overtoneManager.isActive()) {
-                overtones[overtoneIndex] = overtoneManager.getSineWave();
-                ++overtoneIndex;
-            }
-        }
-        return overtones;*/
-        return null;
-    }
-
-    private int getActiveOvertonesNumber() {
-        int activeOvertonesNumber = 0;
-
-        if (!overtonesActivator)
-            return activeOvertonesNumber;
-
-        return activeOvertonesNumber;
-    }
-
-    private double getAmplitude() {
-        return (double) masterVolume.getValue() / 100.0d;
-    }
-
     public void updateEnvelopePreset(int position) {
+        // TODO: change preset to CUSTOM in spinner after manually changing any envelope parameter, it happens only in viewmodel now
         PresetEnvelope targetEnvelopePreset = UnitsConverter.convertPositionToPresetEnvelope(position);
         if (targetEnvelopePreset == Options.envelopePreset)
             return;
@@ -125,18 +118,24 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userAttackDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeAttack = Config.ENVELOPE_ATTACK_DEFAULT.value;
+            envelopeAttack.setValue(Config.ENVELOPE_ATTACK_DEFAULT.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
+        if (userAttackDuration == envelopeAttack.getValue().intValue())
+            return;
         if (userAttackDuration >= 0 && userAttackDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeAttack = userAttackDuration;
+            envelopeAttack.setValue(userAttackDuration);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
         if (userAttackDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeAttack = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
+            envelopeAttack.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
-        envelopeAttack = 0;
+        envelopeAttack.setValue(0);
+        setEnvelopeComplex(PresetEnvelope.CUSTOM);
     }
 
     public void updateEnvelopeDecay(String input) {
@@ -145,18 +144,24 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userDecayDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeDecay = Config.ENVELOPE_DECAY_DEFAULT.value;
+            envelopeDecay.setValue(Config.ENVELOPE_DECAY_DEFAULT.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
+        if (userDecayDuration == envelopeDecay.getValue().intValue())
+            return;
         if (userDecayDuration >= 0 && userDecayDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeDecay = userDecayDuration;
+            envelopeDecay.setValue(userDecayDuration);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
         if (userDecayDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeDecay = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
+            envelopeDecay.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
-        envelopeDecay = 0;
+        envelopeDecay.setValue(0);
+        setEnvelopeComplex(PresetEnvelope.CUSTOM);
     }
 
     public void updateEnvelopeSustainLevel(String input) {
@@ -165,18 +170,24 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userSustainLevel = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeSustainLevel = Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value;
+            envelopeSustainLevel.setValue(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
+        if (userSustainLevel == envelopeSustainLevel.getValue().intValue())
+            return;
         if (userSustainLevel >= 0 && userSustainLevel <= 100) {
-            envelopeSustainLevel = userSustainLevel;
+            envelopeSustainLevel.setValue(userSustainLevel);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
         if (userSustainLevel > 100) {
-            envelopeSustainLevel = 100;
+            envelopeSustainLevel.setValue(100);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
-        envelopeSustainLevel = 0;
+        envelopeSustainLevel.setValue(0);
+        setEnvelopeComplex(PresetEnvelope.CUSTOM);
     }
 
     public void updateEnvelopeSustainDuration(String input) {
@@ -185,18 +196,24 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userSustainDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeSustainDuration = Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value;
+            envelopeSustainDuration.setValue(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
+        if (userSustainDuration == envelopeSustainDuration.getValue().intValue())
+            return;
         if (userSustainDuration >= 0 && userSustainDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeSustainDuration = userSustainDuration;
+            envelopeSustainDuration.setValue(userSustainDuration);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
         if (userSustainDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeSustainDuration = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
+            envelopeSustainDuration.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
-        envelopeSustainDuration = 0;
+        envelopeSustainDuration.setValue(0);
+        setEnvelopeComplex(PresetEnvelope.CUSTOM);
     }
 
     public void updateEnvelopeRelease(String input) {
@@ -205,18 +222,24 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             userReleaseDuration = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            envelopeRelease = Config.ENVELOPE_RELEASE_DEFAULT.value;
+            envelopeRelease.setValue(Config.ENVELOPE_RELEASE_DEFAULT.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
+        if (userReleaseDuration == envelopeRelease.getValue().intValue())
+            return;
         if (userReleaseDuration >= 0 && userReleaseDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeRelease = userReleaseDuration;
+            envelopeRelease.setValue(userReleaseDuration);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
         if (userReleaseDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeRelease = Config.ENVELOPE_MAX_PARAMETER_TIME.value;
+            envelopeRelease.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
+            setEnvelopeComplex(PresetEnvelope.CUSTOM);
             return;
         }
-        envelopeRelease = 0;
+        envelopeRelease.setValue(0);
+        setEnvelopeComplex(PresetEnvelope.CUSTOM);
     }
 
     public void updateFundamentalFrequency(String input) {
@@ -343,6 +366,39 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     }
 
+    private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
+        /*
+        SineWave[] overtones = new SineWave[activeOvertonesNumber];
+        int overtoneIndex = 0;
+
+        if (overtone1.getValue().isActive()) {
+            overtones[overtoneIndex] = overtone1.getValue().getSineWave();
+            ++overtoneIndex;
+        }
+
+        for (OvertoneManager overtoneManager : overtoneManagers) {
+            if (overtoneManager.isActive()) {
+                overtones[overtoneIndex] = overtoneManager.getSineWave();
+                ++overtoneIndex;
+            }
+        }
+        return overtones;*/
+        return null;
+    }
+
+    private int getActiveOvertonesNumber() {
+        int activeOvertonesNumber = 0;
+
+        if (!overtonesActivator)
+            return activeOvertonesNumber;
+
+        return activeOvertonesNumber;
+    }
+
+    private double getAmplitude() {
+        return (double) masterVolume.getValue() / 100.0d;
+    }
+
     private void initializeDefaultValues() {
         setEnvelopeComplex(PresetEnvelope.FLAT);
         setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
@@ -384,14 +440,23 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private void setEnvelopeComplex(PresetEnvelope preset) {
         Options.envelopePreset = preset;
 
-        if (preset == PresetEnvelope.CUSTOM)
+        if (preset == PresetEnvelope.CUSTOM) {
+            setCustomEnvelopePresetValues();
             return;
+        }
+        envelopeAttack.setValue(preset.values[0]);
+        envelopeDecay.setValue(preset.values[1]);
+        envelopeSustainLevel.setValue(preset.values[2]);
+        envelopeSustainDuration.setValue(preset.values[3]);
+        envelopeRelease.setValue(preset.values[4]);
+    }
 
-        envelopeAttack = preset.values[0];
-        envelopeDecay = preset.values[1];
-        envelopeSustainLevel = preset.values[2];
-        envelopeSustainDuration = preset.values[3];
-        envelopeRelease = preset.values[4];
+    private void setCustomEnvelopePresetValues() {
+        PresetEnvelope.CUSTOM.values[0] = envelopeAttack.getValue().intValue();
+        PresetEnvelope.CUSTOM.values[1] = envelopeDecay.getValue().intValue();
+        PresetEnvelope.CUSTOM.values[2] = envelopeSustainLevel.getValue().intValue();
+        PresetEnvelope.CUSTOM.values[3] = envelopeSustainDuration.getValue().intValue();
+        PresetEnvelope.CUSTOM.values[4] = envelopeRelease.getValue().intValue();
     }
 
     private void setFrequencyComplex(int frequency) {
