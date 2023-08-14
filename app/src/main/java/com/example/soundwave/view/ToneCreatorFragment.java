@@ -17,13 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
+import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
 import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;
-import com.example.soundwave.utils.PresetOvertones;
-import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
@@ -71,43 +70,25 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void initializeObservers() {
-        viewModel.getEnvelopeAttack().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+        viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), new Observer<EnvelopeComponent>() {
             @Override
-            public void onChanged(Integer integer) {
-                if (!binding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(integer)))
-                    binding.toneCreatorEnvelopeAttack.setText(String.valueOf(integer));
-            }
-        });
+            public void onChanged(EnvelopeComponent envelopeComponent) {
+                int attackDuration = envelopeComponent.getAttackDuration();
+                int decayDuration = envelopeComponent.getDecayDuration();
+                int sustainLevel = envelopeComponent.getSustainLevel();
+                int sustainDuration = envelopeComponent.getSustainDuration();
+                int releaseDuration = envelopeComponent.getReleaseDuration();
 
-        viewModel.getEnvelopeDecay().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if (!binding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(integer)))
-                    binding.toneCreatorEnvelopeDecay.setText(String.valueOf(integer));
-            }
-        });
-
-        viewModel.getEnvelopeSustainLevel().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if (!binding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(integer)))
-                    binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(integer));
-            }
-        });
-
-        viewModel.getEnvelopeSustainDuration().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if (!binding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(integer)))
-                    binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(integer));
-            }
-        });
-
-        viewModel.getEnvelopeRelease().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if (!binding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(integer)))
-                    binding.toneCreatorEnvelopeRelease.setText(String.valueOf(integer));
+                if (!binding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDuration)))
+                    binding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
+                if (!binding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDuration)))
+                    binding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
+                if (!binding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevel)))
+                    binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
+                if (!binding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDuration)))
+                    binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
+                if (!binding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDuration)))
+                    binding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
             }
         });
 
@@ -167,31 +148,7 @@ public class ToneCreatorFragment extends Fragment {
         overtonesPresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);
 
-        //  Envelope
-        /*binding.toneCreatorEnvelopeAttack.setText(String.valueOf(Options.envelopePreset.values[0]));
-        binding.toneCreatorEnvelopeDecay.setText(String.valueOf(Options.envelopePreset.values[1]));
-        binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(Options.envelopePreset.values[2]));
-        binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(Options.envelopePreset.values[3]));
-        binding.toneCreatorEnvelopeRelease.setText(String.valueOf(Options.envelopePreset.values[4]));
-        viewModel.updateEnvelopeAttack(binding.toneCreatorEnvelopeAttack.getText().toString());
-        viewModel.updateEnvelopeDecay(binding.toneCreatorEnvelopeDecay.getText().toString());
-        viewModel.updateEnvelopeSustainLevel(binding.toneCreatorEnvelopeSustainLevel.getText().toString());
-        viewModel.updateEnvelopeSustainDuration(binding.toneCreatorEnvelopeSustainDuration.getText().toString());
-        viewModel.updateEnvelopeRelease(binding.toneCreatorEnvelopeRelease.getText().toString());
-        viewModel.updateEnvelopePreset(0);*/
-/*
-        //  Fundamental frequency
-        int displayFrequency = UnitsConverter.convertSeekBarProgressToFrequency(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-        binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(displayFrequency));
-        binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
-        binding.toneCreatorFundamentalFrequencyBar.setProgress(Config.FREQUENCY_PROGRESS_BAR_DEFAULT.value);
-        binding.toneCreatorScaleInput.setText("B#4");
-        // TODO: scale input
-
-        //  Volume
-        binding.toneCreatorMasterVolumeBar.setProgress(100);
-        binding.toneCreatorMasterVolumeInput.setText(String.valueOf(100));
-*/
+        //  Bars
         binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
 
         // Overtone indexes
@@ -229,7 +186,7 @@ public class ToneCreatorFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeAttack(s.toString());
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.ATTACK_DURATION, s.toString());
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
@@ -247,7 +204,7 @@ public class ToneCreatorFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeDecay(s.toString());
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.DECAY_DURATION, s.toString());
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
@@ -265,7 +222,7 @@ public class ToneCreatorFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeSustainLevel(s.toString());
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.SUSTAIN_LEVEL, s.toString());
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
@@ -283,7 +240,7 @@ public class ToneCreatorFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeSustainDuration(s.toString());
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.SUSTAIN_DURATION, s.toString());
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
@@ -301,7 +258,7 @@ public class ToneCreatorFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeRelease(s.toString());
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.RELEASE_DURATION, s.toString());
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });

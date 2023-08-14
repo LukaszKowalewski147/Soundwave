@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.soundwave.SineWave;
+import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
@@ -22,11 +23,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private SoundwaveRepo repository;
 
-    private MutableLiveData<Integer> envelopeAttack = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeDecay = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeSustainLevel = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeSustainDuration = new MutableLiveData<>();
-    private MutableLiveData<Integer> envelopeRelease = new MutableLiveData<>();
+    private MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
 
     private MutableLiveData<Integer> fundamentalFrequency = new MutableLiveData<>();
     private MutableLiveData<Integer> fundamentalFrequencyBar = new MutableLiveData<>();
@@ -45,24 +42,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         initializeDefaultValues();
     }
 
-    public LiveData<Integer> getEnvelopeAttack() {
-        return envelopeAttack;
-    }
-
-    public LiveData<Integer> getEnvelopeDecay() {
-        return envelopeDecay;
-    }
-
-    public LiveData<Integer> getEnvelopeSustainLevel() {
-        return envelopeSustainLevel;
-    }
-
-    public LiveData<Integer> getEnvelopeSustainDuration() {
-        return envelopeSustainDuration;
-    }
-
-    public LiveData<Integer> getEnvelopeRelease() {
-        return envelopeRelease;
+    public LiveData<EnvelopeComponent> getEnvelopeComponent() {
+        return envelopeComponent;
     }
 
     public LiveData<Integer> getFundamentalFrequency() {
@@ -112,147 +93,82 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         PresetEnvelope targetEnvelopePreset = UnitsConverter.convertPositionToPresetEnvelope(position);
         if (targetEnvelopePreset == Options.envelopePreset)
             return;
-        setEnvelopeComplex(targetEnvelopePreset);
+        setEnvelopePreset(targetEnvelopePreset);
     }
 
-    public void updateEnvelopeAttack(String input) {
-        int userAttackDuration;
+    public void updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters parameter, String input) {
+        input = input.trim();
+        if (input.isEmpty())            // letting the user delete all digits and type from scratch
+            return;
+
+        int inputValue;
+        int minValue = Config.ENVELOPE_PARAMETER_MIN_DURATION.value;
+        int maxValue = Config.ENVELOPE_PARAMETER_MAX_DURATION.value;
+        if (parameter == EnvelopeComponent.EnvelopeParameters.SUSTAIN_LEVEL) {
+            minValue = Config.ENVELOPE_PARAMETER_MIN_LEVEL.value;
+            maxValue = Config.ENVELOPE_PARAMETER_MAX_LEVEL.value;
+        }
+
         try {
-            userAttackDuration = Integer.parseInt(input);
+            inputValue = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            if (input.isEmpty())            // letting the user delete all digits and type from scratch
-                return;
-            envelopeAttack.setValue(Config.ENVELOPE_ATTACK_DEFAULT.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
+            setEnvelopeParameter(parameter, minValue);
+            setEnvelopePreset(PresetEnvelope.CUSTOM);
             return;
         }
-        if (userAttackDuration == envelopeAttack.getValue().intValue())
-            return;
-        if (userAttackDuration >= 0 && userAttackDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeAttack.setValue(userAttackDuration);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
+
+        if (inputValue > maxValue) {
+            setEnvelopeParameter(parameter, maxValue);
             return;
         }
-        if (userAttackDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeAttack.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
+        if (inputValue < minValue) {
+            setEnvelopeParameter(parameter, minValue);
             return;
         }
-        envelopeAttack.setValue(0);
-        setEnvelopeComplex(PresetEnvelope.CUSTOM);
+        if (isEnvelopeValueDifferent(parameter, inputValue))
+            setEnvelopeParameter(parameter, inputValue);
     }
 
-    public void updateEnvelopeDecay(String input) {
-        int userDecayDuration;
-        try {
-            userDecayDuration = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            if (input.isEmpty())            // letting the user delete all digits and type from scratch
-                return;
-            envelopeDecay.setValue(Config.ENVELOPE_DECAY_DEFAULT.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
+    private boolean isEnvelopeValueDifferent(EnvelopeComponent.EnvelopeParameters parameter, int value) {
+        switch (parameter) {
+            case ATTACK_DURATION:
+                return value != envelopeComponent.getValue().getAttackDuration();
+            case DECAY_DURATION:
+                return value != envelopeComponent.getValue().getDecayDuration();
+            case SUSTAIN_LEVEL:
+                return value != envelopeComponent.getValue().getSustainLevel();
+            case SUSTAIN_DURATION:
+                return value != envelopeComponent.getValue().getSustainDuration();
+            case RELEASE_DURATION:
+                return value != envelopeComponent.getValue().getReleaseDuration();
         }
-        if (userDecayDuration == envelopeDecay.getValue().intValue())
-            return;
-        if (userDecayDuration >= 0 && userDecayDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeDecay.setValue(userDecayDuration);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        if (userDecayDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeDecay.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        envelopeDecay.setValue(0);
-        setEnvelopeComplex(PresetEnvelope.CUSTOM);
+        return true;
     }
 
-    public void updateEnvelopeSustainLevel(String input) {
-        int userSustainLevel;
-        try {
-            userSustainLevel = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            if (input.isEmpty())            // letting the user delete all digits and type from scratch
-                return;
-            envelopeSustainLevel.setValue(Config.ENVELOPE_SUSTAIN_LEVEL_DEFAULT.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
+    private void setEnvelopeParameter(EnvelopeComponent.EnvelopeParameters parameter, int value) {
+        int currentAttackDuration = envelopeComponent.getValue().getAttackDuration();
+        int currentDecayDuration = envelopeComponent.getValue().getDecayDuration();
+        int currentSustainLevel = envelopeComponent.getValue().getSustainLevel();
+        int currentSustainDuration = envelopeComponent.getValue().getSustainDuration();
+        int currentReleaseDuration = envelopeComponent.getValue().getReleaseDuration();
+        switch (parameter) {
+            case ATTACK_DURATION:
+                envelopeComponent.setValue(new EnvelopeComponent(value, currentDecayDuration, currentSustainLevel, currentSustainDuration, currentReleaseDuration));
+                break;
+            case DECAY_DURATION:
+                envelopeComponent.setValue(new EnvelopeComponent(currentAttackDuration, value, currentSustainLevel, currentSustainDuration, currentReleaseDuration));
+                break;
+            case SUSTAIN_LEVEL:
+                envelopeComponent.setValue(new EnvelopeComponent(currentAttackDuration, currentDecayDuration, value, currentSustainDuration, currentReleaseDuration));
+                break;
+            case SUSTAIN_DURATION:
+                envelopeComponent.setValue(new EnvelopeComponent(currentAttackDuration, currentDecayDuration, currentSustainLevel, value, currentReleaseDuration));
+                break;
+            case RELEASE_DURATION:
+                envelopeComponent.setValue(new EnvelopeComponent(currentAttackDuration, currentDecayDuration, currentSustainLevel, currentSustainDuration, value));
         }
-        if (userSustainLevel == envelopeSustainLevel.getValue().intValue())
-            return;
-        if (userSustainLevel >= 0 && userSustainLevel <= 100) {
-            envelopeSustainLevel.setValue(userSustainLevel);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        if (userSustainLevel > 100) {
-            envelopeSustainLevel.setValue(100);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        envelopeSustainLevel.setValue(0);
-        setEnvelopeComplex(PresetEnvelope.CUSTOM);
-    }
-
-    public void updateEnvelopeSustainDuration(String input) {
-        int userSustainDuration;
-        try {
-            userSustainDuration = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            if (input.isEmpty())            // letting the user delete all digits and type from scratch
-                return;
-            envelopeSustainDuration.setValue(Config.ENVELOPE_SUSTAIN_DURATION_DEFAULT.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        if (userSustainDuration == envelopeSustainDuration.getValue().intValue())
-            return;
-        if (userSustainDuration >= 0 && userSustainDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeSustainDuration.setValue(userSustainDuration);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        if (userSustainDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeSustainDuration.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        envelopeSustainDuration.setValue(0);
-        setEnvelopeComplex(PresetEnvelope.CUSTOM);
-    }
-
-    public void updateEnvelopeRelease(String input) {
-        int userReleaseDuration;
-        try {
-            userReleaseDuration = Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            if (input.isEmpty())            // letting the user delete all digits and type from scratch
-                return;
-            envelopeRelease.setValue(Config.ENVELOPE_RELEASE_DEFAULT.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        if (userReleaseDuration == envelopeRelease.getValue().intValue())
-            return;
-        if (userReleaseDuration >= 0 && userReleaseDuration <= Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeRelease.setValue(userReleaseDuration);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        if (userReleaseDuration > Config.ENVELOPE_MAX_PARAMETER_TIME.value) {
-            envelopeRelease.setValue(Config.ENVELOPE_MAX_PARAMETER_TIME.value);
-            setEnvelopeComplex(PresetEnvelope.CUSTOM);
-            return;
-        }
-        envelopeRelease.setValue(0);
-        setEnvelopeComplex(PresetEnvelope.CUSTOM);
+        setEnvelopePreset(PresetEnvelope.CUSTOM);
     }
 
     public void updateFundamentalFrequency(String input) {
@@ -426,7 +342,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void initializeDefaultValues() {
-        setEnvelopeComplex(PresetEnvelope.FLAT);
+        setEnvelopePreset(PresetEnvelope.FLAT);
         setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
         setMasterVolume(100);
         setDefaultOvertones();
@@ -463,26 +379,19 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         masterVolumeBar = volume;
     }
 
-    private void setEnvelopeComplex(PresetEnvelope preset) {
+    private void setEnvelopePreset(PresetEnvelope preset) {
         Options.envelopePreset = preset;
 
         if (preset == PresetEnvelope.CUSTOM) {
-            setCustomEnvelopePresetValues();
+            PresetEnvelope.CUSTOM.values[0] = envelopeComponent.getValue().getAttackDuration();
+            PresetEnvelope.CUSTOM.values[1] = envelopeComponent.getValue().getDecayDuration();
+            PresetEnvelope.CUSTOM.values[2] = envelopeComponent.getValue().getSustainLevel();
+            PresetEnvelope.CUSTOM.values[3] = envelopeComponent.getValue().getSustainDuration();
+            PresetEnvelope.CUSTOM.values[4] = envelopeComponent.getValue().getReleaseDuration();
             return;
         }
-        envelopeAttack.setValue(preset.values[0]);
-        envelopeDecay.setValue(preset.values[1]);
-        envelopeSustainLevel.setValue(preset.values[2]);
-        envelopeSustainDuration.setValue(preset.values[3]);
-        envelopeRelease.setValue(preset.values[4]);
-    }
 
-    private void setCustomEnvelopePresetValues() {
-        PresetEnvelope.CUSTOM.values[0] = envelopeAttack.getValue().intValue();
-        PresetEnvelope.CUSTOM.values[1] = envelopeDecay.getValue().intValue();
-        PresetEnvelope.CUSTOM.values[2] = envelopeSustainLevel.getValue().intValue();
-        PresetEnvelope.CUSTOM.values[3] = envelopeSustainDuration.getValue().intValue();
-        PresetEnvelope.CUSTOM.values[4] = envelopeRelease.getValue().intValue();
+        envelopeComponent.setValue(new EnvelopeComponent(preset.values[0], preset.values[1], preset.values[2], preset.values[3], preset.values[4]));
     }
 
     private void setFrequencyComplex(int frequency) {
