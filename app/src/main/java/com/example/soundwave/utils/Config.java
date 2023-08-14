@@ -6,6 +6,7 @@ public enum Config {
     FREQUENCY_DEFAULT(500),                 // in Hz
     FREQUENCY_PROGRESS_BAR_MAX(850),        // progress bar position
     FREQUENCY_PROGRESS_BAR_DEFAULT(425),    // progress bar position
+    MASTER_VOLUME_DEFAULT(100),             // in %
     DURATION_MIN(1),                        // in seconds
     DURATION_MAX(60),                       // in seconds
     DURATION_DEFAULT(30),                   // in seconds

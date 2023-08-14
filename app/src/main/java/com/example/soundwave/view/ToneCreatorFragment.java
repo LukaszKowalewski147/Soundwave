@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
 import com.example.soundwave.components.EnvelopeComponent;
+import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
 import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.utils.Config;
@@ -92,27 +93,21 @@ public class ToneCreatorFragment extends Fragment {
             }
         });
 
-        viewModel.getFundamentalFrequency().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+        viewModel.getFundamentalFrequencyComponent().observe(getViewLifecycleOwner(), new Observer<FundamentalFrequencyComponent>() {
             @Override
-            public void onChanged(Integer s) {
-                if (!binding.toneCreatorFundamentalFrequencyInput.getText().toString().equals(String.valueOf(s)))
-                    binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(s));
-            }
-        });
+            public void onChanged(FundamentalFrequencyComponent fundamentalFrequencyComponent) {
+                int fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
+                int fundamentalFrequencyBar = fundamentalFrequencyComponent.getFundamentalFrequencyBar();
+                int masterVolume = fundamentalFrequencyComponent.getMasterVolume();
+                String note = fundamentalFrequencyComponent.getNote();
 
-        viewModel.getFundamentalFrequencyBar().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorFundamentalFrequencyBar.setProgress(viewModel.getFundamentalFrequencyBar().getValue());
-                binding.toneCreatorScaleInput.setText(String.valueOf(viewModel.getScale()));
-            }
-        });
-
-        viewModel.getMasterVolume().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer s) {
-                binding.toneCreatorMasterVolumeInput.setText(String.valueOf(s));
-                binding.toneCreatorMasterVolumeBar.setProgress(s);
+                if (!binding.toneCreatorFundamentalFrequencyInput.getText().toString().equals(String.valueOf(fundamentalFrequency)))
+                    binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(fundamentalFrequency));
+                if (!binding.toneCreatorScaleInput.getText().toString().equals(note))
+                    binding.toneCreatorScaleInput.setText(note);
+                binding.toneCreatorFundamentalFrequencyBar.setProgress(fundamentalFrequencyBar);
+                binding.toneCreatorMasterVolumeInput.setText(String.valueOf(masterVolume));
+                binding.toneCreatorMasterVolumeBar.setProgress(masterVolume);
             }
         });
 
@@ -363,7 +358,8 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorMasterVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                viewModel.updateMasterVolumeSeekBarPosition(progress);
+                if (fromUser)
+                    viewModel.updateMasterVolumeSeekBarPosition(progress);
             }
 
             @Override

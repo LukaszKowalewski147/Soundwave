@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.soundwave.SineWave;
 import com.example.soundwave.components.EnvelopeComponent;
+import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.model.entity.Overtone;
 import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
@@ -24,16 +25,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private SoundwaveRepo repository;
 
     private MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
-
-    private MutableLiveData<Integer> fundamentalFrequency = new MutableLiveData<>();
-    private MutableLiveData<Integer> fundamentalFrequencyBar = new MutableLiveData<>();
-    private MutableLiveData<Integer> masterVolume = new MutableLiveData<>();
-    private MutableLiveData<Tone> tone = new MutableLiveData<>();
+    private MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
     private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
+    private MutableLiveData<Tone> tone = new MutableLiveData<>();
 
-    private int frequency;
-    private int masterVolumeBar;
-    private String scale;
     private boolean overtonesActivator;
 
     public ToneCreatorViewModel(@NonNull Application application) {
@@ -46,16 +41,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return envelopeComponent;
     }
 
-    public LiveData<Integer> getFundamentalFrequency() {
-        return fundamentalFrequency;
-    }
-
-    public LiveData<Integer> getFundamentalFrequencyBar() {
-        return fundamentalFrequencyBar;
-    }
-
-    public LiveData<Integer> getMasterVolume() {
-        return masterVolume;
+    public LiveData<FundamentalFrequencyComponent> getFundamentalFrequencyComponent() {
+        return fundamentalFrequencyComponent;
     }
 
     public LiveData<Overtone[]> getOvertones() {
@@ -66,27 +53,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return UnitsConverter.convertPresetEnvelopeToPosition(Options.envelopePreset);
     }
 
-    public String getScale() {
-        return scale;
-    }
-
-    public int getMasterVolumeBar() {
-        return masterVolumeBar;
-    }
-
     public int getOvertonesPresetPosition() {
         return UnitsConverter.convertPresetOvertonesToPosition(Options.overtonePreset);
-    }
-
-    public SineWave[] getSineWaves() {
-        int activeOvertonesNumber = getActiveOvertonesNumber();
-        SineWave[] sineWaves = new SineWave[activeOvertonesNumber + 1];
-        sineWaves[0] = new SineWave(fundamentalFrequency.getValue(), getAmplitude());
-        if (activeOvertonesNumber > 0) {
-            SineWave[] overtones = getOvertonesSineWaves(activeOvertonesNumber);
-            System.arraycopy(overtones, 0, sineWaves, 1, overtones.length);
-        }
-        return sineWaves;
     }
 
     public void updateEnvelopePreset(int position) {
@@ -172,33 +140,32 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void updateFundamentalFrequency(String input) {
+        input = input.trim();
+        if (input.isEmpty())            // letting the user delete all digits and type from scratch
+            return;
+
         int userFrequency;
         try {
             userFrequency = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
+            setFrequencyComplex(Config.FREQUENCY_DEFAULT.value, fundamentalFrequencyComponent.getValue().getMasterVolume());
             return;
         }
-        if (userFrequency == frequency)
+        if (userFrequency == fundamentalFrequencyComponent.getValue().getFundamentalFrequency() || userFrequency < Config.FREQUENCY_MIN.value)
             return;
-        if (userFrequency < Config.FREQUENCY_MIN.value) {
-            setFundamentalFrequencyBar(Config.FREQUENCY_MIN.value);
-            setScale(Config.FREQUENCY_MIN.value);
-            return;
-        }
         int frequencyToSet = Math.min(userFrequency, Config.FREQUENCY_MAX.value);
-        setFrequencyComplex(frequencyToSet);
+        setFrequencyComplex(frequencyToSet, fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
     public void updateFundamentalFrequencySeekBarPosition(int progress) {
-        setFrequencyComplex(UnitsConverter.convertSeekBarProgressToFrequency(progress));
+        setFrequencyComplex(UnitsConverter.convertSeekBarProgressToFrequency(progress), fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
     public void decrementOnceFundamentalFrequency() {
-        int frequency = fundamentalFrequency.getValue();
+        int frequency = fundamentalFrequencyComponent.getValue().getFundamentalFrequency();
         if (--frequency >= Config.FREQUENCY_MIN.value)
-            setFrequencyComplex(frequency);
+            setFrequencyComplex(frequency, fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
     public void decrementConstantlyFundamentalFrequency() {
@@ -212,9 +179,9 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void incrementOnceFundamentalFrequency() {
-        int frequency = fundamentalFrequency.getValue();
+        int frequency = fundamentalFrequencyComponent.getValue().getFundamentalFrequency();
         if (++frequency <= Config.FREQUENCY_MAX.value)
-            setFrequencyComplex(frequency);
+            setFrequencyComplex(frequency, fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
     public void incrementConstantlyFundamentalFrequency() {
@@ -228,7 +195,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void updateMasterVolumeSeekBarPosition(int progress) {
-        masterVolume.setValue(progress);
+        setFrequencyComplex(fundamentalFrequencyComponent.getValue().getFundamentalFrequency(), progress);
     }
 
     public void validateFundamentalFrequencyInput(String input) {
@@ -237,11 +204,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             displayFrequency = Integer.parseInt(input);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
+            setFrequencyComplex(Config.FREQUENCY_DEFAULT.value, fundamentalFrequencyComponent.getValue().getMasterVolume());
             return;
         }
         if (displayFrequency < Config.FREQUENCY_MIN.value)
-            setFrequencyComplex(Config.FREQUENCY_MIN.value);
+            setFrequencyComplex(Config.FREQUENCY_MIN.value, fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
     public void updateOvertonesState(boolean isActive) {
@@ -281,7 +248,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void generateTone() {
-
+        //Sound sound = new SoundGenerator(getDuration(), getSampleRate()).generateSound(getTones());
     }
 
     public void playTone() {
@@ -307,9 +274,20 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         }
         return index + "th";
     }
+/*
+    public SineWave[] getSineWaves() {
+        int activeOvertonesNumber = getActiveOvertonesNumber();
+        SineWave[] sineWaves = new SineWave[activeOvertonesNumber + 1];
+        sineWaves[0] = new SineWave(fundamentalFrequency.getValue(), getAmplitude());
+        if (activeOvertonesNumber > 0) {
+            SineWave[] overtones = getOvertonesSineWaves(activeOvertonesNumber);
+            System.arraycopy(overtones, 0, sineWaves, 1, overtones.length);
+        }
+        return sineWaves;
+    }
 
     private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
-        /*
+
         SineWave[] overtones = new SineWave[activeOvertonesNumber];
         int overtoneIndex = 0;
 
@@ -324,7 +302,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 ++overtoneIndex;
             }
         }
-        return overtones;*/
+        return overtones;
         return null;
     }
 
@@ -340,24 +318,24 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private double getAmplitude() {
         return (double) masterVolume.getValue() / 100.0d;
     }
-
+*/
     private void initializeDefaultValues() {
         setEnvelopePreset(PresetEnvelope.FLAT);
-        setFrequencyComplex(Config.FREQUENCY_DEFAULT.value);
-        setMasterVolume(100);
+        fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
         setDefaultOvertones();
-        setTone();
+        //setTone();
     }
 
     private void setTone() {
-        tone.setValue(new Tone(fundamentalFrequency.getValue(), masterVolume.getValue()));
+        //tone.setValue(new Tone(fundamentalFrequency.getValue(), masterVolume.getValue()));
     }
 
     private void setDefaultOvertones() {
         Options.overtonePreset = PresetOvertones.FLAT;
         Overtone[] defaultOvertones = new Overtone[Config.OVERTONES_NUMBER.value];
+        int fundamentalFrequency = fundamentalFrequencyComponent.getValue().getFundamentalFrequency();
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
-            int overtoneFrequency = fundamentalFrequency.getValue() * (i + 2);
+            int overtoneFrequency = fundamentalFrequency * (i + 2);
             defaultOvertones[i] = new Overtone(i, overtoneFrequency, Options.overtonePreset.amplitudes[i], true);
         }
         overtones.setValue(defaultOvertones);
@@ -365,18 +343,13 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private void updateOvertonesFrequency() {
         Overtone[] updatedOvertones = overtones.getValue();
-        if (updatedOvertones == null)
-            return;
+        int fundamentalFrequency = fundamentalFrequencyComponent.getValue().getFundamentalFrequency();
+
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
-            int overtoneFrequency = fundamentalFrequency.getValue() * (i + 2);
+            int overtoneFrequency = fundamentalFrequency * (i + 2);
             updatedOvertones[i] = new Overtone(i, overtoneFrequency, updatedOvertones[i].getAmplitude(), updatedOvertones[i].isActive());
         }
         overtones.setValue(updatedOvertones);
-    }
-
-    private void setMasterVolume(int volume) {
-        masterVolume.setValue(volume);
-        masterVolumeBar = volume;
     }
 
     private void setEnvelopePreset(PresetEnvelope preset) {
@@ -394,20 +367,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         envelopeComponent.setValue(new EnvelopeComponent(preset.values[0], preset.values[1], preset.values[2], preset.values[3], preset.values[4]));
     }
 
-    private void setFrequencyComplex(int frequency) {
-        this.frequency = frequency;
-        setFundamentalFrequencyBar(frequency);
-        setScale(frequency);
-        fundamentalFrequency.setValue(frequency);
-        updateOvertonesFrequency();
-    }
-
-    private void setFundamentalFrequencyBar(int frequency) {
-        fundamentalFrequencyBar.setValue(UnitsConverter.convertFrequencyToSeekBarProgress(frequency));
-    }
-
-    private void setScale(int frequency) {
-        scale = "B#4";
-        //TODO: calculate and set proper scale based on frequency parameter
+    private void setFrequencyComplex(int frequency, int volume) {
+        int oldFrequency = fundamentalFrequencyComponent.getValue().getFundamentalFrequency();
+        fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(frequency, volume));
+        if (frequency != oldFrequency)                      // if changing only volume
+            updateOvertonesFrequency();                     // not necessary to update overtones
     }
 }
