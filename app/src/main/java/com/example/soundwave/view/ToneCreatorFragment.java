@@ -502,13 +502,13 @@ public class ToneCreatorFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.alert_dialog_reset_tone_creator_message);
-                builder.setPositiveButton(R.string.alert_dialog_reset_tone_creator_positive, new DialogInterface.OnClickListener() {
+                builder.setMessage(R.string.alert_dialog_tone_creator_reset_message);
+                builder.setPositiveButton(R.string.alert_dialog_tone_creator_reset_positive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takeResetAction();
                     }
                 });
-                builder.setNegativeButton(R.string.alert_dialog_reset_tone_creator_negative, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.alert_dialog_tone_creator_reset_negative, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });

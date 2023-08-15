@@ -49,9 +49,9 @@
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_dynamic_playback">Generator</string>
 
-    <string name="alert_dialog_reset_tone_creator_message">Do you want to reset all parameters including generated tone?</string>
-    <string name="alert_dialog_reset_tone_creator_positive">Yes</string>
-    <string name="alert_dialog_reset_tone_creator_negative">No</string>
+    <string name="alert_dialog_tone_creator_reset_message">Do you want to reset tone creator?</string>
+    <string name="alert_dialog_tone_creator_reset_positive">YES</string>
+    <string name="alert_dialog_tone_creator_reset_negative">NO</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">
