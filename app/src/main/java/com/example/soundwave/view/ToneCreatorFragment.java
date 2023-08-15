@@ -1,5 +1,7 @@
 package com.example.soundwave.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -102,12 +104,22 @@ public class ToneCreatorFragment extends Fragment {
         //  Bars
         binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
 
-        // Overtone indexes
+        //  Overtone indexes
         for (int i = 0; i < overtoneBindings.length; i++) {
             overtoneBindings[i].overtoneCreatorIndex.setText(viewModel.getIndexWithSuffix(i + 1));
         }
 
-        // Layout visibility
+        //  Control panel buttons
+        binding.toneCreatorPlayToneBtn.setEnabled(false);
+        binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+
+        binding.toneCreatorSaveToneBtn.setEnabled(false);
+        binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+
+        binding.toneCreatorResetToneBtn.setEnabled(false);
+        binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+
+        //  Layout visibility
         binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
         binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
     }
@@ -160,6 +172,19 @@ public class ToneCreatorFragment extends Fragment {
                     updateOvertoneView(i, overtones[i]);
                 }
                 binding.toneCreatorOvertonesPreset.setSelection(viewModel.getOvertonesPresetPosition());
+            }
+        });
+
+        viewModel.getAnyChange().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    binding.toneCreatorResetToneBtn.setEnabled(true);
+                    binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                    return;
+                }
+                binding.toneCreatorResetToneBtn.setEnabled(false);
+                binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
             }
         });
     }
@@ -476,8 +501,25 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorResetToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.resetTone();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(R.string.alert_dialog_reset_tone_creator_message);
+                builder.setPositiveButton(R.string.alert_dialog_reset_tone_creator_positive, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takeResetAction();
+                    }
+                });
+                builder.setNegativeButton(R.string.alert_dialog_reset_tone_creator_negative, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
+    }
+
+    private void takeResetAction() {
+        binding.toneCreatorOvertonesActivator.setChecked(false);
+        viewModel.resetTone();
     }
 }

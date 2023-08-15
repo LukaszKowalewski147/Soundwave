@@ -27,6 +27,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
     private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
     private MutableLiveData<Tone> tone = new MutableLiveData<>();
+    private MutableLiveData<Boolean> anyChange = new MutableLiveData<>();
 
     private boolean overtonesActivator;
 
@@ -46,6 +47,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public LiveData<Overtone[]> getOvertones() {
         return overtones;
+    }
+
+    public MutableLiveData<Boolean> getAnyChange() {
+        return anyChange;
     }
 
     public int getEnvelopePresetPosition() {
@@ -216,6 +221,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public void updateOvertonesState(boolean isActive) {
         overtonesActivator = isActive;
+        setAnyChange();
     }
 
     public void updateOvertonesPreset(int position) {
@@ -263,7 +269,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void resetTone() {
-
+        initializeDefaultValues();
     }
 
     public String getIndexWithSuffix(int index) {
@@ -323,10 +329,12 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 */
     private void initializeDefaultValues() {
+        anyChange.setValue(false);
         setEnvelopePreset(PresetEnvelope.FLAT);
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
         setDefaultOvertones();
         //setTone();
+        anyChange.setValue(false);
     }
 
     private void setTone() {
@@ -357,6 +365,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private void setEnvelopePreset(PresetEnvelope preset) {
         Options.envelopePreset = preset;
+        setAnyChange();
 
         if (preset == PresetEnvelope.CUSTOM) {
             PresetEnvelope.CUSTOM.values[0] = envelopeComponent.getValue().getAttackDuration();
@@ -375,5 +384,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(frequency, volume));
         if (frequency != oldFrequency)                      // if changing only volume
             updateOvertonesFrequency();                     // not necessary to update overtones
+        setAnyChange();
+    }
+
+    private void setAnyChange() {
+        if (!anyChange.getValue().booleanValue())
+            anyChange.setValue(true);
     }
 }
