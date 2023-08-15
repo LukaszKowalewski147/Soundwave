@@ -8,7 +8,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.soundwave.SineWave;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.model.entity.Overtone;
@@ -156,6 +155,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             return;
         int frequencyToSet = Math.min(userFrequency, Config.FREQUENCY_MAX.value);
         setFrequencyComplex(frequencyToSet, fundamentalFrequencyComponent.getValue().getMasterVolume());
+    }
+
+    public void updateNoteName(int noteIndex) {
+        setFrequencyComplex(FundamentalFrequencyComponent.getFrequencyOutOfNoteIndex(noteIndex), fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
     public void updateFundamentalFrequencySeekBarPosition(int progress) {

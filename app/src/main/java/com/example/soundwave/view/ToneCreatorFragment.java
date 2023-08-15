@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
 import com.example.soundwave.components.EnvelopeComponent;
@@ -25,6 +26,7 @@ import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
+import com.example.soundwave.utils.Scale;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
 public class ToneCreatorFragment extends Fragment {
@@ -70,6 +72,46 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[14] = binding.toneCreatorOvertone14;
     }
 
+    private void initializeDefaultLayout() {
+        //  Spinners
+        ArrayAdapter<CharSequence> sampleRatesAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.sample_rates_array, android.R.layout.simple_spinner_item);
+        sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.toneCreatorSampleRatesSpinner.setAdapter(sampleRatesAdapter);
+
+        ArrayAdapter<CharSequence> envelopePresetAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.envelope_presets_array, android.R.layout.simple_spinner_item);
+        envelopePresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.toneCreatorEnvelopePresetSpinner.setAdapter(envelopePresetAdapter);
+
+        ArrayAdapter<CharSequence> overtonesPresetAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.overtones_presets_array, android.R.layout.simple_spinner_item);
+        overtonesPresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);
+
+        //  Note picker
+        Scale[] notes = Scale.values();
+        int notesCount = notes.length;
+        String[] noteNames = new String[notesCount];
+
+        for (int i = 0; i < notesCount; ++i) {
+            noteNames[i] = notes[i].noteName;
+        }
+
+        binding.toneCreatorNoteInput.setMinValue(0);
+        binding.toneCreatorNoteInput.setMaxValue(notesCount - 1);
+        binding.toneCreatorNoteInput.setDisplayedValues(noteNames);
+
+        //  Bars
+        binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
+
+        // Overtone indexes
+        for (int i = 0; i < overtoneBindings.length; i++) {
+            overtoneBindings[i].overtoneCreatorIndex.setText(viewModel.getIndexWithSuffix(i + 1));
+        }
+
+        // Layout visibility
+        binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
+        binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
+    }
+
     private void initializeObservers() {
         viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), new Observer<EnvelopeComponent>() {
             @Override
@@ -99,12 +141,12 @@ public class ToneCreatorFragment extends Fragment {
                 int fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
                 int fundamentalFrequencyBar = fundamentalFrequencyComponent.getFundamentalFrequencyBar();
                 int masterVolume = fundamentalFrequencyComponent.getMasterVolume();
-                String note = fundamentalFrequencyComponent.getNote();
+                int noteIndex = fundamentalFrequencyComponent.getNoteIndex();
 
                 if (!binding.toneCreatorFundamentalFrequencyInput.getText().toString().equals(String.valueOf(fundamentalFrequency)))
                     binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(fundamentalFrequency));
-                if (!binding.toneCreatorScaleInput.getText().toString().equals(note))
-                    binding.toneCreatorScaleInput.setText(note);
+
+                binding.toneCreatorNoteInput.setValue(noteIndex);
                 binding.toneCreatorFundamentalFrequencyBar.setProgress(fundamentalFrequencyBar);
                 binding.toneCreatorMasterVolumeInput.setText(String.valueOf(masterVolume));
                 binding.toneCreatorMasterVolumeBar.setProgress(masterVolume);
@@ -127,33 +169,6 @@ public class ToneCreatorFragment extends Fragment {
         overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(String.valueOf(overtone.getFrequency()) + "Hz");
         overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(String.valueOf(overtone.getAmplitude()));
         overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.setProgress(overtone.getAmplitude());
-    }
-
-    private void initializeDefaultLayout() {
-        //  Spinners
-        ArrayAdapter<CharSequence> sampleRatesAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.sample_rates_array, android.R.layout.simple_spinner_item);
-        sampleRatesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.toneCreatorSampleRatesSpinner.setAdapter(sampleRatesAdapter);
-
-        ArrayAdapter<CharSequence> envelopePresetAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.envelope_presets_array, android.R.layout.simple_spinner_item);
-        envelopePresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.toneCreatorEnvelopePresetSpinner.setAdapter(envelopePresetAdapter);
-
-        ArrayAdapter<CharSequence> overtonesPresetAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.overtones_presets_array, android.R.layout.simple_spinner_item);
-        overtonesPresetAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.toneCreatorOvertonesPreset.setAdapter(overtonesPresetAdapter);
-
-        //  Bars
-        binding.toneCreatorFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
-
-        // Overtone indexes
-        for (int i = 0; i < overtoneBindings.length; i++) {
-            overtoneBindings[i].overtoneCreatorIndex.setText(viewModel.getIndexWithSuffix(i + 1));
-        }
-
-        // Layout visibility
-        binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
-        binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
     }
 
     private void initializeUIListeners() {
@@ -255,6 +270,13 @@ public class ToneCreatorFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.RELEASE_DURATION, s.toString());
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
+            }
+        });
+
+        binding.toneCreatorNoteInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                viewModel.updateNoteName(newVal);
             }
         });
 
