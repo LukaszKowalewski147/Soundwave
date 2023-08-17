@@ -138,4 +138,18 @@ public class UnitsConverter {
         }
         return 0;
     }
+
+    public static int convertSampleRateToPosition(SampleRate sampleRate) {
+        switch (sampleRate) {
+            case RATE_44_1_KHZ:
+                return 0;
+            case RATE_48_KHZ:
+                return 1;
+            case RATE_96_KHZ:
+                return 2;
+            case RATE_192_KHZ:
+                return 3;
+        }
+        return 0;
+    }
 }

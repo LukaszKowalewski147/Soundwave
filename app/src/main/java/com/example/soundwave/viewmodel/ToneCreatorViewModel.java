@@ -24,19 +24,23 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private SoundwaveRepo repository;
 
+    private MutableLiveData<SampleRate> sampleRate = new MutableLiveData<>();
     private MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
     private MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
     private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
     private MutableLiveData<Tone> tone = new MutableLiveData<>();
     private MutableLiveData<Boolean> anyChange = new MutableLiveData<>();
 
-    private SampleRate sampleRate;
     private boolean overtonesActivator;
 
     public ToneCreatorViewModel(@NonNull Application application) {
         super(application);
         repository = new SoundwaveRepo(application);
         initializeDefaultValues();
+    }
+
+    public LiveData<SampleRate> getSampleRate() {
+        return sampleRate;
     }
 
     public LiveData<EnvelopeComponent> getEnvelopeComponent() {
@@ -64,7 +68,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void updateSampleRate(int position) {
-        sampleRate = UnitsConverter.convertPositionToSampleRate(position);
+        SampleRate newSampleRate = UnitsConverter.convertPositionToSampleRate(position);
+        if (sampleRate.getValue() == newSampleRate)
+            return;
+        sampleRate.setValue(newSampleRate);
+        setAnyChange();
     }
 
     public void updateEnvelopePreset(int position) {
@@ -335,7 +343,9 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 */
     private void initializeDefaultValues() {
-        anyChange.setValue(false);
+        if (anyChange.getValue() == null)
+            anyChange.setValue(false);
+        updateSampleRate(0);
         setEnvelopePreset(PresetEnvelope.FLAT);
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
         setDefaultOvertones();

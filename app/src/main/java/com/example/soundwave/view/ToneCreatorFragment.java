@@ -28,7 +28,9 @@ import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
+import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.Scale;
+import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
 public class ToneCreatorFragment extends Fragment {
@@ -125,6 +127,12 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void initializeObservers() {
+        viewModel.getSampleRate().observe(getViewLifecycleOwner(), new Observer<SampleRate>() {
+            @Override
+            public void onChanged(SampleRate sampleRate) {
+                    binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate));
+            }
+        });
         viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), new Observer<EnvelopeComponent>() {
             @Override
             public void onChanged(EnvelopeComponent envelopeComponent) {
