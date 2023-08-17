@@ -85,6 +85,20 @@ public class UnitsConverter {
         return PresetEnvelope.FLAT;
     }
 
+    public static SampleRate convertPositionToSampleRate(int position) {
+        switch (position) {
+            case 0:
+                return SampleRate.RATE_44_1_KHZ;
+            case 1:
+                return SampleRate.RATE_48_KHZ;
+            case 2:
+                return SampleRate.RATE_96_KHZ;
+            case 3:
+                return SampleRate.RATE_192_KHZ;
+        }
+        return SampleRate.RATE_44_1_KHZ;
+    }
+
     public static int convertPresetEnvelopeToPosition(PresetEnvelope preset) {
         switch (preset) {
             case FLAT:

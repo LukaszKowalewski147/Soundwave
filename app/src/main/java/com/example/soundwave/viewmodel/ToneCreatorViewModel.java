@@ -17,6 +17,7 @@ import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
+import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.UnitsConverter;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
@@ -29,6 +30,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private MutableLiveData<Tone> tone = new MutableLiveData<>();
     private MutableLiveData<Boolean> anyChange = new MutableLiveData<>();
 
+    private SampleRate sampleRate;
     private boolean overtonesActivator;
 
     public ToneCreatorViewModel(@NonNull Application application) {
@@ -59,6 +61,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public int getOvertonesPresetPosition() {
         return UnitsConverter.convertPresetOvertonesToPosition(Options.overtonePreset);
+    }
+
+    public void updateSampleRate(int position) {
+        sampleRate = UnitsConverter.convertPositionToSampleRate(position);
     }
 
     public void updateEnvelopePreset(int position) {
