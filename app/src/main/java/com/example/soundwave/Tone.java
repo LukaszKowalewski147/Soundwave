@@ -1,18 +1,26 @@
 package com.example.soundwave;
 
+import com.example.soundwave.utils.SampleRate;
+
 public class Tone {
 
-    private final double[] samples;
+    private final byte[] samples;
     private final int fundamentalFrequency;
-    private final double volume;
+    private final double masterVolume;
+    private final double duration;
+    private final SampleRate sampleRate;
+    private boolean saved;
 
-    public Tone(double[] samples, int fundamentalFrequency, double volume) {
+    public Tone(byte[] samples, int fundamentalFrequency, double masterVolume, double duration, SampleRate sampleRate) {
         this.samples = samples;
         this.fundamentalFrequency = fundamentalFrequency;
-        this.volume = volume;
+        this.masterVolume = masterVolume;
+        this.duration = duration;
+        this.sampleRate = sampleRate;
+        this.saved = false;
     }
 
-    public double[] getSamples() {
+    public byte[] getSamples() {
         return samples;
     }
 
@@ -20,7 +28,23 @@ public class Tone {
         return fundamentalFrequency;
     }
 
-    public double getVolume() {
-        return volume;
+    public double getMasterVolume() {
+        return masterVolume;
+    }
+
+    public double getDuration() {
+        return duration;
+    }
+
+    public SampleRate getSampleRate() {
+        return sampleRate;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean isSaved) {
+        this.saved = isSaved;
     }
 }

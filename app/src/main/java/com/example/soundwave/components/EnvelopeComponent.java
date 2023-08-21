@@ -6,7 +6,7 @@ public class EnvelopeComponent {
     private final int sustainLevel;
     private final int sustainDuration;
     private final int releaseDuration;
-    private final int totalDuration;
+    private final double totalDurationInSeconds;
 
     public enum EnvelopeParameters {
         ATTACK_DURATION,
@@ -22,7 +22,7 @@ public class EnvelopeComponent {
         this.sustainLevel = sustainLevel;
         this.sustainDuration = sustainDuration;
         this.releaseDuration = releaseDuration;
-        this.totalDuration = calculateTotalDuration();
+        this.totalDurationInSeconds = calculateTotalDurationInSeconds();
     }
 
     public int getAttackDuration() {
@@ -45,11 +45,12 @@ public class EnvelopeComponent {
         return releaseDuration;
     }
 
-    public int getTotalDuration() {
-        return totalDuration;
+    public double getTotalDurationInSeconds() {
+        return totalDurationInSeconds;
     }
 
-    private int calculateTotalDuration() {
-        return attackDuration + decayDuration + sustainDuration + releaseDuration;
+    private double calculateTotalDurationInSeconds() {
+        int totalDurationInMilliseconds = attackDuration + decayDuration + sustainDuration + releaseDuration;
+        return totalDurationInMilliseconds / 1000.0d;
     }
 }

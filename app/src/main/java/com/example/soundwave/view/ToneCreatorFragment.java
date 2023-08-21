@@ -133,6 +133,7 @@ public class ToneCreatorFragment extends Fragment {
                     binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate));
             }
         });
+
         viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), new Observer<EnvelopeComponent>() {
             @Override
             public void onChanged(EnvelopeComponent envelopeComponent) {
