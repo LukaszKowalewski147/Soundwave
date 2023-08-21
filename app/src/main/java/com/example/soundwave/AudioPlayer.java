@@ -7,23 +7,24 @@ import android.media.AudioTrack;
 import android.widget.Toast;
 
 public class AudioPlayer {
-    private final Sound sound;
+    private final Tone tone;
     private AudioTrack audioTrack;
 
-    public AudioPlayer(Sound sound) {
-        this.sound = sound;
+    public AudioPlayer(Tone tone) {
+        this.tone = tone;
         audioTrack = null;
     }
 
-    public void load(Context context) {
+    //public void load(Context context) {
+    public void load() {
         if (!isReadyToWrite()) {
-            Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
             return;
         }
         audioTrack.flush();
-        audioTrack.write(sound.getSinWaveData(), 0, sound.getSinWaveData().length);
+        audioTrack.write(tone.getSamples(), 0, tone.getSamples().length);
         if (!isReadyToPlay()) {
-            Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
             return;
         }
     }
@@ -50,6 +51,12 @@ public class AudioPlayer {
         }
     }
 
+    public boolean isPlaying() {
+        if (audioTrack != null)
+            return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
+        return false;
+    }
+
     public int getPlaybackPosition() {
         return audioTrack.getPlaybackHeadPosition();
     }
@@ -62,12 +69,6 @@ public class AudioPlayer {
 
     private boolean isReadyToPlay() {
         return audioTrack.getState() == AudioTrack.STATE_INITIALIZED;
-    }
-
-    private boolean isPlaying() {
-        if (audioTrack != null)
-            return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
-        return false;
     }
 
     private void fadeOutStop() {
@@ -87,11 +88,11 @@ public class AudioPlayer {
                         .build())
                 .setAudioFormat(new AudioFormat.Builder()
                         .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                        .setSampleRate(sound.getSampleRate().sampleRate)
+                        .setSampleRate(tone.getSampleRate().sampleRate)
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
                 .setTransferMode(AudioTrack.MODE_STATIC)
-                .setBufferSizeInBytes(sound.getSinWaveData().length)
+                .setBufferSizeInBytes(tone.getSamples().length)
                 .build();
     }
 

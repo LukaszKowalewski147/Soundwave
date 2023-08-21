@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.soundwave.AudioPlayer;
 import com.example.soundwave.WavCreator;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
@@ -37,6 +38,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
     private MutableLiveData<Tone> tone = new MutableLiveData<>();
 
+    private AudioPlayer audioPlayer;
     private boolean overtonesActivator;
 
     public ToneCreatorViewModel(@NonNull Application application) {
@@ -283,16 +285,53 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     public void generateTone() {
         ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(), envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue());
         Tone newTone = toneGenerator.generateTone();
+        audioPlayer = new AudioPlayer(newTone);
+        audioPlayer.load();
         tone.setValue(newTone);
         controlPanelComponent.setValue(new ControlPanelComponent(
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.STANDARD,
                 ControlPanelComponent.ButtonState.STANDARD,
-                controlPanelComponent.getValue().getButtonsStates().get(ControlPanelComponent.Button.RESET)));
+                getControlPanelButtonsStates().get(ControlPanelComponent.Button.RESET)));
     }
 
-    public void playTone() {
-
+    public void playStopTone() {
+        HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+        if (buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP) == ControlPanelComponent.ButtonState.STANDARD) {
+            audioPlayer.stop();
+            audioPlayer.reload();
+            audioPlayer.play();
+            controlPanelComponent.setValue(new ControlPanelComponent(
+                    buttonsStates.get(ControlPanelComponent.Button.GENERATE),
+                    ControlPanelComponent.ButtonState.SECOND_FUNCTION,
+                    buttonsStates.get(ControlPanelComponent.Button.SAVE),
+                    buttonsStates.get(ControlPanelComponent.Button.RESET)));
+            Thread thread = new Thread() {
+                public void run() {
+                    int waitingTime = (int) (tone.getValue().getDuration() * 1000);
+                    try {
+                        Thread.sleep(waitingTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStatesInThread = getControlPanelButtonsStates();
+                    if (buttonsStatesInThread.get(ControlPanelComponent.Button.PLAY_STOP) == ControlPanelComponent.ButtonState.SECOND_FUNCTION)
+                        controlPanelComponent.postValue(new ControlPanelComponent(
+                                buttonsStatesInThread.get(ControlPanelComponent.Button.GENERATE),
+                                ControlPanelComponent.ButtonState.STANDARD,
+                                buttonsStatesInThread.get(ControlPanelComponent.Button.SAVE),
+                                buttonsStatesInThread.get(ControlPanelComponent.Button.RESET)));
+                }
+            };
+            thread.start();
+            return;
+        }
+        audioPlayer.stop();
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                buttonsStates.get(ControlPanelComponent.Button.GENERATE),
+                ControlPanelComponent.ButtonState.STANDARD,
+                buttonsStates.get(ControlPanelComponent.Button.SAVE),
+                buttonsStates.get(ControlPanelComponent.Button.RESET)));
     }
 
     public void saveTone(File filepathBase) {
@@ -374,6 +413,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void initializeDefaultValues() {
+        audioPlayer = null;
         if (controlPanelComponent.getValue() == null)
             controlPanelComponent.setValue(new ControlPanelComponent(
                     ControlPanelComponent.ButtonState.STANDARD,

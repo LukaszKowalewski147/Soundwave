@@ -430,8 +430,8 @@
                     android:layout_height="50dp"
                     android:layout_marginEnd="4dp"
                     android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="@id/tone_creator_fundamental_frequency_input"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tone_creator_fundamental_frequency_input" />
 
                 <SeekBar
@@ -799,14 +799,14 @@
             android:textColor="@color/black"
             android:textSize="11sp"
             app:layout_constraintBottom_toTopOf="@id/tone_creator_save_tone_btn"
-            app:layout_constraintEnd_toStartOf="@id/tone_creator_play_tone_btn"
+            app:layout_constraintEnd_toStartOf="@id/tone_creator_play_stop_tone_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tone_creator_control_panel_header_underline"
             tools:ignore="RtlSymmetry" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/tone_creator_play_tone_btn"
+            android:id="@+id/tone_creator_play_stop_tone_btn"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
             android:background="@drawable/background_btn_standard"
@@ -821,12 +821,6 @@
             app:layout_constraintStart_toEndOf="@id/tone_creator_generate_tone_btn"
             app:layout_constraintTop_toTopOf="@id/tone_creator_generate_tone_btn"
             tools:ignore="RtlSymmetry" />
-        <!--    stop state      -->     <!--
-            tools:background="@drawable/background_btn_red"
-            tools:drawableStart="@drawable/ic_stop"
-            tools:text="@string/stop_btn"                           -->
-        <!--    inactive state  -->     <!--
-            tools:background="@drawable/background_btn_inactive"    -->
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_creator_save_tone_btn"
