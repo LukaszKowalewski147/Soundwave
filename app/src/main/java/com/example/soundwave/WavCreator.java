@@ -1,13 +1,10 @@
 package com.example.soundwave;
 
-import android.content.Context;
 import android.os.Environment;
-import android.widget.Toast;
 
-import com.example.soundwave.utils.SampleRate;
+import com.example.soundwave.utils.UnitsConverter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,41 +14,43 @@ import java.nio.ByteOrder;
 
 public class WavCreator {
 
-    private static final String FILE_EXTENSION = ".wav";
-    private static final String FILE_FOLDER = "mySounds";
+    private static final String FILE_FOLDER = "myTones";
+    private final File filepathBase;
+    private final Tone tone;
+    private boolean success;
 
-    private Context context;
-    private Sound sound;
+    public WavCreator(Tone tone, File filepathBase) {
+        this.filepathBase = filepathBase;
+        this.tone = tone;
+        this.success = false;
+    }
 
-    public WavCreator(Context context, Sound sound) {
-        this.context = context;
-        this.sound = sound;
+    public static String getFileFolder() {
+        return FILE_FOLDER;
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 
     public void saveSound() {
         FileOutputStream out = null;
         if (isExternalStorageAvailable()) {
             String fileName = getFilename();
-            Toast.makeText(context, "Nazwa pliku: " + fileName, Toast.LENGTH_SHORT).show();
-            File wavFile = new File(context.getExternalFilesDir(FILE_FOLDER), fileName);
+            File wavFile = new File(filepathBase, fileName);
             try {
                 out = new FileOutputStream(wavFile);
                 writeWavHeader(out);
-                out.write(sound.getSinWaveData());
+                out.write(tone.getSamples());
                 updateWavHeader(wavFile);
-                Toast.makeText(context, "Zapisano do: " + context.getExternalFilesDir(FILE_FOLDER), Toast.LENGTH_LONG).show();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(context, "Błąd zapisu", Toast.LENGTH_SHORT).show();
+                success = true;
             } catch (IOException e) {
-                Toast.makeText(context, "Błąd zapisu", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             } finally {
                 try {
                     if (out != null)
                         out.close();
                 } catch (IOException e) {
-                    Toast.makeText(context, "Błąd zamknięcia pliku", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -59,36 +58,18 @@ public class WavCreator {
     }
 
     private String getFilename() {
-        SampleRate samplingRate = sound.getSampleRate();
-        String sampleingRateTxt = "?kHz-";
-        switch (samplingRate) {
-            case RATE_44_1_KHZ:
-                sampleingRateTxt = "44_1kHz-";
-                break;
-            case RATE_48_KHZ:
-                sampleingRateTxt = "48kHz-";
-                break;
-            case RATE_96_KHZ:
-                sampleingRateTxt = "96kHz-";
-                break;
-            case RATE_192_KHZ:
-                sampleingRateTxt = "192kHz-";
-                break;
-        }
-        String filename = sound.getNumberOfTones() + "tone-" + sound.getDuration() + "s-" + sampleingRateTxt + System.currentTimeMillis() + FILE_EXTENSION;
-        String vol_debug_filename = sound.getNumberOfTones() + "tone-" + sound.getDuration() + "s-" + sampleingRateTxt + "vol" + sound.tmp_debug_volume + FILE_EXTENSION;
-        return filename;
+        String fileExtension = ".wav";
+        String sampleRateTxt = UnitsConverter.convertSampleRateToString(tone.getSampleRate()) + "-";
+        return tone.getFundamentalFrequency() + "Hz-" + tone.getDuration() + "s-" + sampleRateTxt + System.currentTimeMillis() + fileExtension;
     }
 
     private boolean isExternalStorageAvailable() {
         String externalStorageState = Environment.getExternalStorageState();
-        if (externalStorageState.equals(Environment.MEDIA_MOUNTED))
-            return true;
-        return false;
+        return externalStorageState.equals(Environment.MEDIA_MOUNTED);
     }
 
     private void writeWavHeader(OutputStream out) throws IOException {
-        final int samplingRate = sound.getSampleRate().sampleRate;
+        final int sampleRate = tone.getSampleRate().sampleRate;
         short channels = 1;
         short bitDepth = 16;
 
@@ -96,8 +77,8 @@ public class WavCreator {
                 .allocate(14)
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .putShort(channels)
-                .putInt(samplingRate)
-                .putInt(samplingRate * channels * (bitDepth / 8))
+                .putInt(sampleRate)
+                .putInt(sampleRate * channels * (bitDepth / 8))
                 .putShort((short) (channels * (bitDepth / 8)))
                 .putShort(bitDepth)
                 .array();
@@ -141,14 +122,12 @@ public class WavCreator {
             // Subchunk2Size
             accessWave.seek(40);
             accessWave.write(sizes, 4, 4);
-        } catch (IOException ex) {
-            throw ex;
         } finally {
             if (accessWave != null) {
                 try {
                     accessWave.close();
                 } catch (IOException ex) {
-
+                    ex.printStackTrace();
                 }
             }
         }
