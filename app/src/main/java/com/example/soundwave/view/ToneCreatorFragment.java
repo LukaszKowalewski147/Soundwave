@@ -2,8 +2,10 @@ package com.example.soundwave.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +22,9 @@ import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
+import com.example.soundwave.Tone;
+import com.example.soundwave.WavCreator;
+import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
@@ -32,6 +37,8 @@ import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.Scale;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
+
+import java.io.File;
 
 public class ToneCreatorFragment extends Fragment {
 
@@ -112,14 +119,14 @@ public class ToneCreatorFragment extends Fragment {
         }
 
         //  Control panel buttons
-        binding.toneCreatorPlayToneBtn.setEnabled(false);
-        binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        //binding.toneCreatorPlayToneBtn.setEnabled(false);
+        //binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
 
-        binding.toneCreatorSaveToneBtn.setEnabled(false);
-        binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        //binding.toneCreatorSaveToneBtn.setEnabled(false);
+        //binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
 
-        binding.toneCreatorResetToneBtn.setEnabled(false);
-        binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        //binding.toneCreatorResetToneBtn.setEnabled(false);
+        //binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
 
         //  Layout visibility
         binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
@@ -174,6 +181,13 @@ public class ToneCreatorFragment extends Fragment {
             }
         });
 
+        viewModel.getControlPanelComponent().observe(getViewLifecycleOwner(), new Observer<ControlPanelComponent>() {
+            @Override
+            public void onChanged(ControlPanelComponent controlPanelComponent) {
+                manageControlPanel(controlPanelComponent);
+            }
+        });
+
         viewModel.getOvertones().observe(getViewLifecycleOwner(), new Observer<Overtone[]>() {
             @Override
             public void onChanged(Overtone[] overtones) {
@@ -184,18 +198,46 @@ public class ToneCreatorFragment extends Fragment {
             }
         });
 
+        viewModel.getTone().observe(getViewLifecycleOwner(), new Observer<Tone>() {
+            @Override
+            public void onChanged(Tone tone) {
+                /*if (tone == null) {
+                    binding.toneCreatorGenerateToneBtn.setEnabled(true);
+                    binding.toneCreatorGenerateToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                    return;
+                }
+                binding.toneCreatorGenerateToneBtn.setEnabled(false);
+                binding.toneCreatorGenerateToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+                binding.toneCreatorPlayToneBtn.setEnabled(true);
+                binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                if (tone.isSaved()) {
+                    binding.toneCreatorSaveToneBtn.setEnabled(false);
+                    binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_green);
+                } else {
+                    binding.toneCreatorSaveToneBtn.setEnabled(true);
+                    binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                }*/
+            }
+        });
+/*
         viewModel.getAnyChange().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if (aBoolean) {
+                    binding.toneCreatorGenerateToneBtn.setEnabled(true);
+                    binding.toneCreatorGenerateToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
                     binding.toneCreatorResetToneBtn.setEnabled(true);
                     binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
                     return;
                 }
+                if (viewModel.getTone().getValue() != null) {
+                    binding.toneCreatorGenerateToneBtn.setEnabled(false);
+                    binding.toneCreatorGenerateToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+                }
                 binding.toneCreatorResetToneBtn.setEnabled(false);
                 binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
             }
-        });
+        });*/
     }
 
     private void updateOvertoneView(int overtoneIndex, Overtone overtone) {
@@ -500,7 +542,19 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorGenerateToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.generateTone();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(R.string.alert_dialog_tone_creator_generate_message);
+                builder.setPositiveButton(R.string.alert_dialog_tone_creator_generate_positive, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takeGenerateToneAction();
+                    }
+                });
+                builder.setNegativeButton(R.string.alert_dialog_tone_creator_generate_negative, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -514,7 +568,19 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorSaveToneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.saveTone();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(R.string.alert_dialog_tone_creator_save_message);
+                builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takeSaveToneAction();
+                    }
+                });
+                builder.setNegativeButton(R.string.alert_dialog_tone_creator_save_negative, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -538,8 +604,91 @@ public class ToneCreatorFragment extends Fragment {
         });
     }
 
+    private void takeGenerateToneAction() {
+        viewModel.generateTone();
+    }
+
+    private void takeSaveToneAction() {
+        File file = getActivity().getExternalFilesDir(WavCreator.getFileFolder());
+        viewModel.saveTone(file);
+    }
+
     private void takeResetAction() {
         binding.toneCreatorOvertonesActivator.setChecked(false);
         viewModel.resetTone();
+    }
+
+    private void manageControlPanel(ControlPanelComponent controlPanelComponent) {
+        Drawable icon;
+        ControlPanelComponent.ButtonState generateBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.GENERATE);
+        ControlPanelComponent.ButtonState playStopBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.PLAY_STOP);
+        ControlPanelComponent.ButtonState saveBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.SAVE);
+        ControlPanelComponent.ButtonState resetBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.RESET);
+
+        switch (generateBtnState) {
+            case STANDARD:
+                binding.toneCreatorGenerateToneBtn.setEnabled(true);
+                binding.toneCreatorGenerateToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                break;
+            case INACTIVE:
+                binding.toneCreatorGenerateToneBtn.setEnabled(false);
+                binding.toneCreatorGenerateToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        }
+
+        switch (playStopBtnState) {
+            case STANDARD:
+                binding.toneCreatorPlayToneBtn.setEnabled(true);
+                binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                binding.toneCreatorPlayToneBtn.setText(R.string.play_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_note, null);
+                binding.toneCreatorPlayToneBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case INACTIVE:
+                binding.toneCreatorPlayToneBtn.setEnabled(false);
+                binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+                binding.toneCreatorPlayToneBtn.setText(R.string.play_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_note, null);
+                binding.toneCreatorPlayToneBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case SECOND_FUNCTION:
+                binding.toneCreatorPlayToneBtn.setEnabled(true);
+                binding.toneCreatorPlayToneBtn.setBackgroundResource(R.drawable.background_btn_red);
+                binding.toneCreatorPlayToneBtn.setText(R.string.stop_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop, null);
+                binding.toneCreatorPlayToneBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        }
+
+        switch (saveBtnState) {
+            case STANDARD:
+                binding.toneCreatorSaveToneBtn.setEnabled(true);
+                binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                binding.toneCreatorSaveToneBtn.setText(R.string.save_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_save, null);
+                binding.toneCreatorSaveToneBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case INACTIVE:
+                binding.toneCreatorSaveToneBtn.setEnabled(false);
+                binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+                binding.toneCreatorSaveToneBtn.setText(R.string.save_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_save, null);
+                binding.toneCreatorSaveToneBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case DONE:
+                binding.toneCreatorSaveToneBtn.setEnabled(false);
+                binding.toneCreatorSaveToneBtn.setBackgroundResource(R.drawable.background_btn_green);
+                binding.toneCreatorSaveToneBtn.setText(R.string.saved_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_done, null);
+                binding.toneCreatorSaveToneBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        }
+
+        switch (resetBtnState) {
+            case STANDARD:
+                binding.toneCreatorResetToneBtn.setEnabled(true);
+                binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                break;
+            case INACTIVE:
+                binding.toneCreatorResetToneBtn.setEnabled(false);
+                binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        }
     }
 }

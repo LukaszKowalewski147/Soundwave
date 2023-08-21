@@ -8,10 +8,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.soundwave.WavCreator;
+import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.model.entity.Overtone;
-import com.example.soundwave.model.entity.Tone;
+import com.example.soundwave.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.Options;
@@ -19,6 +21,10 @@ import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.UnitsConverter;
+import com.example.soundwave.utils.ToneGenerator;
+
+import java.io.File;
+import java.util.HashMap;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
 
@@ -27,9 +33,9 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private MutableLiveData<SampleRate> sampleRate = new MutableLiveData<>();
     private MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
     private MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
+    private MutableLiveData<ControlPanelComponent> controlPanelComponent = new MutableLiveData<>();
     private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
     private MutableLiveData<Tone> tone = new MutableLiveData<>();
-    private MutableLiveData<Boolean> anyChange = new MutableLiveData<>();
 
     private boolean overtonesActivator;
 
@@ -51,12 +57,16 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return fundamentalFrequencyComponent;
     }
 
+    public LiveData<ControlPanelComponent> getControlPanelComponent() {
+        return controlPanelComponent;
+    }
+
     public LiveData<Overtone[]> getOvertones() {
         return overtones;
     }
 
-    public MutableLiveData<Boolean> getAnyChange() {
-        return anyChange;
+    public LiveData<Tone> getTone() {
+        return tone;
     }
 
     public int getEnvelopePresetPosition() {
@@ -271,15 +281,36 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void generateTone() {
-        //Sound sound = new SoundGenerator(getDuration(), getSampleRate()).generateSound(getTones());
+        ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(), envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue());
+        Tone newTone = toneGenerator.generateTone();
+        tone.setValue(newTone);
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.STANDARD,
+                controlPanelComponent.getValue().getButtonsStates().get(ControlPanelComponent.Button.RESET)));
     }
 
     public void playTone() {
 
     }
 
-    public void saveTone() {
+    public void saveTone(File filepathBase) {
+        WavCreator wavCreator = new WavCreator(tone.getValue(), filepathBase);
+        wavCreator.saveSound();
 
+        if (wavCreator.isSuccess()) {
+            HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+            ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
+            ControlPanelComponent.ButtonState playStopBtnState = buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP);
+            ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
+
+            controlPanelComponent.setValue(new ControlPanelComponent(
+                    generateBtnState,
+                    playStopBtnState,
+                    ControlPanelComponent.ButtonState.DONE,
+                    resetBtnState));
+        }
     }
 
     public void resetTone() {
@@ -328,7 +359,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return overtones;
         return null;
     }
-
+*/
     private int getActiveOvertonesNumber() {
         int activeOvertonesNumber = 0;
 
@@ -339,18 +370,26 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private double getAmplitude() {
-        return (double) masterVolume.getValue() / 100.0d;
+        return (double) fundamentalFrequencyComponent.getValue().getMasterVolume();
     }
-*/
+
     private void initializeDefaultValues() {
-        if (anyChange.getValue() == null)
-            anyChange.setValue(false);
+        if (controlPanelComponent.getValue() == null)
+            controlPanelComponent.setValue(new ControlPanelComponent(
+                    ControlPanelComponent.ButtonState.STANDARD,
+                    ControlPanelComponent.ButtonState.INACTIVE,
+                    ControlPanelComponent.ButtonState.INACTIVE,
+                    ControlPanelComponent.ButtonState.INACTIVE));
         updateSampleRate(0);
         setEnvelopePreset(PresetEnvelope.FLAT);
-        fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
+        fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
+                Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
         setDefaultOvertones();
-        //setTone();
-        anyChange.setValue(false);
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE));
     }
 
     private void setTone() {
@@ -404,7 +443,21 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void setAnyChange() {
-        if (!anyChange.getValue().booleanValue())
-            anyChange.setValue(true);
+        HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+        ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
+        ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
+
+        if (generateBtnState == ControlPanelComponent.ButtonState.STANDARD && resetBtnState == ControlPanelComponent.ButtonState.STANDARD)
+            return;
+
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.STANDARD,
+                buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP),
+                buttonsStates.get(ControlPanelComponent.Button.SAVE),
+                ControlPanelComponent.ButtonState.STANDARD));
+    }
+
+    private HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> getControlPanelButtonsStates() {
+        return controlPanelComponent.getValue().getButtonsStates();
     }
 }
