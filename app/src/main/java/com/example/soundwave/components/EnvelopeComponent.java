@@ -17,6 +17,13 @@ public class EnvelopeComponent {
         RELEASE_DURATION
     }
 
+    public enum EnvelopePhase {
+        ATTACK,
+        DECAY,
+        SUSTAIN,
+        RELEASE
+    }
+
     public EnvelopeComponent(int attackDuration, int decayDuration, int sustainLevel, int sustainDuration, int releaseDuration) {
         this.attackDuration = attackDuration;
         this.decayDuration = decayDuration;
