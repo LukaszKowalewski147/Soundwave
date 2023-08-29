@@ -25,6 +25,7 @@ import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.utils.ToneGenerator;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
@@ -261,6 +262,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
             newPresetOvertones[i] = new Overtone(i, newPresetOvertones[i].getFrequency(), targetOvertonesPreset.amplitudes[i], newPresetOvertones[i].isActive());
         overtones.setValue(newPresetOvertones);
+        setAnyChange();
     }
 
     public void updateOvertoneAmplitude(int index, int amplitude) {
@@ -271,6 +273,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 updatedOvertones[i] = new Overtone(i, updatedOvertones[i].getFrequency(), amplitude, updatedOvertones[i].isActive());
         }
         overtones.setValue(updatedOvertones);
+        setAnyChange();
     }
 
     public void updateOvertoneState(int index, boolean isActive) {
@@ -280,10 +283,12 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 updatedOvertones[i] = new Overtone(i, updatedOvertones[i].getFrequency(), updatedOvertones[i].getAmplitude(), isActive);
         }
         overtones.setValue(updatedOvertones);
+        setAnyChange();
     }
 
     public void generateTone() {
-        ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(), envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue());
+        ArrayList<Overtone> activeOvertones = getActiveOvertones();
+        ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(), envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue(), activeOvertones);
         Tone newTone = toneGenerator.generateTone();
         audioPlayer = new AudioPlayer(newTone);
         audioPlayer.load();
@@ -399,13 +404,22 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return null;
     }
 */
-    private int getActiveOvertonesNumber() {
-        int activeOvertonesNumber = 0;
 
+    private ArrayList<Overtone> getActiveOvertones() {
         if (!overtonesActivator)
-            return activeOvertonesNumber;
+            return null;
 
-        return activeOvertonesNumber;
+        ArrayList<Overtone> activeOvertonesList = new ArrayList<>();
+        Overtone[] allOvertones = overtones.getValue();
+
+        for (Overtone overtone : allOvertones) {
+            if (overtone.isActive())
+                activeOvertonesList.add(overtone);
+        }
+
+        if (activeOvertonesList.isEmpty())
+            return null;
+        return activeOvertonesList;
     }
 
     private double getAmplitude() {

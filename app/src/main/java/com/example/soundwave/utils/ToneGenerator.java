@@ -1,37 +1,27 @@
 package com.example.soundwave.utils;
 
-import com.example.soundwave.Sound;
 import com.example.soundwave.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.model.entity.Overtone;
 
+import java.util.ArrayList;
+
 public class ToneGenerator {
     private final SampleRate sampleRate;
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
-    private final Overtone[] overtones;
+    private final ArrayList<Overtone> overtones;
 
     private final int samplesNumber;
     private final double[] samples;
     private final byte[] outputSound;
 
-    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent envelopeComponent, FundamentalFrequencyComponent fundamentalFrequencyComponent, Overtone[] overtones) {
+    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent envelopeComponent, FundamentalFrequencyComponent fundamentalFrequencyComponent, ArrayList<Overtone> overtones) {
         this.sampleRate = sampleRate;
         this.envelopeComponent = envelopeComponent;
         this.fundamentalFrequencyComponent = fundamentalFrequencyComponent;
         this.overtones = overtones;
-
-        samplesNumber = (int) Math.ceil(envelopeComponent.getTotalDurationInSeconds() * sampleRate.sampleRate);
-        samples = new double[samplesNumber];
-        outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
-    }
-
-    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent envelopeComponent, FundamentalFrequencyComponent fundamentalFrequencyComponent) {
-        this.sampleRate = sampleRate;
-        this.envelopeComponent = envelopeComponent;
-        this.fundamentalFrequencyComponent = fundamentalFrequencyComponent;
-        this.overtones = null;
 
         samplesNumber = (int) Math.ceil(envelopeComponent.getTotalDurationInSeconds() * sampleRate.sampleRate);
         samples = new double[samplesNumber];
@@ -49,19 +39,28 @@ public class ToneGenerator {
             samples[i] = masterVolume * (Math.sin(2 * Math.PI * i / (sampleRateInHz / fundamentalFrequency)));
         }
 
-        // add harmonics data
-        if (overtones != null) {
-            for (Overtone overtone : overtones) {
-                int overtoneAmplitude = overtone.getAmplitude();
-                double overtoneFrequency = overtone.getFrequency();
+        if (overtones != null)
+            addOvertonesData(sampleRateInHz, masterVolume);
 
-                for (int j = 0; j < samplesNumber; ++j) {
-                    samples[j] += masterVolume * overtoneAmplitude * (Math.sin(2 * Math.PI * j / (sampleRateInHz / overtoneFrequency)));
-                }
+        compressAmplitude(masterVolume);
+        fadeOutFlatZero();
+        convertTo16BitPCM();
+
+        return new Tone(outputSound, (int) fundamentalFrequency, masterVolume, 1.0d, sampleRate);
+    }
+
+    private void addOvertonesData(int sampleRateInHz, double masterVolume) {
+        for (Overtone overtone : overtones) {
+            double overtoneAmplitude = overtone.getAmplitude() / 100.0d;
+            double overtoneFrequency = overtone.getFrequency();
+
+            for (int i = 0; i < samplesNumber; ++i) {
+                samples[i] += masterVolume * overtoneAmplitude * (Math.sin(2 * Math.PI * i / (sampleRateInHz / overtoneFrequency)));
             }
         }
+    }
 
-        // find max volume in samples
+    private void compressAmplitude(double masterVolume) {
         double maxVolumeSample = samples[0];
         for (int i = 1; i < samplesNumber; ++i) {
             if (samples[i] > maxVolumeSample)
@@ -74,27 +73,111 @@ public class ToneGenerator {
         for (int i = 0; i < samplesNumber; ++i) {
             samples[i] = samples[i] / compressionRate;
         }
-
-        // convert to 16 bit pcm sound array
-        int index = 0;
-        for (final double dVal : samples) {
-            // scale to maximum amplitude
-            final short val = (short) ((dVal * 32767));
-            // in 16 bit wav PCM, first byte is the low order byte
-            outputSound[index++] = (byte) (val & 0x00ff);
-            outputSound[index++] = (byte) ((val & 0xff00) >>> 8);
-        }
-        fadeIn();
-        fadeOut();
-
-        return new Tone(outputSound, (int) fundamentalFrequency, masterVolume, 1.0d, sampleRate);
     }
 
-    public Sound generateSound(Tone tones) {
-        //double[] toneData = tones.getSamples();
-        //System.arraycopy(toneData, 0, samples, 0, samplesNumber);
 
-        // convert to 16 bit pcm sound array
+
+    /*
+    private void applyEnvelope() {
+        double masterVolume = fundamentalFrequencyComponent.getMasterVolume() / 100.0d;
+        double sustainLevel = envelopeComponent.getSustainLevel() / 100.0d;
+        double totalTimeInMilliseconds = envelopeComponent.getTotalDurationInMilliseconds();
+
+        int attackInMilliseconds = envelopeComponent.getAttackDuration();
+        int decayInMilliseconds = envelopeComponent.getDecayDuration();
+        int sustainInMilliseconds = envelopeComponent.getSustainDuration();
+        int releaseInMilliseconds = envelopeComponent.getReleaseDuration();
+
+        double attackTimePercent = attackInMilliseconds * 100 / totalTimeInMilliseconds;
+        double decayTimePercent = decayInMilliseconds * 100 / totalTimeInMilliseconds;
+        double sustainTimePercent = sustainInMilliseconds * 100 / totalTimeInMilliseconds;
+        double releaseTimePercent = releaseInMilliseconds * 100 / totalTimeInMilliseconds;
+
+        int attackSamples = (int) Math.round(samplesNumber * attackTimePercent / 100);
+        int decaySamples = (int) Math.round(samplesNumber * decayTimePercent / 100);
+        int sustainSamples = (int) Math.round(samplesNumber * sustainTimePercent / 100);
+        int releaseSamples = (int) Math.round(samplesNumber * releaseTimePercent / 100);
+
+        double step;
+        int startSample = 0;
+        int endSample;
+
+        //  Attack phase
+        if (attackSamples > 0) {
+            step = masterVolume / attackSamples;
+            endSample = attackSamples;
+            double attackFactor = 0.0d;
+
+            for (int i = startSample; i < endSample; ++i) {
+                samples[i] *= attackFactor;
+                attackFactor = i * step;
+            }
+        }
+//
+        //  Decay phase
+        if (decaySamples > 0) {
+            step = (1.0d - sustainLevel) / decaySamples;
+            startSample = attackSamples;
+            endSample = startSample + decaySamples;
+            double decayFactor = 1.0d;
+            int sampleIndex = decaySamples;
+
+            for (int i = startSample; i < endSample; ++i) {
+                samples[i] *= decayFactor;
+                step = ((1.0d - sustainLevel) / decaySamples) * 2 * (--sampleIndex / (double) decaySamples);
+                decayFactor -= step;
+            }
+        }
+//
+        //  Decay phase
+        if (decaySamples > 0) {
+            startSample = attackSamples;
+            endSample = startSample + decaySamples;
+            EnvelopeCalculator calculator = new EnvelopeCalculator(EnvelopeComponent.EnvelopePhase.DECAY, decaySamples, sustainLevel);
+            int sampleIndex = 0;
+            for (int i = startSample; i < endSample; ++i) {
+                samples[i] *= calculator.getMultiplier(sampleIndex);
+                ++sampleIndex;
+            }
+        }
+
+        //  Sustain phase
+        if (sustainSamples > 0) {
+            startSample = attackSamples + decaySamples;
+            endSample = startSample + sustainSamples;
+
+            for (int i = startSample; i < endSample; ++i) {
+                samples[i] *= sustainLevel;
+            }
+        }
+//
+        //  Release phase
+        if (releaseSamples > 0) {
+            step = sustainLevel / releaseSamples;
+            startSample = attackSamples + decaySamples + sustainSamples;
+            double releaseFactor = sustainLevel;
+
+            for (int i = startSample; i < samplesNumber; ++i) {
+                samples[i] *= releaseFactor;
+                releaseFactor -= step;
+            }
+        }
+//
+        //  Release phase
+        if (releaseSamples > 0) {
+            startSample = attackSamples + decaySamples + sustainSamples;
+            EnvelopeCalculator calculator = new EnvelopeCalculator(EnvelopeComponent.EnvelopePhase.RELEASE, releaseSamples, sustainLevel);
+            int sampleIndex = 0;
+
+            for (int i = startSample; i < samplesNumber; ++i) {
+                samples[i] *= calculator.getMultiplier(sampleIndex);
+                ++sampleIndex;
+            }
+        }
+    }
+*/
+
+    private void convertTo16BitPCM() {
         int index = 0;
         for (final double dVal : samples) {
             // scale to maximum amplitude
@@ -103,10 +186,6 @@ public class ToneGenerator {
             outputSound[index++] = (byte) (val & 0x00ff);
             outputSound[index++] = (byte) ((val & 0xff00) >>> 8);
         }
-        fadeIn();
-        fadeOut();
-        int tmp_debug_volume = (int) (tones.getMasterVolume() * 100);
-        return new Sound(outputSound, 1, (short) 1, sampleRate, tmp_debug_volume);
     }
 
     private void fadeIn() {
@@ -135,12 +214,37 @@ public class ToneGenerator {
         }
     }
 
+    private void fadeOutFlatZero() {
+        int lastCrossingIndex = getLastCrossingIndex();
+
+        for (int i = lastCrossingIndex; i < samplesNumber; ++i)
+           samples[i] = 0;
+    }
+
+
+    private int getLastCrossingIndex() {
+        boolean isNegative = samples[samplesNumber - 1] < 0;
+
+        if (isNegative) {
+            for (int i = samplesNumber - 2; i > 0; --i) {
+                if (samples[i] >= 0)
+                    return i + 1;
+            }
+        } else {
+            for (int i = samplesNumber - 2; i > 0; --i) {
+                if (samples[i] < 0)
+                    return i + 1;
+            }
+        }
+        return samplesNumber - 1;
+    }
+
     private double getFaderStep() {
         int fadeDuration = getFadeDuration();
         return 1.0d / fadeDuration;
     }
 
     private int getFadeDuration() {
-        return sampleRate.sampleRate / 50; // 0.02s
+        return sampleRate.sampleRate / 1000; // 0.001s
     }
 }

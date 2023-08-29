@@ -1,5 +1,6 @@
 package com.example.soundwave.components;
 
+import com.example.soundwave.SineWave;
 import com.example.soundwave.utils.Scale;
 import com.example.soundwave.utils.UnitsConverter;
 
@@ -37,8 +38,8 @@ public class FundamentalFrequencyComponent {
         return noteIndex;
     }
 
-    public String getNoteName() {
-        return Scale.values()[noteIndex].noteName;
+    public SineWave getSineWave() {
+        return new SineWave(fundamentalFrequency, masterVolume);
     }
 
     private int assignBar() {
