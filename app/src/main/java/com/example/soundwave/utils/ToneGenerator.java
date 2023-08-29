@@ -43,6 +43,7 @@ public class ToneGenerator {
             addOvertonesData(sampleRateInHz, masterVolume);
 
         compressAmplitude(masterVolume);
+        applyEnvelope();
         fadeOutFlatZero();
         convertTo16BitPCM();
 
@@ -75,9 +76,6 @@ public class ToneGenerator {
         }
     }
 
-
-
-    /*
     private void applyEnvelope() {
         double masterVolume = fundamentalFrequencyComponent.getMasterVolume() / 100.0d;
         double sustainLevel = envelopeComponent.getSustainLevel() / 100.0d;
@@ -113,22 +111,7 @@ public class ToneGenerator {
                 attackFactor = i * step;
             }
         }
-//
-        //  Decay phase
-        if (decaySamples > 0) {
-            step = (1.0d - sustainLevel) / decaySamples;
-            startSample = attackSamples;
-            endSample = startSample + decaySamples;
-            double decayFactor = 1.0d;
-            int sampleIndex = decaySamples;
 
-            for (int i = startSample; i < endSample; ++i) {
-                samples[i] *= decayFactor;
-                step = ((1.0d - sustainLevel) / decaySamples) * 2 * (--sampleIndex / (double) decaySamples);
-                decayFactor -= step;
-            }
-        }
-//
         //  Decay phase
         if (decaySamples > 0) {
             startSample = attackSamples;
@@ -150,19 +133,7 @@ public class ToneGenerator {
                 samples[i] *= sustainLevel;
             }
         }
-//
-        //  Release phase
-        if (releaseSamples > 0) {
-            step = sustainLevel / releaseSamples;
-            startSample = attackSamples + decaySamples + sustainSamples;
-            double releaseFactor = sustainLevel;
 
-            for (int i = startSample; i < samplesNumber; ++i) {
-                samples[i] *= releaseFactor;
-                releaseFactor -= step;
-            }
-        }
-//
         //  Release phase
         if (releaseSamples > 0) {
             startSample = attackSamples + decaySamples + sustainSamples;
@@ -175,7 +146,6 @@ public class ToneGenerator {
             }
         }
     }
-*/
 
     private void convertTo16BitPCM() {
         int index = 0;
