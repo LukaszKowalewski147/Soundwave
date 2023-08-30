@@ -1,6 +1,9 @@
 package com.example.soundwave.components;
 
+import com.example.soundwave.utils.PresetEnvelope;
+
 public class EnvelopeComponent {
+    private final PresetEnvelope envelopePreset;
     private final int attackDuration;
     private final int decayDuration;
     private final int sustainLevel;
@@ -24,7 +27,9 @@ public class EnvelopeComponent {
         RELEASE
     }
 
-    public EnvelopeComponent(int attackDuration, int decayDuration, int sustainLevel, int sustainDuration, int releaseDuration) {
+    public EnvelopeComponent(PresetEnvelope envelopePreset, int attackDuration, int decayDuration,
+                             int sustainLevel, int sustainDuration, int releaseDuration) {
+        this.envelopePreset = envelopePreset;
         this.attackDuration = attackDuration;
         this.decayDuration = decayDuration;
         this.sustainLevel = sustainLevel;
@@ -32,6 +37,10 @@ public class EnvelopeComponent {
         this.releaseDuration = releaseDuration;
         this.totalDurationInMilliseconds = calculateTotalDurationInMilliseconds();
         this.totalDurationInSeconds = calculateTotalDurationInSeconds();
+    }
+
+    public PresetEnvelope getEnvelopePreset() {
+        return envelopePreset;
     }
 
     public int getAttackDuration() {

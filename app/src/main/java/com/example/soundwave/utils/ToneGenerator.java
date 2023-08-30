@@ -3,27 +3,27 @@ package com.example.soundwave.utils;
 import com.example.soundwave.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
+import com.example.soundwave.components.OvertonesComponent;
 import com.example.soundwave.model.entity.Overtone;
-
-import java.util.ArrayList;
 
 public class ToneGenerator {
     private final SampleRate sampleRate;
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
-    private final ArrayList<Overtone> overtones;
+    private final OvertonesComponent overtonesComponent;
 
     private final int samplesNumber;
     private final double[] samples;
     private final byte[] outputSound;
 
-    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent envelopeComponent, FundamentalFrequencyComponent fundamentalFrequencyComponent, ArrayList<Overtone> overtones) {
+    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent eC,
+                         FundamentalFrequencyComponent ffc, OvertonesComponent oC) {
         this.sampleRate = sampleRate;
-        this.envelopeComponent = envelopeComponent;
-        this.fundamentalFrequencyComponent = fundamentalFrequencyComponent;
-        this.overtones = overtones;
+        this.envelopeComponent = eC;
+        this.fundamentalFrequencyComponent = ffc;
+        this.overtonesComponent = oC;
 
-        samplesNumber = (int) Math.ceil(envelopeComponent.getTotalDurationInSeconds() * sampleRate.sampleRate);
+        samplesNumber = (int) Math.ceil(eC.getTotalDurationInSeconds() * sampleRate.sampleRate);
         samples = new double[samplesNumber];
         outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
     }
@@ -39,7 +39,7 @@ public class ToneGenerator {
             samples[i] = masterVolume * (Math.sin(2 * Math.PI * i / (sampleRateInHz / fundamentalFrequency)));
         }
 
-        if (overtones != null)
+        if (overtonesComponent.getOvertones() != null)
             addOvertonesData(sampleRateInHz, masterVolume);
 
         compressAmplitude(masterVolume);
@@ -47,11 +47,11 @@ public class ToneGenerator {
         fadeOutFlatZero();
         convertTo16BitPCM();
 
-        return new Tone(outputSound, (int) fundamentalFrequency, masterVolume, 1.0d, sampleRate);
+        return new Tone(sampleRate, envelopeComponent, fundamentalFrequencyComponent, overtonesComponent, outputSound);
     }
 
     private void addOvertonesData(int sampleRateInHz, double masterVolume) {
-        for (Overtone overtone : overtones) {
+        for (Overtone overtone : overtonesComponent.getOvertones()) {
             double overtoneAmplitude = overtone.getAmplitude() / 100.0d;
             double overtoneFrequency = overtone.getFrequency();
 

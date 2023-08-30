@@ -60,7 +60,7 @@ public class WavCreator {
     private String getFilename() {
         String fileExtension = ".wav";
         String sampleRateTxt = UnitsConverter.convertSampleRateToString(tone.getSampleRate()) + "-";
-        return tone.getFundamentalFrequency() + "Hz-" + tone.getDuration() + "s-" + sampleRateTxt + System.currentTimeMillis() + fileExtension;
+        return tone.getFundamentalFrequency() + "Hz-" + tone.getDurationInSeconds() + "s-" + sampleRateTxt + System.currentTimeMillis() + fileExtension;
     }
 
     private boolean isExternalStorageAvailable() {
