@@ -123,6 +123,8 @@ public class ToneCreatorFragment extends Fragment {
         //  Layout visibility
         binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
         binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
+
+        manageToneDetails(null);
     }
 
     private void initializeObservers() {
@@ -193,7 +195,7 @@ public class ToneCreatorFragment extends Fragment {
         viewModel.getTone().observe(getViewLifecycleOwner(), new Observer<Tone>() {
             @Override
             public void onChanged(Tone tone) {
-
+                manageToneDetails(tone);
             }
         });
     }
@@ -654,5 +656,26 @@ public class ToneCreatorFragment extends Fragment {
                 binding.toneCreatorResetToneBtn.setEnabled(false);
                 binding.toneCreatorResetToneBtn.setBackgroundResource(R.drawable.background_btn_inactive);
         }
+    }
+
+    private void manageToneDetails(Tone tone) {
+        String sampleRateString = "-";
+        String frequencyString = "-";
+        String envelopeString = "-";
+        String timbreString = "-";
+
+        if (tone != null) {
+            int noteIndex = tone.getFundamentalFrequencyComponent().getNoteIndex();
+            String note = Scale.values()[noteIndex].noteName;
+
+            sampleRateString = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
+            frequencyString = tone.getFundamentalFrequency() + "Hz (" + note + ")";
+            envelopeString = UnitsConverter.convertPresetEnvelopeToString(tone.getEnvelopePreset());
+            timbreString = UnitsConverter.convertPresetOvertonesToString(tone.getOvertonesPreset());
+        }
+        binding.toneCreatorToneDetailsSampleRate.setText(sampleRateString);
+        binding.toneCreatorToneDetailsFundamentalFrequency.setText(frequencyString);
+        binding.toneCreatorToneDetailsEnvelopePreset.setText(envelopeString);
+        binding.toneCreatorToneDetailsTimbrePreset.setText(timbreString);
     }
 }

@@ -59,7 +59,7 @@ public class WavCreator {
 
     private String getFilename() {
         String fileExtension = ".wav";
-        String sampleRateTxt = UnitsConverter.convertSampleRateToString(tone.getSampleRate()) + "-";
+        String sampleRateTxt = UnitsConverter.convertSampleRateToStringFile(tone.getSampleRate()) + "-";
         return tone.getFundamentalFrequency() + "Hz-" + tone.getDurationInSeconds() + "s-" + sampleRateTxt + System.currentTimeMillis() + fileExtension;
     }
 

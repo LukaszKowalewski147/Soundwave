@@ -153,7 +153,7 @@ public class UnitsConverter {
         return 0;
     }
 
-    public static String convertSampleRateToString(SampleRate sampleRate) {
+    public static String convertSampleRateToStringFile(SampleRate sampleRate) {
         switch (sampleRate) {
             case RATE_44_1_KHZ:
                 return "44_1kHz";
@@ -165,5 +165,59 @@ public class UnitsConverter {
                 return "192kHz";
         }
         return "?kHz";
+    }
+
+    public static String convertSampleRateToStringVisible(SampleRate sampleRate) {
+        switch (sampleRate) {
+            case RATE_44_1_KHZ:
+                return "44.1kHz";
+            case RATE_48_KHZ:
+                return "48kHz";
+            case RATE_96_KHZ:
+                return "96kHz";
+            case RATE_192_KHZ:
+                return "192kHz";
+        }
+        return "-";
+    }
+
+    public static String convertPresetEnvelopeToString(PresetEnvelope preset) {
+        switch (preset) {
+            case FLAT:
+                return "FLAT";
+            case PIANO:
+                return "PIANO";
+            case GUITAR:
+                return "GUITAR";
+            case FLUTE:
+                return "FLUTE";
+            case TRUMPET:
+                return "TRUMPET";
+            case CUSTOM:
+                return "CUSTOM";
+        }
+        return "-";
+    }
+
+    public static String convertPresetOvertonesToString(PresetOvertones preset) {
+        switch (preset) {
+            case FLAT:
+                return "FLAT";
+            case PIANO:
+                return "PIANO";
+            case ACOUSTIC_GUITAR:
+                return "ACOUSTIC_GUITAR";
+            case BASS_GUITAR:
+                return "BASS_GUITAR";
+            case ELECTRIC_GUITAR:
+                return "ELECTRIC_GUITAR";
+            case FLUTE:
+                return "FLUTE";
+            case TRUMPET:
+                return "TRUMPET";
+            case CUSTOM:
+                return "CUSTOM";
+        }
+        return "-";
     }
 }

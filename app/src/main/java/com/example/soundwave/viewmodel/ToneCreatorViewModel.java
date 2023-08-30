@@ -346,6 +346,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public void resetTone() {
         initializeDefaultValues();
+        tone.setValue(null);
     }
 
     public String getIndexWithSuffix(int index) {
