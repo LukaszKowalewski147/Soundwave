@@ -2,10 +2,10 @@ package com.example.soundwave.model.entity;
 
 public class Overtone {
 
-    private int index;
-    private int frequency;
-    private int amplitude;
-    private boolean active;
+    private final int index;
+    private final int frequency;
+    private final int amplitude;
+    private final boolean active;
 
     public Overtone(int index, int frequency, int amplitude, boolean active) {
         this.index = index;

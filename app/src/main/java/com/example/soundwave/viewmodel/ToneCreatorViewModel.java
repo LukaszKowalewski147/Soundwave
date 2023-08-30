@@ -359,38 +359,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         }
         return index + "th";
     }
-/*
-    public SineWave[] getSineWaves() {
-        int activeOvertonesNumber = getActiveOvertonesNumber();
-        SineWave[] sineWaves = new SineWave[activeOvertonesNumber + 1];
-        sineWaves[0] = new SineWave(fundamentalFrequency.getValue(), getAmplitude());
-        if (activeOvertonesNumber > 0) {
-            SineWave[] overtones = getOvertonesSineWaves(activeOvertonesNumber);
-            System.arraycopy(overtones, 0, sineWaves, 1, overtones.length);
-        }
-        return sineWaves;
-    }
-
-    private SineWave[] getOvertonesSineWaves(int activeOvertonesNumber) {
-
-        SineWave[] overtones = new SineWave[activeOvertonesNumber];
-        int overtoneIndex = 0;
-
-        if (overtone1.getValue().isActive()) {
-            overtones[overtoneIndex] = overtone1.getValue().getSineWave();
-            ++overtoneIndex;
-        }
-
-        for (OvertoneManager overtoneManager : overtoneManagers) {
-            if (overtoneManager.isActive()) {
-                overtones[overtoneIndex] = overtoneManager.getSineWave();
-                ++overtoneIndex;
-            }
-        }
-        return overtones;
-        return null;
-    }
-*/
 
     private ArrayList<Overtone> getActiveOvertones() {
         if (!overtonesActivator)
@@ -407,10 +375,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         if (activeOvertonesList.isEmpty())
             return null;
         return activeOvertonesList;
-    }
-
-    private double getAmplitude() {
-        return (double) fundamentalFrequencyComponent.getValue().getMasterVolume();
     }
 
     private void initializeDefaultValues() {
@@ -433,10 +397,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 ControlPanelComponent.ButtonState.INACTIVE));
     }
 
-    private void setTone() {
-        //tone.setValue(new Tone(fundamentalFrequency.getValue(), masterVolume.getValue()));
-    }
-
     private void setDefaultOvertones() {
         Options.overtonePreset = PresetOvertones.FLAT;
         Overtone[] defaultOvertones = new Overtone[Config.OVERTONES_NUMBER.value];
@@ -454,7 +414,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
             int overtoneFrequency = fundamentalFrequency * (i + 2);
-            updatedOvertones[i] = new Overtone(i, overtoneFrequency, updatedOvertones[i].getAmplitude(), updatedOvertones[i].isActive());
+            updatedOvertones[i] = new Overtone(i, overtoneFrequency,
+                    updatedOvertones[i].getAmplitude(), updatedOvertones[i].isActive());
         }
         overtones.setValue(updatedOvertones);
     }
@@ -489,7 +450,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
         ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
 
-        if (generateBtnState == ControlPanelComponent.ButtonState.STANDARD && resetBtnState == ControlPanelComponent.ButtonState.STANDARD)
+        if (generateBtnState == ControlPanelComponent.ButtonState.STANDARD &&
+                resetBtnState == ControlPanelComponent.ButtonState.STANDARD)
             return;
 
         controlPanelComponent.setValue(new ControlPanelComponent(
