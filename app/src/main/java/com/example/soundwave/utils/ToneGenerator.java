@@ -77,7 +77,6 @@ public class ToneGenerator {
     }
 
     private void applyEnvelope() {
-        double masterVolume = fundamentalFrequencyComponent.getMasterVolume() / 100.0d;
         double sustainLevel = envelopeComponent.getSustainLevel() / 100.0d;
         double totalTimeInMilliseconds = envelopeComponent.getTotalDurationInMilliseconds();
 
@@ -102,7 +101,7 @@ public class ToneGenerator {
 
         //  Attack phase
         if (attackSamples > 0) {
-            step = masterVolume / attackSamples;
+            step = 1.0 / attackSamples;
             endSample = attackSamples;
             double attackFactor = 0.0d;
 
@@ -158,6 +157,30 @@ public class ToneGenerator {
         }
     }
 
+    private void fadeOutFlatZero() {
+        int lastCrossingIndex = getLastCrossingIndex();
+
+        for (int i = lastCrossingIndex; i < samplesNumber; ++i)
+           samples[i] = 0;
+    }
+
+    private int getLastCrossingIndex() {
+        boolean isNegative = samples[samplesNumber - 1] < 0;
+
+        if (isNegative) {
+            for (int i = samplesNumber - 2; i > 0; --i) {
+                if (samples[i] >= 0)
+                    return i + 1;
+            }
+        } else {
+            for (int i = samplesNumber - 2; i > 0; --i) {
+                if (samples[i] < 0)
+                    return i + 1;
+            }
+        }
+        return samplesNumber - 1;
+    }
+
     private void fadeIn() {
         int index = 0;
         int fadeDuration = getFadeDuration();
@@ -182,31 +205,6 @@ public class ToneGenerator {
             outputSound[index--] *= fader;
             fader += faderStep;
         }
-    }
-
-    private void fadeOutFlatZero() {
-        int lastCrossingIndex = getLastCrossingIndex();
-
-        for (int i = lastCrossingIndex; i < samplesNumber; ++i)
-           samples[i] = 0;
-    }
-
-
-    private int getLastCrossingIndex() {
-        boolean isNegative = samples[samplesNumber - 1] < 0;
-
-        if (isNegative) {
-            for (int i = samplesNumber - 2; i > 0; --i) {
-                if (samples[i] >= 0)
-                    return i + 1;
-            }
-        } else {
-            for (int i = samplesNumber - 2; i > 0; --i) {
-                if (samples[i] < 0)
-                    return i + 1;
-            }
-        }
-        return samplesNumber - 1;
     }
 
     private double getFaderStep() {
