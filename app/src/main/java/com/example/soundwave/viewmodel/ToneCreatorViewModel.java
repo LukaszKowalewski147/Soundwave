@@ -203,30 +203,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             setFrequencyComplex(frequency, fundamentalFrequencyComponent.getValue().getMasterVolume());
     }
 
-    public void decrementConstantlyFundamentalFrequency() {
-        /*
-        Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-        SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), fundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
-        Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-        seekBarUpdaterThread.start();
-        */
-        //TODO: find a way to do this :/
-    }
-
     public void incrementOnceFundamentalFrequency() {
         int frequency = fundamentalFrequencyComponent.getValue().getFundamentalFrequency();
         if (++frequency <= Config.FREQUENCY_MAX.value)
             setFrequencyComplex(frequency, fundamentalFrequencyComponent.getValue().getMasterVolume());
-    }
-
-    public void incrementConstantlyFundamentalFrequency() {
-        /*
-        Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-        SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), fundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
-        Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-        seekBarUpdaterThread.start();
-        */
-        //TODO: find a way to do this :/
     }
 
     public void updateMasterVolumeSeekBarPosition(int progress) {

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
+import com.example.soundwave.SeekBarUpdater;
 import com.example.soundwave.Tone;
 import com.example.soundwave.WavCreator;
 import com.example.soundwave.components.ControlPanelComponent;
@@ -376,7 +378,10 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorFrequencyDecrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                viewModel.decrementConstantlyFundamentalFrequency();
+                Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneCreatorFundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
+                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                seekBarUpdaterThread.start();
                 return true;
             }
         });
@@ -403,7 +408,10 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorFrequencyIncrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                viewModel.incrementConstantlyFundamentalFrequency();
+                Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneCreatorFundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
+                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+                seekBarUpdaterThread.start();
                 return true;
             }
         });

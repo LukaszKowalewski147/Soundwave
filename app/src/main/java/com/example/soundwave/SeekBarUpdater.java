@@ -1,5 +1,8 @@
 package com.example.soundwave;
 
+import com.example.soundwave.utils.Config;
+import com.example.soundwave.utils.Options;
+
 import android.os.Handler;
 import android.widget.EditText;
 
@@ -19,25 +22,12 @@ public class SeekBarUpdater implements Runnable {
     public void run() {
         int refreshRate = getRefreshRate();
         while (getState() == Options.ButtonLongPressState.PRESSED) {
-            applyChanges();
+            changeFrequency();
             try {
                 Thread.sleep(refreshRate);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void applyChanges() {
-        switch (operation) {
-            case FREQUENCY_DECREMENT:
-            case FREQUENCY_INCREMENT:
-                changeFrequency();
-                break;
-            case DURATION_DECREMENT:
-            case DURATION_INCREMENT:
-                changeDuration();
-                break;
         }
     }
 
@@ -63,51 +53,20 @@ public class SeekBarUpdater implements Runnable {
         });
     }
 
-    private void changeDuration() {
-        int duration = Integer.parseInt(toUpdateTxt.getText().toString());
-        switch (operation) {
-            case DURATION_DECREMENT:
-                --duration;
-                if (duration < Config.DURATION_MIN.value)
-                    return;
-                break;
-            case DURATION_INCREMENT:
-                ++duration;
-                if (duration > Config.DURATION_MAX.value)
-                    return;
-                break;
-        }
-        int finalProgress = duration;
-        handler.post(new Runnable() {
-            public void run() {
-                toUpdateTxt.setText(String.valueOf(finalProgress));
-            }
-        });
-    }
-
     private Options.ButtonLongPressState getState() {
         Options.ButtonLongPressState state = Options.ButtonLongPressState.RELEASED;
         switch (operation) {
             case FREQUENCY_DECREMENT:
                 state = Options.buttonDecrementFrequencyState;
                 break;
-            case DURATION_DECREMENT:
-                state = Options.buttonDecrementDurationState;
-                break;
             case FREQUENCY_INCREMENT:
                 state = Options.buttonIncrementFrequencyState;
-                break;
-            case DURATION_INCREMENT:
-                state = Options.buttonIncrementDurationState;
                 break;
         }
         return state;
     }
 
     private int getRefreshRate() {
-        int refreshRate = Config.SEEKBAR_CHANGE_REFRESH_RATE.value;
-        if (operation == Options.Operation.DURATION_DECREMENT || operation == Options.Operation.DURATION_INCREMENT)
-            refreshRate *= 2;
-        return refreshRate;
+        return Config.SEEKBAR_CHANGE_REFRESH_RATE.value;
     }
 }
