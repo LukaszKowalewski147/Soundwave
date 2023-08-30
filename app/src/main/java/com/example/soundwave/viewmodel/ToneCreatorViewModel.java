@@ -284,7 +284,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.STANDARD,
                 ControlPanelComponent.ButtonState.STANDARD,
-                getControlPanelButtonsStates().get(ControlPanelComponent.Button.RESET)));
+                ControlPanelComponent.ButtonState.STANDARD));
     }
 
     public void playStopTone() {
