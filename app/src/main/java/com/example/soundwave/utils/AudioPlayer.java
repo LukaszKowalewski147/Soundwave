@@ -1,10 +1,12 @@
-package com.example.soundwave;
+package com.example.soundwave.utils;
 
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.widget.Toast;
+
+import com.example.soundwave.Tone;
 
 public class AudioPlayer {
     private final Tone tone;
@@ -15,7 +17,6 @@ public class AudioPlayer {
         audioTrack = null;
     }
 
-    //public void load(Context context) {
     public void load() {
         if (!isReadyToWrite()) {
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();

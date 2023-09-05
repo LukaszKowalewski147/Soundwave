@@ -1,7 +1,4 @@
-package com.example.soundwave;
-
-import com.example.soundwave.utils.Config;
-import com.example.soundwave.utils.Options;
+package com.example.soundwave.utils;
 
 import android.os.Handler;
 import android.widget.EditText;

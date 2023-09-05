@@ -1,8 +1,8 @@
-package com.example.soundwave;
+package com.example.soundwave.utils;
 
 import android.os.Environment;
 
-import com.example.soundwave.utils.UnitsConverter;
+import com.example.soundwave.Tone;
 
 import java.io.File;
 import java.io.FileOutputStream;
