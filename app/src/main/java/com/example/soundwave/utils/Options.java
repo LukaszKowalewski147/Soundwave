@@ -2,11 +2,6 @@ package com.example.soundwave.utils;
 
 public class Options {
 
-    public enum PlaybackMode {
-        STATIC,
-        STREAM
-    }
-
     public enum PlaybackState {
         ON,
         OFF
@@ -24,20 +19,13 @@ public class Options {
 
     public enum Operation {
         FREQUENCY_INCREMENT,
-        FREQUENCY_DECREMENT,
-        DURATION_INCREMENT,
-        DURATION_DECREMENT
+        FREQUENCY_DECREMENT
     }
 
-    public static volatile PlaybackMode playbackMode = PlaybackMode.STATIC;
     public static volatile PlaybackState playbackState = PlaybackState.OFF;
     public static volatile LooperState looperState = LooperState.OFF;
     public static volatile PresetEnvelope envelopePreset = PresetEnvelope.FLAT;
     public static volatile PresetOvertones overtonePreset = PresetOvertones.FLAT;
     public static volatile ButtonLongPressState buttonIncrementFrequencyState = ButtonLongPressState.RELEASED;
     public static volatile ButtonLongPressState buttonDecrementFrequencyState = ButtonLongPressState.RELEASED;
-    public static volatile ButtonLongPressState buttonIncrementDurationState = ButtonLongPressState.RELEASED;
-    public static volatile ButtonLongPressState buttonDecrementDurationState = ButtonLongPressState.RELEASED;
-    public static volatile int soundSampleRate = SampleRate.RATE_44_1_KHZ.sampleRate;
-    public static volatile short soundDuration = (short) Config.DURATION_DEFAULT.value;
 }
