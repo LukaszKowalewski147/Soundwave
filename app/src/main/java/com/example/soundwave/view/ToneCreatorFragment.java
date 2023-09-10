@@ -23,9 +23,9 @@ import android.widget.CompoundButton;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
-import com.example.soundwave.SeekBarUpdater;
+import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.Tone;
-import com.example.soundwave.WavCreator;
+import com.example.soundwave.utils.WavCreator;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;

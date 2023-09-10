@@ -8,8 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.soundwave.AudioPlayer;
-import com.example.soundwave.WavCreator;
+import com.example.soundwave.utils.AudioPlayer;
+import com.example.soundwave.utils.WavCreator;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
