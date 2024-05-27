@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.soundwave.databinding.ActivityMainBinding;
@@ -50,21 +51,38 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.tone_creator:
+                        manageVisibilityOfTopMenu(false);
                         loadFragment(new ToneCreatorFragment());
                         break;
                     case R.id.tone_mixer:
+                        manageVisibilityOfTopMenu(false);
                         loadFragment(new ToneMixerFragment());
                         break;
                     case R.id.my_homepage:
+                        manageVisibilityOfTopMenu(true);
                         loadFragment(new HomepageFragment());
                         break;
                     case R.id.tone_streaming:
+                        manageVisibilityOfTopMenu(false);
                         loadFragment(new ToneStreamingFragment());
                         break;
                 }
                 return true;
             }
         });
+    }
+
+    private void manageVisibilityOfTopMenu(boolean visible) {
+        if (visible) {
+            final float scale = getResources().getDisplayMetrics().density;
+            int pixels = (int) (48 * scale + 0.5f); //48dp
+
+            binding.mainGuidelineTop.setGuidelineBegin(pixels);
+            binding.mainTopMenu.setVisibility(View.VISIBLE);
+        } else {
+            binding.mainGuidelineTop.setGuidelineBegin(0);
+            binding.mainTopMenu.setVisibility(View.GONE);
+        }
     }
 
     private void loadFragment(Fragment fragment) {

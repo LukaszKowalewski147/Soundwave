@@ -14,33 +14,42 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="48dp" />
 
-    <ImageButton
-        android:id="@+id/main_settings_btn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:background="?android:selectableItemBackground"
-        android:contentDescription="@string/desc_settings_btn"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_settings"
-        app:layout_constraintBottom_toBottomOf="@id/main_guideline_top"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_top_menu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/main_guideline_top"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/main_account_btn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="8dp"
-        android:background="?android:selectableItemBackground"
-        android:contentDescription="@string/desc_account_btn"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_account"
-        app:layout_constraintBottom_toBottomOf="@id/main_guideline_top"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/main_settings_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/desc_settings_btn"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_settings"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/main_account_btn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/desc_account_btn"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_account"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/main_fragment_container"
@@ -49,7 +58,7 @@
         app:layout_constraintBottom_toTopOf="@id/main_bottom_nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/main_guideline_top" />
+        app:layout_constraintTop_toBottomOf="@id/main_top_menu" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bottom_nav_view"
