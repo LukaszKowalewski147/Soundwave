@@ -21,7 +21,7 @@
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toTopOf="@id/tone_creator_guideline_creator_bottom"
         app:layout_constraintTop_toTopOf="parent">
-
+<!--
         <TextView
             android:id="@+id/tone_creator_creator_header"
             android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
             android:layout_marginEnd="16dp"
             android:background="@color/header_separator"
             app:layout_constraintTop_toBottomOf="@id/tone_creator_creator_header" />
-
+-->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -52,7 +52,7 @@
             android:fadingEdgeLength="16dp"
             android:requiresFadingEdge="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tone_creator_creator_header_underline">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

@@ -7,7 +7,7 @@
     android:background="@drawable/background_shadow_layout"
     tools:background="@color/dark_gray"
     tools:context=".view.ToneStreamingFragment">
-
+<!--
     <TextView
         android:id="@+id/tone_streaming_header"
         android:layout_width="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_marginEnd="16dp"
         android:background="@color/header_separator"
         app:layout_constraintTop_toBottomOf="@id/tone_streaming_header" />
-
+-->
     <ImageView
         android:id="@+id/tone_streaming_frequency_icon"
         android:layout_width="40dp"
@@ -41,7 +41,7 @@
         android:scaleY="0.5"
         android:src="@drawable/ic_frequency"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tone_streaming_header" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
