@@ -39,10 +39,11 @@ public class ToneGenerator {
             samples[i] = masterVolume * (Math.sin(2 * Math.PI * i / (sampleRateInHz / fundamentalFrequency)));
         }
 
-        if (overtonesComponent.getOvertones() != null)
+        if (overtonesComponent.getOvertones() != null) {
             addOvertonesData(sampleRateInHz, masterVolume);
+            compressAmplitude(masterVolume);
+        }
 
-        compressAmplitude(masterVolume);
         applyEnvelope();
         fadeOutFlatZero();
         convertTo16BitPCM();
