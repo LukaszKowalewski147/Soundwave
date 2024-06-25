@@ -30,20 +30,17 @@ public class ToneGenerator {
 
     public Tone generateTone() {
         int sampleRateInHz = sampleRate.sampleRate;
-
-        double masterVolume = fundamentalFrequencyComponent.getMasterVolume() / 100.0d;
         double fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
 
         // add fundamental frequency data
         for (int i = 0; i < samplesNumber; ++i) {
-            //samples[i] = masterVolume * (Math.sin(2 * Math.PI * i / (sampleRateInHz / fundamentalFrequency)));
             samples[i] = Math.sin(2 * Math.PI * i / (sampleRateInHz / fundamentalFrequency));
         }
 
         if (overtonesComponent.getOvertones() != null)
-            addOvertonesData(sampleRateInHz, masterVolume);
+            addOvertonesData(sampleRateInHz);
 
-        compressToMasterVolume(masterVolume);
+        compressToMasterVolume();
         applyEnvelope();
         fadeOutFlatZero();
         convertTo16BitPCM();
@@ -51,21 +48,22 @@ public class ToneGenerator {
         return new Tone(sampleRate, envelopeComponent, fundamentalFrequencyComponent, overtonesComponent, outputSound);
     }
 
-    private void addOvertonesData(int sampleRateInHz, double masterVolume) {
+    private void addOvertonesData(int sampleRateInHz) {
         for (Overtone overtone : overtonesComponent.getOvertones()) {
-           // double overtoneAmplitude = overtone.getAmplitude() / 100.0d;
+
+            // !!! - Overtone output amplitude is calculated with 10^(x/20) where x is amplitude in dB from user input
             double overtoneAmplitude = Math.pow(10.0d, overtone.getAmplitude()/20.0d);
             double overtoneFrequency = overtone.getFrequency();
 
-            for (int i = 0; i < samplesNumber; ++i) {
-                //samples[i] += masterVolume * overtoneAmplitude * (Math.sin(2 * Math.PI * i / (sampleRateInHz / overtoneFrequency)));
+            for (int i = 0; i < samplesNumber; ++i)
                 samples[i] += overtoneAmplitude * (Math.sin(2 * Math.PI * i / (sampleRateInHz / overtoneFrequency)));
-            }
         }
     }
 
-    private void compressToMasterVolume(double masterVolume) {
+    private void compressToMasterVolume() {
+        double masterVolume = fundamentalFrequencyComponent.getMasterVolume() / 100.0d; // master volume in %
         double maxVolumeSample = samples[0];
+
         for (int i = 1; i < samplesNumber; ++i) {
             if (samples[i] > maxVolumeSample)
                 maxVolumeSample = samples[i];
