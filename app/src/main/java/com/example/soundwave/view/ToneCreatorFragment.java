@@ -203,8 +203,11 @@ public class ToneCreatorFragment extends Fragment {
     private void updateOvertoneView(int overtoneIndex, Overtone overtone) {
         overtoneBindings[overtoneIndex].overtoneCreatorActivator.setChecked(overtone.isActive());
         overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(String.valueOf(overtone.getFrequency()) + "Hz");
-        overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(String.valueOf(overtone.getAmplitude()));
-        overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.setProgress(overtone.getAmplitude());
+        String volumeInputSuffix = "+";
+        if (overtone.getAmplitude() < 0.0d)
+            volumeInputSuffix = "";
+        overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(volumeInputSuffix + overtone.getAmplitude() + "dB");
+        overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.setProgress(UnitsConverter.convertOvertoneDbHumanValueToSliderProgress(overtone.getAmplitude()));
     }
 
     private void initializeUIListeners() {

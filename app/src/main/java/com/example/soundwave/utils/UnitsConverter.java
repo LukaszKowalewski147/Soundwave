@@ -1,5 +1,8 @@
 package com.example.soundwave.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class UnitsConverter {
 
     private static final int frequencyOffset = 500;
@@ -219,5 +222,16 @@ public class UnitsConverter {
                 return "CUSTOM";
         }
         return "-";
+    }
+
+    public static double convertOvertoneDbSliderToHumanValue(int decibelValue) {
+        double noPrecisionDb = (decibelValue / 10.0d) - 40;
+        return BigDecimal.valueOf(noPrecisionDb)
+                .setScale(1, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
+
+    public static int convertOvertoneDbHumanValueToSliderProgress(double decibelValue) {
+        return (int) (decibelValue + 40) * 10;
     }
 }

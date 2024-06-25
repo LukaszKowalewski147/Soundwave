@@ -251,12 +251,14 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         setAnyChange();
     }
 
-    public void updateOvertoneAmplitude(int index, int amplitude) {
+    public void updateOvertoneAmplitude(int index, int progress) {
         Options.overtonePreset = PresetOvertones.CUSTOM;
         Overtone[] updatedOvertones = overtones.getValue();
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
-            if (i == index)
+            if (i == index) {
+                double amplitude = UnitsConverter.convertOvertoneDbSliderToHumanValue(progress);
                 updatedOvertones[i] = new Overtone(i, updatedOvertones[i].getFrequency(), amplitude, updatedOvertones[i].isActive());
+            }
         }
         overtones.setValue(updatedOvertones);
         setAnyChange();

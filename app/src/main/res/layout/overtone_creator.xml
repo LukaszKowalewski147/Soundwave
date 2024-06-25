@@ -61,8 +61,8 @@
         android:id="@+id/overtone_creator_volume_bar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:max="150"
-        android:progress="100"
+        android:max="500"
+        android:progress="400"
         android:progressTint="@color/app_yellow_gradient_start"
         android:thumb="@drawable/custom_seekbar_thumb"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -82,6 +82,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="100" />
+        tools:text="+0dB" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

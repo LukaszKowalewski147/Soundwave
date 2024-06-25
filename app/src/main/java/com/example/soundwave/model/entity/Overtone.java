@@ -4,10 +4,10 @@ public class Overtone {
 
     private final int index;
     private final int frequency;
-    private final int amplitude;
+    private final double amplitude;
     private final boolean active;
 
-    public Overtone(int index, int frequency, int amplitude, boolean active) {
+    public Overtone(int index, int frequency, double amplitude, boolean active) {
         this.index = index;
         this.frequency = frequency;
         this.amplitude = amplitude;
@@ -18,7 +18,7 @@ public class Overtone {
         return frequency;
     }
 
-    public int getAmplitude() {
+    public double getAmplitude() {
         return amplitude;
     }
 
