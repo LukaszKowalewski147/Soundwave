@@ -61,7 +61,7 @@
         android:id="@+id/overtone_creator_volume_bar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:max="500"
+        android:max="600"
         android:progress="400"
         android:progressTint="@color/app_yellow_gradient_start"
         android:thumb="@drawable/custom_seekbar_thumb"
