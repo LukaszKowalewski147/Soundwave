@@ -1,4 +1,4 @@
-package com.example.soundwave.model.entity;
+package com.example.soundwave;
 
 public class Overtone {
 
@@ -26,3 +26,4 @@ public class Overtone {
         return active;
     }
 }
+

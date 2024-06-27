@@ -1,6 +1,6 @@
 package com.example.soundwave.components;
 
-import com.example.soundwave.model.entity.Overtone;
+import com.example.soundwave.Overtone;
 import com.example.soundwave.utils.PresetOvertones;
 
 import java.util.ArrayList;

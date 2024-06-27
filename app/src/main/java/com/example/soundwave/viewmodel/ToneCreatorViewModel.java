@@ -14,7 +14,7 @@ import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
-import com.example.soundwave.model.entity.Overtone;
+import com.example.soundwave.Overtone;
 import com.example.soundwave.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.Config;

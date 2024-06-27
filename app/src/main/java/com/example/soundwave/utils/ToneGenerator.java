@@ -4,7 +4,7 @@ import com.example.soundwave.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
-import com.example.soundwave.model.entity.Overtone;
+import com.example.soundwave.Overtone;
 
 public class ToneGenerator {
     private final SampleRate sampleRate;
