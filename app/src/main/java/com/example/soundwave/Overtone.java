@@ -1,5 +1,7 @@
 package com.example.soundwave;
 
+import androidx.annotation.NonNull;
+
 public class Overtone {
 
     private final int index;
@@ -24,6 +26,12 @@ public class Overtone {
 
     public boolean isActive() {
         return active;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "o{" + index + ":" + frequency + ":" + amplitude + ":" + active + "}";
     }
 }
 

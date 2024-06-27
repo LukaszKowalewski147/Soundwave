@@ -14,6 +14,8 @@ public class Tone {
     private final int fundamentalFrequency;
 
     private final double volume;
+
+    private final String overtonesData;
 /*
     private final double[] samples;
 
@@ -23,9 +25,10 @@ public class Tone {
         this.samples = samples;
     }
 */
-    public Tone(int fundamentalFrequency, double volume) {
+    public Tone(int fundamentalFrequency, double volume, String overtonesData) {
         this.fundamentalFrequency = fundamentalFrequency;
         this.volume = volume;
+        this.overtonesData = overtonesData;
     }
 
     public void setId(int id) {
@@ -43,7 +46,12 @@ public class Tone {
     public double getVolume() {
         return volume;
     }
-/*
+
+    public String getOvertonesData() {
+        return overtonesData;
+    }
+
+    /*
     public double[] getSamples() {
         return samples;
     }*/

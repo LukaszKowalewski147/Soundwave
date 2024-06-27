@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.soundwave.model.dao.ToneDao;
 import com.example.soundwave.model.entity.Tone;
 
-@Database(entities = {Tone.class}, version = 1)
+@Database(entities = {Tone.class}, version = 2)
 public abstract class SoundwaveDatabase extends RoomDatabase {
 
     private static SoundwaveDatabase instance;
