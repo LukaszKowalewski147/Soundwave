@@ -204,6 +204,8 @@ public class UnitsConverter {
 
     public static String convertPresetOvertonesToString(PresetOvertones preset) {
         switch (preset) {
+            case NONE:
+                return "-";
             case FLAT:
                 return "FLAT";
             case PIANO:

@@ -25,7 +25,8 @@ public class Options {
     public static volatile PlaybackState playbackState = PlaybackState.OFF;
     public static volatile LooperState looperState = LooperState.OFF;
     public static volatile PresetEnvelope envelopePreset = PresetEnvelope.FLAT;
-    public static volatile PresetOvertones overtonePreset = PresetOvertones.FLAT;
+    public static volatile PresetOvertones overtonePreset = PresetOvertones.NONE;
+    public static volatile PresetOvertones lastOvertonePreset = PresetOvertones.FLAT;
     public static volatile ButtonLongPressState buttonIncrementFrequencyState = ButtonLongPressState.RELEASED;
     public static volatile ButtonLongPressState buttonDecrementFrequencyState = ButtonLongPressState.RELEASED;
 }

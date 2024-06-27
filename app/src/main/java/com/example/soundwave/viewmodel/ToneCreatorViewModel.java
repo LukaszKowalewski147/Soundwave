@@ -78,7 +78,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public int getOvertonesPresetPosition() {
-        return UnitsConverter.convertPresetOvertonesToPosition(Options.overtonePreset);
+        return UnitsConverter.convertPresetOvertonesToPosition(Options.lastOvertonePreset);
     }
 
     public void updateSampleRate(int position) {
@@ -234,6 +234,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public void updateOvertonesState(boolean isActive) {
         overtonesActivator = isActive;
+        if (!isActive)
+            Options.overtonePreset = PresetOvertones.NONE;
+        else
+            Options.overtonePreset = Options.lastOvertonePreset;
         setAnyChange();
     }
 
@@ -243,6 +247,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             return;
 
         Options.overtonePreset = targetOvertonesPreset;
+        Options.lastOvertonePreset = targetOvertonesPreset;
 
         Overtone[] newPresetOvertones = overtones.getValue();
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
@@ -253,6 +258,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public void updateOvertoneAmplitude(int index, int progress) {
         Options.overtonePreset = PresetOvertones.CUSTOM;
+        Options.lastOvertonePreset = PresetOvertones.CUSTOM;
+
         Overtone[] updatedOvertones = overtones.getValue();
         for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
             if (i == index) {
@@ -409,6 +416,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             defaultOvertones[i] = new Overtone(i, overtoneFrequency, Options.overtonePreset.amplitudes[i], true);
         }
         overtones.setValue(defaultOvertones);
+        Options.overtonePreset = PresetOvertones.NONE;
     }
 
     private void updateOvertonesFrequency() {
