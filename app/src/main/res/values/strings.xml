@@ -26,6 +26,7 @@
     <string name="envelope_release_header">Release</string>
     <string name="timbre_header">Timbre</string>
     <string name="tones_number_header">Tones number</string>
+    <string name="tone_volume_header">Volume</string>
 
 
     <!--    Buttons             -->
@@ -37,6 +38,7 @@
     <string name="saved_btn">Saved</string>
     <string name="reset_btn">Reset</string>
     <string name="more_info_btn">More…</string>
+    <string name="less_info_btn">Less…</string>
 
     <!--    Units               -->
     <string name="percent_unit">%</string>

@@ -16,6 +16,12 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
     TextView toneFrequency;
     TextView toneEnvelope;
     TextView toneTimbre;
+    TextView toneVolumeHeader;
+    TextView toneVolume;
+    TextView toneOvertonesNumberHeader;
+    TextView toneOvertonesNumber;
+    TextView toneOtherInfoHeader;
+    TextView toneOtherInfo;
     ImageButton toneDeleteBtn;
     AppCompatButton toneRenameBtn;
     AppCompatButton toneMoreInfoBtn;
@@ -27,6 +33,12 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
         toneFrequency = itemView.findViewById(R.id.tone_details_frequency);
         toneEnvelope = itemView.findViewById(R.id.tone_details_envelope_preset);
         toneTimbre = itemView.findViewById(R.id.tone_details_timbre_preset);
+        toneVolumeHeader = itemView.findViewById(R.id.tone_details_volume_header);
+        toneVolume = itemView.findViewById(R.id.tone_details_volume);
+        toneOvertonesNumberHeader = itemView.findViewById(R.id.tone_details_overtones_number_header);
+        toneOvertonesNumber = itemView.findViewById(R.id.tone_details_overtones_number);
+        toneOtherInfoHeader = itemView.findViewById(R.id.tone_details_other_header);
+        toneOtherInfo = itemView.findViewById(R.id.tone_details_other);
         toneDeleteBtn = itemView.findViewById(R.id.tone_delete_btn);
         toneRenameBtn = itemView.findViewById(R.id.tone_rename_btn);
         toneMoreInfoBtn = itemView.findViewById(R.id.tone_more_info_btn);

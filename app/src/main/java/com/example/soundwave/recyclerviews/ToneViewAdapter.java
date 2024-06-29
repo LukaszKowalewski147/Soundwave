@@ -34,6 +34,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ToneViewHolder holder, int position) {
+        setMoreInfoVisibility(holder, false);
         Tone tone = tones.get(position);
 
         int frequency = tone.getFundamentalFrequency();
@@ -43,6 +44,9 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
         holder.toneEnvelope.setText(tone.getEnvelope());
         holder.toneTimbre.setText(tone.getTimbre());
+        holder.toneVolume.setText(tone.getVolume() + "%");
+        holder.toneOvertonesNumber.setText("14");
+        holder.toneOtherInfo.setText("comming soon");
 
         holder.toneRenameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +61,16 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
                listener.onDeleteClick(tone);
             }
         });
+
+        holder.toneMoreInfoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.toneVolumeHeader.getVisibility() == View.GONE)
+                    setMoreInfoVisibility(holder, true);
+                else
+                    setMoreInfoVisibility(holder, false);
+            }
+        });
     }
 
     @Override
@@ -69,5 +83,23 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             tones = newTones;
             notifyDataSetChanged();
         }
+    }
+
+    private void setMoreInfoVisibility(ToneViewHolder holder, boolean visible) {
+        String buttonText = context.getString(R.string.more_info_btn);
+        int visibility = View.GONE;
+
+        if (visible) {
+            buttonText = context.getString(R.string.less_info_btn);
+            visibility = View.VISIBLE;
+        }
+
+        holder.toneMoreInfoBtn.setText(buttonText);
+        holder.toneVolumeHeader.setVisibility(visibility);
+        holder.toneVolume.setVisibility(visibility);
+        holder.toneOvertonesNumberHeader.setVisibility(visibility);
+        holder.toneOvertonesNumber.setVisibility(visibility);
+        holder.toneOtherInfoHeader.setVisibility(visibility);
+        holder.toneOtherInfo.setVisibility(visibility);
     }
 }
