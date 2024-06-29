@@ -351,7 +351,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             }
             overtonesDetails = overtonesDetailsBuilder.toString();
         }
-        toneEntity = new com.example.soundwave.model.entity.Tone(toneFrequency, toneVolume, overtonesDetails);
+        toneEntity = new com.example.soundwave.model.entity.Tone("nazwa", toneFrequency, "gitarka", "basowa", toneVolume, overtonesDetails);
         repository.insert(toneEntity);
 
         WavCreator wavCreator = new WavCreator(tone.getValue(), filepathBase);
