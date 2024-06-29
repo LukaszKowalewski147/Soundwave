@@ -236,4 +236,28 @@ public class UnitsConverter {
     public static int convertOvertoneDbHumanValueToSliderProgress(double decibelValue) {
         return (int) (decibelValue + 40) * 10;
     }
+
+    public static int convertFrequencyToNoteIndex(int frequency) {
+        Scale[] scale = Scale.values();
+        int index = 0;
+
+        int currentDifference;
+        int previousDifference = Math.abs(frequency - scale[0].noteFrequency);
+
+        for (int i = 1; i < Scale.values().length; ++i) {
+            Scale scaleItem = scale[i];
+            currentDifference = Math.abs(frequency - scaleItem.noteFrequency);
+            if (currentDifference > previousDifference)
+                break;
+            previousDifference = currentDifference;
+            index = i;
+        }
+
+        return index;
+    }
+
+    public static String convertFrequencyToNote(int frequency) {
+        int index = convertFrequencyToNoteIndex(frequency);
+        return Scale.values()[index].noteName;
+    }
 }

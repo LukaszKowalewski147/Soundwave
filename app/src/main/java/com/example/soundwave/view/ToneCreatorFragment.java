@@ -669,8 +669,7 @@ public class ToneCreatorFragment extends Fragment {
         String timbreString = "-";
 
         if (tone != null) {
-            int noteIndex = tone.getFundamentalFrequencyComponent().getNoteIndex();
-            String note = Scale.values()[noteIndex].noteName;
+            String note = UnitsConverter.convertFrequencyToNote(tone.getFundamentalFrequency());
 
             sampleRateString = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
             frequencyString = tone.getFundamentalFrequency() + "Hz (" + note + ")";
