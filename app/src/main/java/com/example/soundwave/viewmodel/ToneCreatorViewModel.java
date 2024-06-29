@@ -340,8 +340,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         Tone baseTone = tone.getValue();
 
         int toneFrequency = baseTone.getFundamentalFrequency();
+        String envelopePreset = baseTone.getEnvelopePreset().toString();
+        String overtonesPreset = baseTone.getOvertonesPreset().toString();
         double toneVolume = baseTone.getMasterVolume();
         String overtonesDetails = "";
+
         ArrayList<Overtone> overtones = baseTone.getOvertones();
         if (overtones != null)
         {
@@ -351,7 +354,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             }
             overtonesDetails = overtonesDetailsBuilder.toString();
         }
-        toneEntity = new com.example.soundwave.model.entity.Tone(toneName, toneFrequency, "gitarka", "basowa", toneVolume, overtonesDetails);
+        toneEntity = new com.example.soundwave.model.entity.Tone(toneName, toneFrequency, envelopePreset, overtonesPreset, toneVolume, overtonesDetails);
         repository.insert(toneEntity);
 
         WavCreator wavCreator = new WavCreator(tone.getValue(), filepathBase);
