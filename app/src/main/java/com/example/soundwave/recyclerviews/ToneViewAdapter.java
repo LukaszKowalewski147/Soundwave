@@ -45,6 +45,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         String envelopePreset = tone.getEnvelopePreset().toString();
         String overtonesPreset = tone.getOvertonesPreset().toString();
         int volume = tone.getMasterVolume();
+        String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
 
         holder.toneName.setText(dbTone.getName());
         holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
@@ -52,6 +53,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneTimbre.setText(overtonesPreset);
         holder.toneVolume.setText(volume + "%");
         holder.toneOvertonesNumber.setText("14");
+        holder.toneSampleRate.setText(sampleRate);
         holder.toneOtherInfo.setText("comming soon");
 
         holder.toneRenameBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +107,8 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneVolume.setVisibility(visibility);
         holder.toneOvertonesNumberHeader.setVisibility(visibility);
         holder.toneOvertonesNumber.setVisibility(visibility);
+        holder.toneSampleRateHeader.setVisibility(visibility);
+        holder.toneSampleRate.setVisibility(visibility);
         holder.toneOtherInfoHeader.setVisibility(visibility);
         holder.toneOtherInfo.setVisibility(visibility);
     }
