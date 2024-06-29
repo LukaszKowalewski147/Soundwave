@@ -8,12 +8,24 @@ import java.util.List;
 public class OvertonesAdapter {
     public static List<Overtone> convertDbStringToOvertones(String overtones) {
         List<Overtone> overtonesList = new ArrayList<>();
-        StringBuilder search = new StringBuilder().append(overtones);
 
-        while(overtones.contains("o{")) {
+        if (overtones == null || overtones.trim().isEmpty())
+            return overtonesList;
 
+        String[] entries = overtones.split(";");
+
+        for (String entry : entries) {
+            if (!entry.trim().isEmpty()) {
+                String[] fields = entry.split(",");
+                if (fields.length == 4) {
+                    int index = Integer.parseInt(fields[0].trim());
+                    int frequency = Integer.parseInt(fields[1].trim());
+                    double amplitude = Double.parseDouble(fields[2].trim());
+                    boolean active = Boolean.parseBoolean(fields[3].trim());
+                    overtonesList.add(new Overtone(index, frequency, amplitude, active));
+                }
+            }
         }
-
         return overtonesList;
     }
 }

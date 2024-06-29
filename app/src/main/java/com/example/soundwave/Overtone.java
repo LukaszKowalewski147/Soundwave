@@ -31,7 +31,7 @@ public class Overtone {
     @NonNull
     @Override
     public String toString() {
-        return "o{" + index + ":" + frequency + ":" + amplitude + ":" + active + "}";
+        return index + "," + frequency + "," + amplitude + "," + active + ";";
     }
 }
 
