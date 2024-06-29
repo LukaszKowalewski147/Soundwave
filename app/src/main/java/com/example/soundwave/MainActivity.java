@@ -36,12 +36,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-        mainActivityViewModel.getAllTones().observe(this, new Observer<List<Tone>>() {
-            @Override
-            public void onChanged(List<Tone> tones) {
-                Toast.makeText(MainActivity.this, "Num of tones: " + tones.size(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         loadFragment(new HomepageFragment());
         binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);

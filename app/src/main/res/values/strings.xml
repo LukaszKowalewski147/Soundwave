@@ -65,12 +65,14 @@
     <string name="alert_dialog_homepage_delete_message">Do you want to delete tone?</string>
     <string name="alert_dialog_homepage_delete_positive">YES</string>
     <string name="alert_dialog_homepage_delete_negative">NO</string>
+    <string name="alert_dialog_homepage_delete_success">Tone deleted</string>
+    <string name="alert_dialog_homepage_delete_fail">Deletion failed</string>
 
     <string name="alert_dialog_homepage_rename_message">Give your tone a new name…</string>
     <string name="alert_dialog_homepage_rename_positive">RENAME</string>
     <string name="alert_dialog_homepage_rename_negative">Cancel</string>
-    <string name="alert_dialog_homepage_rename_success">Done</string>
-    <string name="alert_dialog_homepage_rename_fail">Operation failed</string>
+    <string name="alert_dialog_homepage_rename_success">Tone renamed</string>
+    <string name="alert_dialog_homepage_rename_fail">Renaming failed</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">

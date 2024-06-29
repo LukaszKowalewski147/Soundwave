@@ -44,7 +44,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneEnvelope.setText(tone.getEnvelope());
         holder.toneTimbre.setText(tone.getTimbre());
 
-        holder.toneName.setOnClickListener(new View.OnClickListener() {
+        holder.toneRenameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onRenameClick(tone);

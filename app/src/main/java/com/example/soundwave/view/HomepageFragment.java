@@ -99,13 +99,19 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
         builder.setMessage(R.string.alert_dialog_homepage_delete_message);
         builder.setPositiveButton(R.string.alert_dialog_homepage_delete_positive, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                viewModel.deleteTone(tone);
+                viewModel.deleteTone(tone).observe(getViewLifecycleOwner(), success -> {
+                    if (success)
+                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_delete_success, Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_delete_fail, Toast.LENGTH_SHORT).show();
+                });
             }
         });
         builder.setNegativeButton(R.string.alert_dialog_homepage_delete_negative, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             }
         });
+
         AlertDialog dialog = builder.create();
         dialog.show();
     }

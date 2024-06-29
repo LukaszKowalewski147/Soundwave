@@ -46,7 +46,18 @@ public class HomepageViewModel extends AndroidViewModel {
         return result;
     }
 
-    public void deleteTone(Tone tone) {
-        repository.delete(tone);
+    public LiveData<Boolean> deleteTone(Tone tone) {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+
+        executorService.execute(() -> {
+            try {
+                repository.delete(tone);
+                result.postValue(true);
+            } catch (Exception e) {
+                result.postValue(false);
+            }
+        });
+
+        return result;
     }
 }
