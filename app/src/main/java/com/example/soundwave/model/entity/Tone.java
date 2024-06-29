@@ -10,7 +10,7 @@ public class Tone {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    private final String name;
+    private String name;
 
     @ColumnInfo(name = "fundamental_frequency")
     private final int fundamentalFrequency;
@@ -39,6 +39,10 @@ public class Tone {
 
     public int getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {

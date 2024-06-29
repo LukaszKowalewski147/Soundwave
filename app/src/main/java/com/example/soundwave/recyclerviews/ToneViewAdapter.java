@@ -2,6 +2,7 @@ package com.example.soundwave.recyclerviews;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -17,10 +18,12 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
     private Context context;
     private List<Tone> tones;
+    private OnToneClickListener listener;
 
-    public ToneViewAdapter(Context context, List<Tone> tones) {
+    public ToneViewAdapter(Context context, List<Tone> tones, OnToneClickListener listener) {
         this.context = context;
         this.tones = tones;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,12 +34,29 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ToneViewHolder holder, int position) {
-        holder.toneName.setText(tones.get(position).getName());
-        int frequency = tones.get(position).getFundamentalFrequency();
+        Tone tone = tones.get(position);
+
+        int frequency = tone.getFundamentalFrequency();
         String scale = UnitsConverter.convertFrequencyToNote(frequency);
+
+        holder.toneName.setText(tone.getName());
         holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
-        holder.toneEnvelope.setText(tones.get(position).getEnvelope());
-        holder.toneTimbre.setText(tones.get(position).getTimbre());
+        holder.toneEnvelope.setText(tone.getEnvelope());
+        holder.toneTimbre.setText(tone.getTimbre());
+
+        holder.toneName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onRenameClick(tone);
+            }
+        });
+
+        holder.toneDeleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               listener.onDeleteClick(tone);
+            }
+        });
     }
 
     @Override

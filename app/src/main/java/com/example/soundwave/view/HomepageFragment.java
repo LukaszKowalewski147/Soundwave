@@ -1,5 +1,7 @@
 package com.example.soundwave.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,19 +9,24 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.soundwave.R;
 import com.example.soundwave.databinding.FragmentHomepageBinding;
 import com.example.soundwave.model.entity.Tone;
+import com.example.soundwave.recyclerviews.OnToneClickListener;
 import com.example.soundwave.recyclerviews.ToneViewAdapter;
 import com.example.soundwave.viewmodel.HomepageViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomepageFragment extends Fragment {
+public class HomepageFragment extends Fragment implements OnToneClickListener {
 
     private HomepageViewModel viewModel;
     private FragmentHomepageBinding binding;
@@ -42,7 +49,7 @@ public class HomepageFragment extends Fragment {
 
     private void initializeLayout() {
         binding.tonesRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        toneViewAdapter = new ToneViewAdapter(getContext(), new ArrayList<>());
+        toneViewAdapter = new ToneViewAdapter(getContext(), new ArrayList<>(), this);
         binding.tonesRecyclerview.setAdapter(toneViewAdapter);
     }
 
@@ -55,5 +62,60 @@ public class HomepageFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onRenameClick(Tone tone) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.alert_dialog_homepage_rename_message);
+
+        final EditText toneNewName = new EditText(getContext());
+        toneNewName.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(toneNewName);
+
+        builder.setPositiveButton(R.string.alert_dialog_homepage_rename_positive, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                viewModel.renameTone(tone, toneNewName.getText().toString()).observe(getViewLifecycleOwner(), success -> {
+                    if (success)
+                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_success, Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_fail, Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+        builder.setNegativeButton(R.string.alert_dialog_homepage_rename_negative, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onDeleteClick(Tone tone) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.alert_dialog_homepage_delete_message);
+        builder.setPositiveButton(R.string.alert_dialog_homepage_delete_positive, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                viewModel.deleteTone(tone);
+            }
+        });
+        builder.setNegativeButton(R.string.alert_dialog_homepage_delete_negative, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onEditClick(Tone tone) {
+
+    }
+
+    @Override
+    public void onPlayClick(Tone tone) {
+
     }
 }
