@@ -70,6 +70,13 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             }
         });
 
+        holder.tonePlayStopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onPlayStopClick(dbTone);
+            }
+        });
+
         holder.toneMoreInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

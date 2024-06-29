@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
+import com.example.soundwave.utils.AudioPlayer;
+import com.example.soundwave.utils.ToneParser;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -59,5 +61,15 @@ public class HomepageViewModel extends AndroidViewModel {
         });
 
         return result;
+    }
+
+    public void playStopTone(Tone tone) {
+        ToneParser parser = new ToneParser(tone);
+        com.example.soundwave.Tone toneToPlay = parser.parseToneFromDb();
+        AudioPlayer player = new AudioPlayer(toneToPlay);
+        player.load();
+        //player.stop();
+       // player.reload();
+        player.play();
     }
 }

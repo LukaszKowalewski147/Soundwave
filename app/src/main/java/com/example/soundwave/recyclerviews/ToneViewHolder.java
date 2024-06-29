@@ -25,6 +25,7 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
     TextView toneOtherInfoHeader;
     TextView toneOtherInfo;
     ImageButton toneDeleteBtn;
+    ImageButton tonePlayStopBtn;
     AppCompatButton toneRenameBtn;
     AppCompatButton toneMoreInfoBtn;
 
@@ -44,6 +45,7 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
         toneOtherInfoHeader = itemView.findViewById(R.id.tone_details_other_header);
         toneOtherInfo = itemView.findViewById(R.id.tone_details_other);
         toneDeleteBtn = itemView.findViewById(R.id.tone_delete_btn);
+        tonePlayStopBtn = itemView.findViewById(R.id.tone_play_stop_btn);
         toneRenameBtn = itemView.findViewById(R.id.tone_rename_btn);
         toneMoreInfoBtn = itemView.findViewById(R.id.tone_more_info_btn);
     }

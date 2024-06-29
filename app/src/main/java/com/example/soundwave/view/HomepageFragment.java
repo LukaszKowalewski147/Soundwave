@@ -122,7 +122,7 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     }
 
     @Override
-    public void onPlayClick(Tone tone) {
-
+    public void onPlayStopClick(Tone tone) {
+        viewModel.playStopTone(tone);
     }
 }

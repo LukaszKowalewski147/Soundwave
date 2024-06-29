@@ -232,7 +232,7 @@
         app:layout_constraintTop_toBottomOf="@id/tone_details_other_header" />
 
     <ImageButton
-        android:id="@+id/tone_play_btn"
+        android:id="@+id/tone_play_stop_btn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="4dp"

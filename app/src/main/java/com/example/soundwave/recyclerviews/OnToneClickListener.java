@@ -6,5 +6,5 @@ public interface OnToneClickListener {
     void onRenameClick(Tone tone);
     void onDeleteClick(Tone tone);
     void onEditClick(Tone tone);
-    void onPlayClick(Tone tone);
+    void onPlayStopClick(Tone tone);
 }
