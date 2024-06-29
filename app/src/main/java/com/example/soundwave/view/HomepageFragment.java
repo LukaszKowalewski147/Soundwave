@@ -71,6 +71,7 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
 
         final EditText toneNewName = new EditText(getContext());
         toneNewName.setInputType(InputType.TYPE_CLASS_TEXT);
+        toneNewName.setText(tone.getName());
         builder.setView(toneNewName);
 
         builder.setPositiveButton(R.string.alert_dialog_homepage_rename_positive, new DialogInterface.OnClickListener() {
