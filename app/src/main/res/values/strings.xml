@@ -54,9 +54,9 @@
     <string name="alert_dialog_tone_creator_generate_positive">YES</string>
     <string name="alert_dialog_tone_creator_generate_negative">NO</string>
 
-    <string name="alert_dialog_tone_creator_save_message">Do you want to save tone?</string>
-    <string name="alert_dialog_tone_creator_save_positive">YES</string>
-    <string name="alert_dialog_tone_creator_save_negative">NO</string>
+    <string name="alert_dialog_tone_creator_save_message">Give your tone a name…</string>
+    <string name="alert_dialog_tone_creator_save_positive">SAVE</string>
+    <string name="alert_dialog_tone_creator_save_negative">Cancel</string>
 
     <string name="alert_dialog_tone_creator_reset_message">Do you want to reset tone creator?</string>
     <string name="alert_dialog_tone_creator_reset_positive">YES</string>

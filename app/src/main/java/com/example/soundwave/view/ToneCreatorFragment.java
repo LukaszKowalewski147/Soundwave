@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
@@ -540,9 +542,14 @@ public class ToneCreatorFragment extends Fragment {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.alert_dialog_tone_creator_save_message);
+
+                final EditText toneName = new EditText(getContext());
+                toneName.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(toneName);
+
                 builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        takeSaveToneAction();
+                        takeSaveToneAction(toneName.getText().toString());
                     }
                 });
                 builder.setNegativeButton(R.string.alert_dialog_tone_creator_save_negative, new DialogInterface.OnClickListener() {
@@ -578,9 +585,9 @@ public class ToneCreatorFragment extends Fragment {
         viewModel.generateTone();
     }
 
-    private void takeSaveToneAction() {
+    private void takeSaveToneAction(String toneName) {
         File file = getActivity().getExternalFilesDir(WavCreator.getFileFolder());
-        viewModel.saveTone(file);
+        viewModel.saveTone(toneName, file);
     }
 
     private void takeResetAction() {
