@@ -11,6 +11,7 @@ import com.example.soundwave.model.local.SoundwaveDatabase;
 import java.util.List;
 
 public class SoundwaveRepo {
+
     private ToneDao toneDao;
     private LiveData<List<Tone>> allTones;
 

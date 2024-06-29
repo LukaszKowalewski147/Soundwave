@@ -10,23 +10,25 @@ public class Tone {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    private final String name;
+
     @ColumnInfo(name = "fundamental_frequency")
     private final int fundamentalFrequency;
 
+    private final String envelope;
+
+    private final String timbre;
+
     private final double volume;
 
+    @ColumnInfo(name = "overtones_data")
     private final String overtonesData;
-/*
-    private final double[] samples;
 
-    public Tone(int fundamentalFrequency, double volume, double[] samples) {
+    public Tone(String name, int fundamentalFrequency, String envelope, String timbre, double volume, String overtonesData) {
+        this.name = name;
         this.fundamentalFrequency = fundamentalFrequency;
-        this.volume = volume;
-        this.samples = samples;
-    }
-*/
-    public Tone(int fundamentalFrequency, double volume, String overtonesData) {
-        this.fundamentalFrequency = fundamentalFrequency;
+        this.envelope = envelope;
+        this.timbre = timbre;
         this.volume = volume;
         this.overtonesData = overtonesData;
     }
@@ -39,8 +41,20 @@ public class Tone {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getFundamentalFrequency() {
         return fundamentalFrequency;
+    }
+
+    public String getEnvelope() {
+        return envelope;
+    }
+
+    public String getTimbre() {
+        return timbre;
     }
 
     public double getVolume() {
@@ -50,9 +64,4 @@ public class Tone {
     public String getOvertonesData() {
         return overtonesData;
     }
-
-    /*
-    public double[] getSamples() {
-        return samples;
-    }*/
 }
