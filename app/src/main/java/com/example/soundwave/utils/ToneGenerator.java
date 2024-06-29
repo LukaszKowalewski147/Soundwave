@@ -16,14 +16,14 @@ public class ToneGenerator {
     private final double[] samples;
     private final byte[] outputSound;
 
-    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent eC,
-                         FundamentalFrequencyComponent ffc, OvertonesComponent oC) {
+    public ToneGenerator(SampleRate sampleRate, EnvelopeComponent ec,
+                         FundamentalFrequencyComponent ffc, OvertonesComponent oc) {
         this.sampleRate = sampleRate;
-        this.envelopeComponent = eC;
+        this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
-        this.overtonesComponent = oC;
+        this.overtonesComponent = oc;
 
-        samplesNumber = (int) Math.ceil(eC.getTotalDurationInSeconds() * sampleRate.sampleRate);
+        samplesNumber = (int) Math.ceil(ec.getTotalDurationInSeconds() * sampleRate.sampleRate);
         samples = new double[samplesNumber];
         outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
     }

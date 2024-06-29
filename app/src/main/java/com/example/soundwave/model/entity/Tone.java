@@ -13,59 +13,81 @@ public class Tone {
     private String name;
 
     @ColumnInfo(name = "fundamental_frequency")
-    private final int fundamentalFrequency;
+    private int fundamentalFrequency;
 
-    private final String envelope;
+    private int volume;
 
-    private final String timbre;
+    @ColumnInfo(name = "envelope_component")
+    private String envelopeComponent;
 
-    private final double volume;
+    @ColumnInfo(name = "overtones_component")
+    private String overtonesComponent;
 
-    @ColumnInfo(name = "overtones_data")
-    private final String overtonesData;
+    @ColumnInfo(name = "sample_rate")
+    private String sampleRate;
 
-    public Tone(String name, int fundamentalFrequency, String envelope, String timbre, double volume, String overtonesData) {
+    public Tone(String name, int fundamentalFrequency, int volume, String envelopeComponent, String overtonesComponent, String sampleRate) {
         this.name = name;
         this.fundamentalFrequency = fundamentalFrequency;
-        this.envelope = envelope;
-        this.timbre = timbre;
+        this.envelopeComponent = envelopeComponent;
         this.volume = volume;
-        this.overtonesData = overtonesData;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.overtonesComponent = overtonesComponent;
+        this.sampleRate = sampleRate;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getFundamentalFrequency() {
         return fundamentalFrequency;
     }
 
-    public String getEnvelope() {
-        return envelope;
+    public void setFundamentalFrequency(int fundamentalFrequency) {
+        this.fundamentalFrequency = fundamentalFrequency;
     }
 
-    public String getTimbre() {
-        return timbre;
-    }
-
-    public double getVolume() {
+    public int getVolume() {
         return volume;
     }
 
-    public String getOvertonesData() {
-        return overtonesData;
+    public void setVolume(int volume) {
+        this.volume = volume;
+    }
+
+    public String getEnvelopeComponent() {
+        return envelopeComponent;
+    }
+
+    public void setEnvelopeComponent(String envelopeComponent) {
+        this.envelopeComponent = envelopeComponent;
+    }
+
+    public String getOvertonesComponent() {
+        return overtonesComponent;
+    }
+
+    public void setOvertonesComponent(String overtonesComponent) {
+        this.overtonesComponent = overtonesComponent;
+    }
+
+    public String getSampleRate() {
+        return sampleRate;
+    }
+
+    public void setSampleRate(String sampleRate) {
+        this.sampleRate = sampleRate;
     }
 }

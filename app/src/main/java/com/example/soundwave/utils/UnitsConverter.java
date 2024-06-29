@@ -184,6 +184,20 @@ public class UnitsConverter {
         return "-";
     }
 
+    public static SampleRate convertStringToSampleRate(String sampleRate) {
+        switch (sampleRate) {
+            case "44.1kHz":
+                return SampleRate.RATE_44_1_KHZ;
+            case "48kHz":
+                return SampleRate.RATE_48_KHZ;
+            case "96kHz":
+                return SampleRate.RATE_96_KHZ;
+            case "192kHz":
+                return SampleRate.RATE_192_KHZ;
+        }
+        return SampleRate.RATE_44_1_KHZ;
+    }
+
     public static String convertPresetEnvelopeToString(PresetEnvelope preset) {
         switch (preset) {
             case FLAT:
@@ -200,6 +214,24 @@ public class UnitsConverter {
                 return "CUSTOM";
         }
         return "-";
+    }
+
+    public static PresetEnvelope convertStringToPresetEnvelope(String preset) {
+        switch (preset) {
+            case "FLAT":
+                return PresetEnvelope.FLAT;
+            case "PIANO":
+                return PresetEnvelope.PIANO;
+            case "GUITAR":
+                return PresetEnvelope.GUITAR;
+            case "FLUTE":
+                return PresetEnvelope.FLUTE;
+            case "TRUMPET":
+                return PresetEnvelope.TRUMPET;
+            case "CUSTOM":
+                return PresetEnvelope.CUSTOM;
+        }
+        return PresetEnvelope.CUSTOM;
     }
 
     public static String convertPresetOvertonesToString(PresetOvertones preset) {
@@ -224,6 +256,30 @@ public class UnitsConverter {
                 return "CUSTOM";
         }
         return "-";
+    }
+
+    public static PresetOvertones convertStringToPresetOvertones(String preset) {
+        switch (preset) {
+            case "NONE":
+                return PresetOvertones.NONE;
+            case "FLAT":
+                return PresetOvertones.FLAT;
+            case "PIANO":
+                return PresetOvertones.PIANO;
+            case "ACOUSTIC_GUITAR":
+                return PresetOvertones.ACOUSTIC_GUITAR;
+            case "BASS_GUITAR":
+                return PresetOvertones.BASS_GUITAR;
+            case "ELECTRIC_GUITAR":
+                return PresetOvertones.ELECTRIC_GUITAR;
+            case "FLUTE":
+                return PresetOvertones.FLUTE;
+            case "TRUMPET":
+                return PresetOvertones.TRUMPET;
+            case "CUSTOM":
+                return PresetOvertones.CUSTOM;
+        }
+        return PresetOvertones.CUSTOM;
     }
 
     public static double convertOvertoneDbSliderToHumanValue(int decibelValue) {

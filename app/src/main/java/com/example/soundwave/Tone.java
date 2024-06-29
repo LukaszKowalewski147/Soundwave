@@ -3,7 +3,6 @@ package com.example.soundwave;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
-import com.example.soundwave.Overtone;
 import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
@@ -19,11 +18,11 @@ public class Tone {
     private final byte[] samples;
 
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
-                OvertonesComponent oC, byte[] samples) {
+                OvertonesComponent oc, byte[] samples) {
         this.sampleRate = sampleRate;
         this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
-        this.overtonesComponent = oC;
+        this.overtonesComponent = oc;
         this.samples = samples;
     }
 
@@ -59,7 +58,7 @@ public class Tone {
         return fundamentalFrequencyComponent.getFundamentalFrequency();
     }
 
-    public double getMasterVolume() {
+    public int getMasterVolume() {
         return fundamentalFrequencyComponent.getMasterVolume();
     }
 

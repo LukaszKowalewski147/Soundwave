@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundwave.R;
 import com.example.soundwave.model.entity.Tone;
+import com.example.soundwave.utils.ToneParser;
 import com.example.soundwave.utils.UnitsConverter;
 
 import java.util.List;
@@ -35,30 +36,35 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ToneViewHolder holder, int position) {
         setMoreInfoVisibility(holder, false);
-        Tone tone = tones.get(position);
+        Tone dbTone = tones.get(position);
+        ToneParser parser = new ToneParser(dbTone);
+        com.example.soundwave.Tone tone = parser.parseToneFromDb();
 
         int frequency = tone.getFundamentalFrequency();
         String scale = UnitsConverter.convertFrequencyToNote(frequency);
+        String envelopePreset = tone.getEnvelopePreset().toString();
+        String overtonesPreset = tone.getOvertonesPreset().toString();
+        int volume = tone.getMasterVolume();
 
-        holder.toneName.setText(tone.getName());
+        holder.toneName.setText(dbTone.getName());
         holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
-        holder.toneEnvelope.setText(tone.getEnvelope());
-        holder.toneTimbre.setText(tone.getTimbre());
-        holder.toneVolume.setText(tone.getVolume() + "%");
+        holder.toneEnvelope.setText(envelopePreset);
+        holder.toneTimbre.setText(overtonesPreset);
+        holder.toneVolume.setText(volume + "%");
         holder.toneOvertonesNumber.setText("14");
         holder.toneOtherInfo.setText("comming soon");
 
         holder.toneRenameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onRenameClick(tone);
+                listener.onRenameClick(dbTone);
             }
         });
 
         holder.toneDeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               listener.onDeleteClick(tone);
+               listener.onDeleteClick(dbTone);
             }
         });
 

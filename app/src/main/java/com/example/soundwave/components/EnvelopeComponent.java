@@ -78,4 +78,10 @@ public class EnvelopeComponent {
     private double calculateTotalDurationInSeconds() {
         return totalDurationInMilliseconds / 1000.0d;
     }
+
+    @Override
+    public String toString() {
+        return envelopePreset + "," + attackDuration + "," + decayDuration + "," +
+                sustainLevel + "," + sustainDuration + "," + releaseDuration;
+    }
 }
