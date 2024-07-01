@@ -404,12 +404,12 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 editedTone.getFundamentalFrequency(), editedTone.getMasterVolume()));
         loadOvertonesComponent(editedTone.getOvertonesComponent());
+        tone.setValue(editedTone);
         controlPanelComponent.setValue(new ControlPanelComponent(
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.STANDARD,
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.INACTIVE));
-        tone.setValue(editedTone);
     }
 
     private void loadSampleRate(SampleRate editedSampleRate) {
@@ -524,6 +524,14 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         if (frequency != oldFrequency)                      // if changing only volume
             updateOvertonesFrequency();                     // not necessary to update overtones
         setAnyChange();
+    }
+
+    public void setNoChange() {
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE));
     }
 
     private void setAnyChange() {

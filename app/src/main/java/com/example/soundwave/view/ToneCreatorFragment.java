@@ -478,6 +478,8 @@ public class ToneCreatorFragment extends Fragment {
                 if (isChecked) {
                     binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
                     binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
+                    if (editorMode)
+                        viewModel.setNoChange();
                     return;
                 }
                 binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
@@ -503,6 +505,8 @@ public class ToneCreatorFragment extends Fragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     viewModel.updateOvertoneState(index, isChecked);
+                    if (editorMode)
+                        viewModel.setNoChange();
                 }
             });
 
