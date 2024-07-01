@@ -409,6 +409,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 ControlPanelComponent.ButtonState.STANDARD,
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.INACTIVE));
+        tone.setValue(editedTone);
     }
 
     public void loadSampleRate(SampleRate editedSampleRate) {
