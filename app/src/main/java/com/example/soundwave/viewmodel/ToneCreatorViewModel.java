@@ -348,8 +348,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         String overtonesDetails = "";
 
         ArrayList<Overtone> overtones = baseTone.getOvertones();
-        if (overtones != null)
-        {
+        if (overtones != null) {
             StringBuilder overtonesDetailsBuilder = new StringBuilder();
             for (Overtone overtone : overtones) {
                 overtonesDetailsBuilder.append(overtone.toString());
@@ -428,11 +427,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             PresetEnvelope.CUSTOM.values[2] = editedEC.getSustainLevel();
             PresetEnvelope.CUSTOM.values[3] = editedEC.getSustainDuration();
             PresetEnvelope.CUSTOM.values[4] = editedEC.getReleaseDuration();
-            return;
         }
 
-        envelopeComponent.setValue(new EnvelopeComponent(editedPreset, editedPreset.values[0],
-                editedPreset.values[1], editedPreset.values[2], editedPreset.values[3], editedPreset.values[4]));
+        envelopeComponent.setValue(new EnvelopeComponent(editedPreset,
+                editedPreset.values[0], editedPreset.values[1], editedPreset.values[2],
+                editedPreset.values[3], editedPreset.values[4]));
     }
 
     public void loadOvertonesComponent(OvertonesComponent editedOC) {
@@ -440,7 +439,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         Options.overtonePreset = editedPreset;
         Options.lastOvertonePreset = editedPreset;
 
-        if(editedPreset != PresetOvertones.NONE) {
+        if (editedPreset != PresetOvertones.NONE) {
             ArrayList<Overtone> ocOvertones = editedOC.getOvertones();
 
             Overtone[] editedOvertones = ocOvertones.toArray(new Overtone[ocOvertones.size()]);
