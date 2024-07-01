@@ -412,13 +412,13 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         tone.setValue(editedTone);
     }
 
-    public void loadSampleRate(SampleRate editedSampleRate) {
+    private void loadSampleRate(SampleRate editedSampleRate) {
         if (sampleRate.getValue() == editedSampleRate)
             return;
         sampleRate.setValue(editedSampleRate);
     }
 
-    public void loadEnvelopeComponent(EnvelopeComponent editedEC) {
+    private void loadEnvelopeComponent(EnvelopeComponent editedEC) {
         PresetEnvelope editedPreset = editedEC.getEnvelopePreset();
         Options.envelopePreset = editedPreset;
 
@@ -435,7 +435,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 editedPreset.values[3], editedPreset.values[4]));
     }
 
-    public void loadOvertonesComponent(OvertonesComponent editedOC) {
+    private void loadOvertonesComponent(OvertonesComponent editedOC) {
         PresetOvertones editedPreset = editedOC.getOvertonesPreset();
         Options.overtonePreset = editedPreset;
         Options.lastOvertonePreset = editedPreset;

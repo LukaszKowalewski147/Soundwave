@@ -52,6 +52,9 @@ public class ToneCreatorFragment extends Fragment {
     private FragmentToneCreatorBinding binding;
     private OvertoneCreatorBinding[] overtoneBindings;
 
+    private Tone editedTone;
+    private boolean editorMode = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentToneCreatorBinding.inflate(inflater, container, false);
@@ -62,12 +65,14 @@ public class ToneCreatorFragment extends Fragment {
         initializeUIListeners();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            Tone editedTone = (Tone) bundle.getSerializable("tone");
-            viewModel.loadEditedTone(editedTone);
             if (getActivity() != null) {
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.selectToneCreatorOnBottomNav();
             }
+            editorMode = true;
+            editedTone = (Tone) bundle.getSerializable("tone");
+            viewModel.loadEditedTone(editedTone);
+            initializeToneEditorLayout();
         }
         return binding.getRoot();
     }
@@ -145,7 +150,7 @@ public class ToneCreatorFragment extends Fragment {
         viewModel.getSampleRate().observe(getViewLifecycleOwner(), new Observer<SampleRate>() {
             @Override
             public void onChanged(SampleRate sampleRate) {
-                    binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate));
+                binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate));
             }
         });
 
@@ -593,6 +598,12 @@ public class ToneCreatorFragment extends Fragment {
         });
     }
 
+    private void initializeToneEditorLayout() {
+        if (viewModel.getTone().getValue().getOvertonesPreset() != PresetOvertones.NONE) {
+            binding.toneCreatorOvertonesActivator.setChecked(true);
+        }
+    }
+
     private void takeGenerateToneAction() {
         viewModel.generateTone();
     }
@@ -603,8 +614,12 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void takeResetAction() {
-        binding.toneCreatorOvertonesActivator.setChecked(false);
-        viewModel.resetTone();
+        if (editorMode)
+            viewModel.loadEditedTone(editedTone);
+        else {
+            binding.toneCreatorOvertonesActivator.setChecked(false);
+            viewModel.resetTone();
+        }
     }
 
     private void manageControlPanel(ControlPanelComponent controlPanelComponent) {
