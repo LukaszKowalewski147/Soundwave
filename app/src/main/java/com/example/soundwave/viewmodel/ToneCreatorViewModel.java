@@ -27,6 +27,7 @@ import com.example.soundwave.utils.ToneGenerator;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
@@ -282,7 +283,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void generateTone() {
-        OvertonesComponent oC = new OvertonesComponent(getActiveOvertones(), Options.overtonePreset);
+        OvertonesComponent oC = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
         ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(),
                 envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue(), oC);
         Tone newTone = toneGenerator.generateTone();
@@ -446,21 +447,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         overtones.setValue(editedOvertones);
     }
 
-    private ArrayList<Overtone> getActiveOvertones() {
+    private ArrayList<Overtone> getAllOvertones() {
         if (!overtonesActivator)
             return null;
 
-        ArrayList<Overtone> activeOvertonesList = new ArrayList<>();
-        Overtone[] allOvertones = overtones.getValue();
-
-        for (Overtone overtone : allOvertones) {
-            if (overtone.isActive())
-                activeOvertonesList.add(overtone);
-        }
-
-        if (activeOvertonesList.isEmpty())
-            return null;
-        return activeOvertonesList;
+        return new ArrayList<>(Arrays.asList(overtones.getValue()));
     }
 
     private void initializeDefaultValues() {
