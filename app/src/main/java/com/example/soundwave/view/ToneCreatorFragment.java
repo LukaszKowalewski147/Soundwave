@@ -566,6 +566,10 @@ public class ToneCreatorFragment extends Fragment {
 
                 final EditText toneName = new EditText(getContext());
                 toneName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                if (editorMode)
+                    toneName.setText(editedTone.getName());
+
                 builder.setView(toneName);
 
                 builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, new DialogInterface.OnClickListener() {
@@ -603,6 +607,9 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void initializeToneEditorLayout() {
+        binding.toneCreatorToneName.setText(editedTone.getName());
+        binding.toneCreatorToneName.setVisibility(View.VISIBLE);
+
         if (viewModel.getTone().getValue().getOvertonesPreset() != PresetOvertones.NONE) {
             binding.toneCreatorOvertonesActivator.setChecked(true);
         }

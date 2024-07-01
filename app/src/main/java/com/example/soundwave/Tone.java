@@ -14,6 +14,7 @@ public class Tone implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int id;
+    private String name;
     private final SampleRate sampleRate;
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
@@ -23,6 +24,7 @@ public class Tone implements Serializable {
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
                 OvertonesComponent oc, byte[] samples) {
         this.id = -1;
+        this.name = "";
         this.sampleRate = sampleRate;
         this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
@@ -36,6 +38,14 @@ public class Tone implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public SampleRate getSampleRate() {

@@ -18,6 +18,7 @@ public class ToneParser {
 
     public Tone parseToneFromDb() {
         int id = dbTone.getId();
+        String name = dbTone.getName();
         SampleRate sampleRate = parseSampleRate();
         EnvelopeComponent ec = parseEnvelopeComponent();
         FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent();
@@ -25,6 +26,7 @@ public class ToneParser {
 
         Tone tone = new ToneGenerator(sampleRate, ec, ffc, oc).generateTone();
         tone.setId(id);
+        tone.setName(name);
 
         return tone;
     }
