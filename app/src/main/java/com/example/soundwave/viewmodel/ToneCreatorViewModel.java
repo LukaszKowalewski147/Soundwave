@@ -436,15 +436,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void loadOvertonesComponent(OvertonesComponent editedOC) {
-        Options.overtonePreset = editedOC.getOvertonesPreset();
-        Options.lastOvertonePreset = editedOC.getOvertonesPreset();
+        PresetOvertones editedPreset = editedOC.getOvertonesPreset();
+        Options.overtonePreset = editedPreset;
+        Options.lastOvertonePreset = editedPreset;
 
-        ArrayList<Overtone> ocOvertones = editedOC.getOvertones();
+        if(editedPreset != PresetOvertones.NONE) {
+            ArrayList<Overtone> ocOvertones = editedOC.getOvertones();
 
-        Overtone[] editedOvertones = ocOvertones.toArray(new Overtone[ocOvertones.size()]);
-        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
-            editedOvertones[i] = new Overtone(i, editedOvertones[i].getFrequency(), editedOvertones[i].getAmplitude(), editedOvertones[i].isActive());
-        overtones.setValue(editedOvertones);
+            Overtone[] editedOvertones = ocOvertones.toArray(new Overtone[ocOvertones.size()]);
+            for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
+                editedOvertones[i] = new Overtone(i, editedOvertones[i].getFrequency(), editedOvertones[i].getAmplitude(), editedOvertones[i].isActive());
+            overtones.setValue(editedOvertones);
+        }
     }
 
     private ArrayList<Overtone> getAllOvertones() {
