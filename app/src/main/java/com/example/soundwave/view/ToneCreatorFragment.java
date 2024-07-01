@@ -609,12 +609,12 @@ public class ToneCreatorFragment extends Fragment {
     }
 
     private void takeGenerateToneAction() {
-        viewModel.generateTone();
+        viewModel.generateTone(editorMode);
     }
 
     private void takeSaveToneAction(String toneName) {
         File file = getActivity().getExternalFilesDir(WavCreator.getFileFolder());
-        viewModel.saveTone(toneName, file);
+        viewModel.saveTone(toneName, file, editorMode);
     }
 
     private void takeResetAction() {

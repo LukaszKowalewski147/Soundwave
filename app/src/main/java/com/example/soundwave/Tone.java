@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class Tone implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private int id;
     private final SampleRate sampleRate;
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
@@ -21,11 +22,20 @@ public class Tone implements Serializable {
 
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
                 OvertonesComponent oc, byte[] samples) {
+        this.id = -1;
         this.sampleRate = sampleRate;
         this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
         this.overtonesComponent = oc;
         this.samples = samples;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public SampleRate getSampleRate() {
