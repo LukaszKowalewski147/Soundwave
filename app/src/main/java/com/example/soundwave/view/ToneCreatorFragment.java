@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
+import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.Tone;
 import com.example.soundwave.utils.WavCreator;
@@ -66,6 +67,7 @@ public class ToneCreatorFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         overtoneBindings = null;
+        Options.lastOvertonePreset = PresetOvertones.FLAT;
     }
 
     private void initializeOvertoneBindings() {
