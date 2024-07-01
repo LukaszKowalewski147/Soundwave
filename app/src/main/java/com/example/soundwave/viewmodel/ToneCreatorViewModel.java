@@ -50,6 +50,13 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         initializeDefaultValues();
     }
 
+    @Override
+    protected void onCleared() {
+        audioPlayer.stop();
+        audioPlayer = null;
+        super.onCleared();
+    }
+
     public LiveData<SampleRate> getSampleRate() {
         return sampleRate;
     }
