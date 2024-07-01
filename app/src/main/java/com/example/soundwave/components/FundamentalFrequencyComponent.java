@@ -3,7 +3,10 @@ package com.example.soundwave.components;
 import com.example.soundwave.utils.Scale;
 import com.example.soundwave.utils.UnitsConverter;
 
-public class FundamentalFrequencyComponent {
+import java.io.Serializable;
+
+public class FundamentalFrequencyComponent implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final int fundamentalFrequency;
     private final int fundamentalFrequencyBar;

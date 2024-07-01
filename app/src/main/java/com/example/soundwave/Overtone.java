@@ -2,7 +2,10 @@ package com.example.soundwave;
 
 import androidx.annotation.NonNull;
 
-public class Overtone {
+import java.io.Serializable;
+
+public class Overtone implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final int index;
     private final int frequency;

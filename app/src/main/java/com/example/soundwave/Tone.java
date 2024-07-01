@@ -7,9 +7,11 @@ import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Tone {
+public class Tone implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final SampleRate sampleRate;
     private final EnvelopeComponent envelopeComponent;

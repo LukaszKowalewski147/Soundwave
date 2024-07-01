@@ -2,7 +2,11 @@ package com.example.soundwave.components;
 
 import com.example.soundwave.utils.PresetEnvelope;
 
-public class EnvelopeComponent {
+import java.io.Serializable;
+
+public class EnvelopeComponent implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final PresetEnvelope envelopePreset;
     private final int attackDuration;
     private final int decayDuration;

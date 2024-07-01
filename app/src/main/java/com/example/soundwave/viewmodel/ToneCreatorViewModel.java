@@ -395,6 +395,57 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return index + "th";
     }
 
+    public void loadEditedTone(Tone editedTone) {
+        audioPlayer = new AudioPlayer(editedTone);
+        audioPlayer.load();
+
+        loadSampleRate(editedTone.getSampleRate());
+        loadEnvelopeComponent(editedTone.getEnvelopeComponent());
+        fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
+                editedTone.getFundamentalFrequency(), editedTone.getMasterVolume()));
+        loadOvertonesComponent(editedTone.getOvertonesComponent());
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE));
+    }
+
+    public void loadSampleRate(SampleRate editedSampleRate) {
+        if (sampleRate.getValue() == editedSampleRate)
+            return;
+        sampleRate.setValue(editedSampleRate);
+    }
+
+    public void loadEnvelopeComponent(EnvelopeComponent editedEC) {
+        PresetEnvelope editedPreset = editedEC.getEnvelopePreset();
+        Options.envelopePreset = editedPreset;
+
+        if (editedPreset == PresetEnvelope.CUSTOM) {
+            PresetEnvelope.CUSTOM.values[0] = editedEC.getAttackDuration();
+            PresetEnvelope.CUSTOM.values[1] = editedEC.getDecayDuration();
+            PresetEnvelope.CUSTOM.values[2] = editedEC.getSustainLevel();
+            PresetEnvelope.CUSTOM.values[3] = editedEC.getSustainDuration();
+            PresetEnvelope.CUSTOM.values[4] = editedEC.getReleaseDuration();
+            return;
+        }
+
+        envelopeComponent.setValue(new EnvelopeComponent(editedPreset, editedPreset.values[0],
+                editedPreset.values[1], editedPreset.values[2], editedPreset.values[3], editedPreset.values[4]));
+    }
+
+    public void loadOvertonesComponent(OvertonesComponent editedOC) {
+        Options.overtonePreset = editedOC.getOvertonesPreset();
+        Options.lastOvertonePreset = editedOC.getOvertonesPreset();
+
+        ArrayList<Overtone> ocOvertones = editedOC.getOvertones();
+
+        Overtone[] editedOvertones = ocOvertones.toArray(new Overtone[ocOvertones.size()]);
+        for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i)
+            editedOvertones[i] = new Overtone(i, editedOvertones[i].getFrequency(), editedOvertones[i].getAmplitude(), editedOvertones[i].isActive());
+        overtones.setValue(editedOvertones);
+    }
+
     private ArrayList<Overtone> getActiveOvertones() {
         if (!overtonesActivator)
             return null;

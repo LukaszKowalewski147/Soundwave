@@ -59,6 +59,11 @@ public class ToneCreatorFragment extends Fragment {
         initializeDefaultLayout();
         initializeObservers();
         initializeUIListeners();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            Tone editedTone = (Tone) bundle.getSerializable("tone");
+            viewModel.loadEditedTone(editedTone);
+        }
         return binding.getRoot();
     }
 
