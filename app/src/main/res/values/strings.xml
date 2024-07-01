@@ -52,6 +52,7 @@
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_dynamic_playback">Generator</string>
 
+    <!--    Alert dialogs       -->
     <string name="alert_dialog_tone_creator_generate_message">Do you want to generate tone?</string>
     <string name="alert_dialog_tone_creator_generate_positive">YES</string>
     <string name="alert_dialog_tone_creator_generate_negative">NO</string>
@@ -75,6 +76,15 @@
     <string name="alert_dialog_homepage_rename_negative">Cancel</string>
     <string name="alert_dialog_homepage_rename_success">Tone renamed</string>
     <string name="alert_dialog_homepage_rename_fail">Renaming failed</string>
+
+    <string name="alert_dialog_homepage_download_message">Do you want to download this tone?</string>
+    <string name="alert_dialog_homepage_download_positive">YES</string>
+    <string name="alert_dialog_homepage_download_negative">NO</string>
+    <string name="alert_dialog_homepage_download_success">Tone downloaded to:</string>
+    <string name="alert_dialog_homepage_download_fail">Downloading failed</string>
+
+    <!--    Error messages      -->
+    <string name="error_msg_filepath_to_download_fail">Filepath to download error</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">

@@ -12,6 +12,7 @@ import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.AudioPlayer;
 import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.utils.WavCreator;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -101,6 +102,13 @@ public class HomepageViewModel extends AndroidViewModel {
                 }
             }, toneToPlay.getDurationInMilliseconds());
         }
+    }
+
+    public boolean downloadTone(Tone tone) {
+        com.example.soundwave.Tone toneToDownload = new ToneParser(tone).parseToneFromDb();
+        WavCreator wavCreator = new WavCreator(toneToDownload);
+        wavCreator.saveSound();
+        return wavCreator.isSuccess();
     }
 
     public boolean isTonePlaying(Tone tone) {

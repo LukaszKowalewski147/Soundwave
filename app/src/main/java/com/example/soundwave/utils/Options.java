@@ -29,4 +29,5 @@ public class Options {
     public static volatile PresetOvertones lastOvertonePreset = PresetOvertones.FLAT;
     public static volatile ButtonLongPressState buttonIncrementFrequencyState = ButtonLongPressState.RELEASED;
     public static volatile ButtonLongPressState buttonDecrementFrequencyState = ButtonLongPressState.RELEASED;
+    public static volatile String filepathToDownload = "";
 }

@@ -15,12 +15,10 @@ import java.nio.ByteOrder;
 public class WavCreator {
 
     private static final String FILE_FOLDER = "myTones";
-    private final File filepathBase;
     private final Tone tone;
     private boolean success;
 
-    public WavCreator(Tone tone, File filepathBase) {
-        this.filepathBase = filepathBase;
+    public WavCreator(Tone tone) {
         this.tone = tone;
         this.success = false;
     }
@@ -36,6 +34,10 @@ public class WavCreator {
     public void saveSound() {
         FileOutputStream out = null;
         if (isExternalStorageAvailable()) {
+            File filepathBase = getFilepathBase();
+            if (filepathBase == null)
+                return;
+
             String fileName = getFilename();
             File wavFile = new File(filepathBase, fileName);
             try {
@@ -55,6 +57,13 @@ public class WavCreator {
                 }
             }
         }
+    }
+
+    private File getFilepathBase() {
+        if (!Options.filepathToDownload.isEmpty()) {
+            return new File(Options.filepathToDownload);
+        }
+        return null;
     }
 
     private String getFilename() {

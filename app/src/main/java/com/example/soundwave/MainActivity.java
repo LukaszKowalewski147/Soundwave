@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.soundwave.databinding.ActivityMainBinding;
 import com.example.soundwave.model.entity.Tone;
+import com.example.soundwave.utils.Options;
+import com.example.soundwave.utils.WavCreator;
 import com.example.soundwave.view.HomepageFragment;
 import com.example.soundwave.view.ToneCreatorFragment;
 import com.example.soundwave.view.ToneMixerFragment;
@@ -22,6 +24,7 @@ import com.example.soundwave.view.ToneStreamingFragment;
 import com.example.soundwave.viewmodel.MainActivityViewModel;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setFilepathToDownload();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -84,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
             userClick = false;
             binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
             userClick = true;
+        }
+    }
+
+    private void setFilepathToDownload() {
+        File externalFilesDir = getExternalFilesDir(WavCreator.getFileFolder());
+        if (externalFilesDir != null) {
+            Options.filepathToDownload = externalFilesDir.toString();
+        } else {
+            Toast.makeText(this, R.string.error_msg_filepath_to_download_fail, Toast.LENGTH_SHORT).show();
         }
     }
 

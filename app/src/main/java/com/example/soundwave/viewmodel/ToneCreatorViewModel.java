@@ -381,21 +381,16 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         else
             repository.insert(toneEntity);
 
-        WavCreator wavCreator = new WavCreator(tone.getValue(), filepathBase);
-        wavCreator.saveSound();
+        HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+        ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
+        ControlPanelComponent.ButtonState playStopBtnState = buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP);
+        ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
 
-        if (wavCreator.isSuccess()) {
-            HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
-            ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
-            ControlPanelComponent.ButtonState playStopBtnState = buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP);
-            ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
-
-            controlPanelComponent.setValue(new ControlPanelComponent(
-                    generateBtnState,
-                    playStopBtnState,
-                    ControlPanelComponent.ButtonState.DONE,
-                    resetBtnState));
-        }
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                generateBtnState,
+                playStopBtnState,
+                ControlPanelComponent.ButtonState.DONE,
+                resetBtnState));
     }
 
     public void resetTone() {

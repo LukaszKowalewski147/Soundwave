@@ -100,6 +100,13 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             }
         });
 
+        holder.toneDownloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onDownloadClick(dbTone);
+            }
+        });
+
         holder.toneMoreInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

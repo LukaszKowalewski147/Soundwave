@@ -21,6 +21,7 @@ import com.example.soundwave.databinding.FragmentHomepageBinding;
 import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.recyclerviews.OnToneClickListener;
 import com.example.soundwave.recyclerviews.ToneViewAdapter;
+import com.example.soundwave.utils.Options;
 import com.example.soundwave.viewmodel.HomepageViewModel;
 
 import java.util.ArrayList;
@@ -131,6 +132,29 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     @Override
     public void onPlayStopClick(Tone tone) {
         viewModel.playStopTone(tone);
+    }
+
+    @Override
+    public void onDownloadClick(Tone tone) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.alert_dialog_homepage_download_message);
+
+        builder.setPositiveButton(R.string.alert_dialog_homepage_download_positive, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (viewModel.downloadTone(tone))
+                    Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_success) + " " + Options.filepathToDownload, Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(getContext(), R.string.alert_dialog_homepage_download_fail, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        builder.setNegativeButton(R.string.alert_dialog_homepage_download_negative, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
