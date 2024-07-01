@@ -191,6 +191,8 @@ public class ToneCreatorFragment extends Fragment {
                 binding.toneCreatorFundamentalFrequencyBar.setProgress(fundamentalFrequencyBar);
                 binding.toneCreatorMasterVolumeInput.setText(String.valueOf(masterVolume));
                 binding.toneCreatorMasterVolumeBar.setProgress(masterVolume);
+
+                manageMasterVolumeIcon(masterVolume);
             }
         });
 
@@ -206,6 +208,7 @@ public class ToneCreatorFragment extends Fragment {
             public void onChanged(Overtone[] overtones) {
                 for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
                     updateOvertoneView(i, overtones[i]);
+                    manageOvertoneVolumeIcon(i, overtones[i].getAmplitude());
                 }
                 binding.toneCreatorOvertonesPreset.setSelection(viewModel.getOvertonesPresetPosition());
             }
@@ -725,5 +728,28 @@ public class ToneCreatorFragment extends Fragment {
         binding.toneCreatorToneDetailsFundamentalFrequency.setText(frequencyString);
         binding.toneCreatorToneDetailsEnvelopePreset.setText(envelopeString);
         binding.toneCreatorToneDetailsTimbrePreset.setText(timbreString);
+    }
+
+    private void manageMasterVolumeIcon(int masterVolume) {
+        if (masterVolume == 0)
+            binding.toneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_mute);
+        else if (masterVolume < binding.toneCreatorMasterVolumeBar.getMax() / 3)
+            binding.toneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_low);
+        else if (masterVolume < 1 + (binding.toneCreatorMasterVolumeBar.getMax() / 3) * 2)
+            binding.toneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_normal);
+        else
+            binding.toneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_high);
+    }
+
+    private void manageOvertoneVolumeIcon(int overtoneIndex, double volume) {
+        double maxVolume = overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.getMax() / 10.0d;
+        volume += 40;
+
+        if (volume < maxVolume / 3)
+            overtoneBindings[overtoneIndex].overtoneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_low);
+        else if (volume < (maxVolume / 3) * 2)
+            overtoneBindings[overtoneIndex].overtoneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_normal);
+        else
+            overtoneBindings[overtoneIndex].overtoneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_high);
     }
 }
