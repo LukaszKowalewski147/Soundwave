@@ -52,8 +52,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     @Override
     protected void onCleared() {
-        audioPlayer.stop();
-        audioPlayer = null;
+        if (audioPlayer != null) {
+            audioPlayer.stop();
+            audioPlayer = null;
+        }
         super.onCleared();
     }
 
