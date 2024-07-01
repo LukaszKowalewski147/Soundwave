@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MainActivityViewModel mainActivityViewModel;
+    boolean userClick = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +44,47 @@ public class MainActivity extends AppCompatActivity {
         binding.mainBottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.tone_creator:
-                        manageVisibilityOfTopMenu(false);
-                        loadFragment(new ToneCreatorFragment());
-                        break;
-                    case R.id.tone_mixer:
-                        manageVisibilityOfTopMenu(false);
-                        loadFragment(new ToneMixerFragment());
-                        break;
-                    case R.id.my_homepage:
-                        manageVisibilityOfTopMenu(true);
-                        loadFragment(new HomepageFragment());
-                        break;
-                    case R.id.tone_streaming:
-                        manageVisibilityOfTopMenu(false);
-                        loadFragment(new ToneStreamingFragment());
-                        break;
+                if (userClick) {
+                    switch (item.getItemId()) {
+                        case R.id.tone_creator:
+                            manageVisibilityOfTopMenu(false);
+                            loadFragment(new ToneCreatorFragment());
+                            break;
+                        case R.id.tone_mixer:
+                            manageVisibilityOfTopMenu(false);
+                            loadFragment(new ToneMixerFragment());
+                            break;
+                        case R.id.my_homepage:
+                            manageVisibilityOfTopMenu(true);
+                            loadFragment(new HomepageFragment());
+                            break;
+                        case R.id.tone_streaming:
+                            manageVisibilityOfTopMenu(false);
+                            loadFragment(new ToneStreamingFragment());
+                            break;
+                    }
                 }
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (binding.mainBottomNavView.getSelectedItemId() == R.id.my_homepage) {
+            super.onBackPressed();
+        } else {
+            binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);
+        }
+    }
+
+    public void selectToneCreatorOnBottomNav() {
+        if (binding != null) {
+            manageVisibilityOfTopMenu(false);
+            userClick = false;
+            binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
+            userClick = true;
+        }
     }
 
     private void manageVisibilityOfTopMenu(boolean visible) {

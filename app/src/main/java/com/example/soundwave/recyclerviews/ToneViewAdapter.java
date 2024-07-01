@@ -96,7 +96,6 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
                 fragmentManager.beginTransaction()
                         .replace(R.id.main_fragment_container, fragment)
-                        .addToBackStack(null)
                         .commit();
             }
         });

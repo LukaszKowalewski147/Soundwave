@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
+import com.example.soundwave.MainActivity;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.Tone;
@@ -63,6 +64,10 @@ public class ToneCreatorFragment extends Fragment {
         if (bundle != null) {
             Tone editedTone = (Tone) bundle.getSerializable("tone");
             viewModel.loadEditedTone(editedTone);
+            if (getActivity() != null) {
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.selectToneCreatorOnBottomNav();
+            }
         }
         return binding.getRoot();
     }
