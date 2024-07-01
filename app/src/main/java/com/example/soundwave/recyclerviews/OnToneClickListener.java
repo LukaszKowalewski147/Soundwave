@@ -7,4 +7,5 @@ public interface OnToneClickListener {
     void onDeleteClick(Tone tone);
     void onEditClick(Tone tone);
     void onPlayStopClick(Tone tone);
+    boolean isPlaying(Tone tone);
 }

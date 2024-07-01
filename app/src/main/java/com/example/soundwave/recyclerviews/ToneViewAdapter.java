@@ -70,6 +70,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             }
         });
 
+        holder.tonePlayStopBtn.setImageResource(listener.isPlaying(dbTone) ? R.drawable.ic_stop : R.drawable.ic_play_tone);
         holder.tonePlayStopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

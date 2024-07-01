@@ -62,6 +62,13 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
                 }
             }
         });
+
+        viewModel.getIsTonePlaying().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                toneViewAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -124,5 +131,10 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     @Override
     public void onPlayStopClick(Tone tone) {
         viewModel.playStopTone(tone);
+    }
+
+    @Override
+    public boolean isPlaying(Tone tone) {
+        return viewModel.isTonePlaying(tone);
     }
 }

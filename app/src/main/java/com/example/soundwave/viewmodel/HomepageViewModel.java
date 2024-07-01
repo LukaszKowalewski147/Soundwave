@@ -1,6 +1,7 @@
 package com.example.soundwave.viewmodel;
 
 import android.app.Application;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -20,7 +21,10 @@ public class HomepageViewModel extends AndroidViewModel {
 
     private SoundwaveRepo repository;
     private LiveData<List<Tone>> allTones;
+    private MutableLiveData<Boolean> isTonePlaying = new MutableLiveData<>();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Tone currentlyPlayingTone;
+    private AudioPlayer currentAudioPlayer;
 
     public HomepageViewModel(@NonNull Application application) {
         super(application);
@@ -30,6 +34,10 @@ public class HomepageViewModel extends AndroidViewModel {
 
     public LiveData<List<Tone>> getAllTones() {
         return allTones;
+    }
+
+    public LiveData<Boolean> getIsTonePlaying() {
+        return isTonePlaying;
     }
 
     public LiveData<Boolean> renameTone(Tone tone, String toneNewName) {
@@ -64,12 +72,38 @@ public class HomepageViewModel extends AndroidViewModel {
     }
 
     public void playStopTone(Tone tone) {
-        ToneParser parser = new ToneParser(tone);
-        com.example.soundwave.Tone toneToPlay = parser.parseToneFromDb();
-        AudioPlayer player = new AudioPlayer(toneToPlay);
-        player.load();
-        //player.stop();
-       // player.reload();
-        player.play();
+        if (isTonePlaying(tone)) {
+            // Stop currently playing tone
+            if (currentAudioPlayer != null) {
+                currentAudioPlayer.stop();
+                currentAudioPlayer = null;
+                isTonePlaying.postValue(false);
+            }
+            currentlyPlayingTone = null;
+        } else {
+            // Stop the previous tone if it's playing
+            if (currentAudioPlayer != null) {
+                currentAudioPlayer.stop();
+            }
+
+            // Play the new tone
+            com.example.soundwave.Tone toneToPlay = new ToneParser(tone).parseToneFromDb();
+            currentAudioPlayer = new AudioPlayer(toneToPlay);
+            currentAudioPlayer.load();
+            currentAudioPlayer.play();
+            currentlyPlayingTone = tone;
+
+            isTonePlaying.postValue(true);
+            new Handler().postDelayed(() -> {
+                if (isTonePlaying(tone)) {
+                    currentlyPlayingTone = null;
+                    isTonePlaying.postValue(false);
+                }
+            }, toneToPlay.getDurationInMilliseconds());
+        }
+    }
+
+    public boolean isTonePlaying(Tone tone) {
+        return currentlyPlayingTone != null && currentlyPlayingTone.equals(tone);
     }
 }
