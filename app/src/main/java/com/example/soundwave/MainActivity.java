@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private MainActivityViewModel mainActivityViewModel;
     boolean userClick = true;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
-        loadFragment(new HomepageFragment());
+        currentFragment = new HomepageFragment();
+        loadFragment(currentFragment);
+
         binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);
 
         binding.mainBottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -49,20 +52,32 @@ public class MainActivity extends AppCompatActivity {
                 if (userClick) {
                     switch (item.getItemId()) {
                         case R.id.tone_creator:
-                            manageVisibilityOfTopMenu(false);
-                            loadFragment(new ToneCreatorFragment());
+                            if (!(currentFragment instanceof ToneCreatorFragment)) {
+                                manageVisibilityOfTopMenu(false);
+                                currentFragment = new ToneCreatorFragment();
+                                loadFragment(currentFragment);
+                            }
                             break;
                         case R.id.tone_mixer:
-                            manageVisibilityOfTopMenu(false);
-                            loadFragment(new ToneMixerFragment());
+                            if (!(currentFragment instanceof ToneMixerFragment)) {
+                                manageVisibilityOfTopMenu(false);
+                                currentFragment = new ToneMixerFragment();
+                                loadFragment(currentFragment);
+                            }
                             break;
                         case R.id.my_homepage:
-                            manageVisibilityOfTopMenu(true);
-                            loadFragment(new HomepageFragment());
+                            if (!(currentFragment instanceof HomepageFragment)) {
+                                manageVisibilityOfTopMenu(true);
+                                currentFragment = new HomepageFragment();
+                                loadFragment(currentFragment);
+                            }
                             break;
                         case R.id.tone_streaming:
-                            manageVisibilityOfTopMenu(false);
-                            loadFragment(new ToneStreamingFragment());
+                            if (!(currentFragment instanceof ToneStreamingFragment)) {
+                                manageVisibilityOfTopMenu(false);
+                                currentFragment = new ToneStreamingFragment();
+                                loadFragment(currentFragment);
+                            }
                             break;
                     }
                 }
@@ -83,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
     public void selectToneCreatorOnBottomNav() {
         if (binding != null) {
             manageVisibilityOfTopMenu(false);
+            currentFragment = new ToneCreatorFragment();
             userClick = false;
             binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
             userClick = true;
