@@ -612,6 +612,7 @@ public class ToneCreatorFragment extends Fragment {
     private void initializeToneEditorLayout() {
         binding.toneCreatorToneName.setText(editedTone.getName());
         binding.toneCreatorToneName.setVisibility(View.VISIBLE);
+        binding.toneCreatorToneName.setSelected(true);
 
         if (viewModel.getTone().getValue().getOvertonesPreset() != PresetOvertones.NONE) {
             binding.toneCreatorOvertonesActivator.setChecked(true);

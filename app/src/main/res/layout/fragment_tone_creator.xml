@@ -24,20 +24,27 @@
         <TextView
             android:id="@+id/tone_creator_tone_name"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:freezesText="true"
             android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             android:paddingBottom="4dp"
-            android:text="My first tone"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold|italic"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="My first tone" />
+            tools:text="długa nazwa MAX 1234 panie Boczku świnio opasła"
+            tools:visibility="visible" />
 
         <ScrollView
             android:layout_width="match_parent"

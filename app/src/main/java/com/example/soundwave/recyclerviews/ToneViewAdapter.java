@@ -51,6 +51,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         int volume = tone.getMasterVolume();
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
 
+        holder.toneName.setSelected(true);
         holder.toneName.setText(dbTone.getName());
         holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
         holder.toneEnvelope.setText(envelopePreset);

@@ -23,17 +23,22 @@
     <TextView
         android:id="@+id/tone_name"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:gravity="center"
-        android:text="My first tone"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxWidth="200dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         android:textColor="@color/white"
-        android:textSize="19sp"
+        android:textSize="20sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="@id/tone_icon"
         app:layout_constraintStart_toEndOf="@id/tone_icon"
         app:layout_constraintTop_toTopOf="@id/tone_icon"
-        tools:text="My first tone" />
+        tools:text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" />
 
     <ImageView
         android:id="@+id/tone_rename_icon"
@@ -53,10 +58,10 @@
         android:layout_height="0dp"
         android:background="@android:color/transparent"
         android:foreground="?attr/selectableItemBackground"
-        app:layout_constraintBottom_toBottomOf="@id/tone_name"
+        app:layout_constraintBottom_toBottomOf="@id/tone_icon"
         app:layout_constraintEnd_toEndOf="@id/tone_rename_icon"
         app:layout_constraintStart_toStartOf="@id/tone_name"
-        app:layout_constraintTop_toTopOf="@id/tone_name" />
+        app:layout_constraintTop_toTopOf="@id/tone_icon" />
 
     <ImageButton
         android:id="@+id/tone_delete_btn"
@@ -64,11 +69,12 @@
         android:layout_height="48dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_delete_tone_btn"
-        android:scaleType="fitXY"
         android:padding="10dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@id/tone_rename_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tone_rename_icon" />
 
     <TextView
         android:id="@+id/tone_details_frequency_header"
@@ -239,8 +245,8 @@
         android:layout_marginEnd="4dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_play_tone_btn"
-        android:scaleType="fitXY"
         android:padding="6dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_play_tone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tone_edit_btn"
@@ -253,8 +259,8 @@
         android:layout_marginEnd="4dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_edit_tone_btn"
-        android:scaleType="fitXY"
         android:padding="10dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_tone_creator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tone_download_btn"
@@ -266,12 +272,12 @@
         android:layout_height="48dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_play_tone_btn"
-        android:scaleType="fitXY"
         android:padding="8dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_download"
         app:layout_constraintBottom_toBottomOf="@id/tone_more_info_btn"
-        app:layout_constraintTop_toTopOf="@id/tone_more_info_btn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_more_info_btn"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
