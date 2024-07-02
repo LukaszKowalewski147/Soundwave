@@ -24,13 +24,16 @@ public class HomepageViewModel extends AndroidViewModel {
     private LiveData<List<Tone>> allTones;
     private MutableLiveData<Boolean> isTonePlaying = new MutableLiveData<>();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private Tone currentlyPlayingTone;
-    private AudioPlayer currentAudioPlayer;
+    private AudioPlayer currentAudioPlayer;         // null if no tone is playing
+    private int currentlyPlayingTonePosition;       //   -1 if no tone is playing
+    private int lastPlayedTonePosition;             //   -1 if no tone is playing
 
     public HomepageViewModel(@NonNull Application application) {
         super(application);
         repository = new SoundwaveRepo(application);
         allTones = repository.getAllTones();
+        currentlyPlayingTonePosition = -1;
+        lastPlayedTonePosition = -1;
     }
 
     public LiveData<List<Tone>> getAllTones() {
@@ -39,6 +42,10 @@ public class HomepageViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getIsTonePlaying() {
         return isTonePlaying;
+    }
+
+    public int getLastPlayedTonePosition() {
+        return lastPlayedTonePosition;
     }
 
     public LiveData<Boolean> renameTone(Tone tone, String toneNewName) {
@@ -72,38 +79,6 @@ public class HomepageViewModel extends AndroidViewModel {
         return result;
     }
 
-    public void playStopTone(Tone tone) {
-        if (isTonePlaying(tone)) {
-            // Stop currently playing tone
-            if (currentAudioPlayer != null) {
-                currentAudioPlayer.stop();
-                currentAudioPlayer = null;
-                isTonePlaying.postValue(false);
-            }
-            currentlyPlayingTone = null;
-        } else {
-            // Stop the previous tone if it's playing
-            if (currentAudioPlayer != null) {
-                currentAudioPlayer.stop();
-            }
-
-            // Play the new tone
-            com.example.soundwave.Tone toneToPlay = new ToneParser(tone).parseToneFromDb();
-            currentAudioPlayer = new AudioPlayer(toneToPlay);
-            currentAudioPlayer.load();
-            currentAudioPlayer.play();
-            currentlyPlayingTone = tone;
-
-            isTonePlaying.postValue(true);
-            new Handler().postDelayed(() -> {
-                if (isTonePlaying(tone)) {
-                    currentlyPlayingTone = null;
-                    isTonePlaying.postValue(false);
-                }
-            }, toneToPlay.getDurationInMilliseconds());
-        }
-    }
-
     public boolean downloadTone(Tone tone) {
         com.example.soundwave.Tone toneToDownload = new ToneParser(tone).parseToneFromDb();
         WavCreator wavCreator = new WavCreator(toneToDownload);
@@ -111,7 +86,39 @@ public class HomepageViewModel extends AndroidViewModel {
         return wavCreator.isSuccess();
     }
 
-    public boolean isTonePlaying(Tone tone) {
-        return currentlyPlayingTone != null && currentlyPlayingTone.equals(tone);
+    public boolean isTonePlaying(int position) {
+        return currentlyPlayingTonePosition == position;
+    }
+
+    public boolean isAnyTonePlaying() {
+        return currentAudioPlayer != null;
+    }
+
+    public void playTone(Tone tone, int position) {
+        com.example.soundwave.Tone toneToPlay = new ToneParser(tone).parseToneFromDb();
+        currentAudioPlayer = new AudioPlayer(toneToPlay);
+        currentAudioPlayer.load();
+        currentAudioPlayer.play();
+
+        currentlyPlayingTonePosition = position;
+        lastPlayedTonePosition = position;
+        isTonePlaying.postValue(true);
+
+        new Handler().postDelayed(() -> {
+            if (isTonePlaying(position)) {
+                stopTonePlaying();
+                isTonePlaying.postValue(false);
+            }
+        }, toneToPlay.getDurationInMilliseconds());
+    }
+
+    public int stopTonePlaying() {
+        if (currentAudioPlayer != null) {
+            currentAudioPlayer.stop();
+            currentAudioPlayer = null;
+        }
+        currentlyPlayingTonePosition = -1;
+
+        return lastPlayedTonePosition;
     }
 }

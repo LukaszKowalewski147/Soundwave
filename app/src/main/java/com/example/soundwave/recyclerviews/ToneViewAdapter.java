@@ -1,5 +1,6 @@
 package com.example.soundwave.recyclerviews;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,18 +18,22 @@ import com.example.soundwave.utils.ToneParser;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.view.ToneCreatorFragment;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
     private Context context;
     private List<Tone> tones;
     private OnToneClickListener listener;
+    private Map<Integer, Boolean> expandedPositions;
 
     public ToneViewAdapter(Context context, List<Tone> tones, OnToneClickListener listener) {
         this.context = context;
         this.tones = tones;
         this.listener = listener;
+        this.expandedPositions = new HashMap<>();
     }
 
     @NonNull
@@ -38,8 +43,10 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ToneViewHolder holder, int position) {
-        setMoreInfoVisibility(holder, false);
+    public void onBindViewHolder(@NonNull ToneViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        boolean isExpanded = expandedPositions.getOrDefault(position, false);
+        setMoreInfoVisibility(holder, isExpanded);
+
         Tone dbTone = tones.get(position);
         ToneParser parser = new ToneParser(dbTone);
         com.example.soundwave.Tone tone = parser.parseToneFromDb();
@@ -75,11 +82,20 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             }
         });
 
-        holder.tonePlayStopBtn.setImageResource(listener.isPlaying(dbTone) ? R.drawable.ic_stop : R.drawable.ic_play_tone);
+        holder.tonePlayStopBtn.setImageResource(listener.isTonePlaying(position) ? R.drawable.ic_stop : R.drawable.ic_play_tone);
         holder.tonePlayStopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onPlayStopClick(dbTone);
+                if (listener.isTonePlaying(position)) {
+                    listener.stopTonePlaying(false);
+                    holder.tonePlayStopBtn.setImageResource(R.drawable.ic_play_tone);
+                    return;
+                }
+                if (listener.isAnyTonePlaying()) {
+                    listener.stopTonePlaying(true);
+                }
+                listener.playTone(dbTone, position);
+                holder.tonePlayStopBtn.setImageResource(R.drawable.ic_stop);
             }
         });
 
@@ -111,10 +127,9 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneMoreInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.toneVolumeHeader.getVisibility() == View.GONE)
-                    setMoreInfoVisibility(holder, true);
-                else
-                    setMoreInfoVisibility(holder, false);
+                boolean expanded = expandedPositions.getOrDefault(position, false);
+                expandedPositions.put(position, !expanded);
+                notifyItemChanged(position);
             }
         });
     }

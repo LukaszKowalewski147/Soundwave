@@ -67,7 +67,9 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
         viewModel.getIsTonePlaying().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                toneViewAdapter.notifyDataSetChanged();
+                if (!aBoolean)
+                    toneViewAdapter.notifyItemChanged(viewModel.getLastPlayedTonePosition());
+                // Notify only on natural end of playback
             }
         });
     }
@@ -141,16 +143,6 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     }
 
     @Override
-    public void onEditClick(Tone tone) {
-
-    }
-
-    @Override
-    public void onPlayStopClick(Tone tone) {
-        viewModel.playStopTone(tone);
-    }
-
-    @Override
     public void onDownloadClick(Tone tone) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.alert_dialog_homepage_download_message);
@@ -174,7 +166,24 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     }
 
     @Override
-    public boolean isPlaying(Tone tone) {
-        return viewModel.isTonePlaying(tone);
+    public void playTone(Tone tone, int position) {
+        viewModel.playTone(tone, position);
+    }
+
+    @Override
+    public void stopTonePlaying(boolean anyTone) {
+        int lastPlayedTonePosition = viewModel.stopTonePlaying();
+        if (anyTone)
+            toneViewAdapter.notifyItemChanged(lastPlayedTonePosition);
+    }
+
+    @Override
+    public boolean isAnyTonePlaying() {
+        return viewModel.isAnyTonePlaying();
+    }
+
+    @Override
+    public boolean isTonePlaying(int position) {
+        return viewModel.isTonePlaying(position);
     }
 }
