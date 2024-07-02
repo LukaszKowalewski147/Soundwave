@@ -1,6 +1,6 @@
 package com.example.soundwave.recyclerviews;
 
-import com.example.soundwave.model.entity.Tone;
+import com.example.soundwave.Tone;
 
 public interface OnToneClickListener {
     void onRenameClick(Tone tone);

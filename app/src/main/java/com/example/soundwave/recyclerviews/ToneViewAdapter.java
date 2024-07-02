@@ -13,8 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundwave.R;
-import com.example.soundwave.model.entity.Tone;
-import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.Tone;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.view.ToneCreatorFragment;
 
@@ -47,9 +46,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         boolean isExpanded = expandedPositions.getOrDefault(position, false);
         setMoreInfoVisibility(holder, isExpanded);
 
-        Tone dbTone = tones.get(position);
-        ToneParser parser = new ToneParser(dbTone);
-        com.example.soundwave.Tone tone = parser.parseToneFromDb();
+        com.example.soundwave.Tone tone = tones.get(position);
 
         int frequency = tone.getFundamentalFrequency();
         String scale = UnitsConverter.convertFrequencyToNote(frequency);
@@ -59,7 +56,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
 
         holder.toneName.setSelected(true);
-        holder.toneName.setText(dbTone.getName());
+        holder.toneName.setText(tone.getName());
         holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
         holder.toneEnvelope.setText(envelopePreset);
         holder.toneTimbre.setText(overtonesPreset);
@@ -71,14 +68,14 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneRenameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onRenameClick(dbTone);
+                listener.onRenameClick(tone);
             }
         });
 
         holder.toneDeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               listener.onDeleteClick(dbTone);
+               listener.onDeleteClick(tone);
             }
         });
 
@@ -94,7 +91,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
                 if (listener.isAnyTonePlaying()) {
                     listener.stopTonePlaying(true);
                 }
-                listener.playTone(dbTone, position);
+                listener.playTone(tone, position);
                 holder.tonePlayStopBtn.setImageResource(R.drawable.ic_stop);
             }
         });
@@ -120,7 +117,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneDownloadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDownloadClick(dbTone);
+                listener.onDownloadClick(tone);
             }
         });
 

@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.soundwave.utils.AudioPlayer;
-import com.example.soundwave.utils.WavCreator;
+import com.example.soundwave.utils.ToneParser;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
@@ -25,7 +25,6 @@ import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.utils.ToneGenerator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -349,30 +348,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 buttonsStates.get(ControlPanelComponent.Button.RESET)));
     }
 
-    public void saveTone(String toneName, File filepathBase, boolean editorMode) {
-        com.example.soundwave.model.entity.Tone toneEntity;
+    public void saveTone(String toneName, boolean editorMode) {
         Tone baseTone = tone.getValue();
+        baseTone.setName(toneName);
 
-        int toneFrequency = baseTone.getFundamentalFrequency();
-        int toneVolume = baseTone.getMasterVolume();
-        String envelopeComponent = baseTone.getEnvelopeComponent().toString();
-        String overtonesPreset = baseTone.getOvertonesPreset().toString();
-
-        String overtonesDetails = "";
-
-        ArrayList<Overtone> overtones = baseTone.getOvertones();
-        if (overtones != null) {
-            StringBuilder overtonesDetailsBuilder = new StringBuilder();
-            for (Overtone overtone : overtones) {
-                overtonesDetailsBuilder.append(overtone.toString());
-            }
-            overtonesDetails = overtonesDetailsBuilder.toString();
-        }
-        String overtonesComponent = overtonesPreset + "!" + overtonesDetails;
-        String sampleRate = UnitsConverter.convertSampleRateToStringVisible(baseTone.getSampleRate());
-
-        toneEntity = new com.example.soundwave.model.entity.Tone(toneName, toneFrequency,
-                toneVolume, envelopeComponent, overtonesComponent, sampleRate);
+        com.example.soundwave.model.entity.Tone toneEntity = new ToneParser().parseToneToDbEntity(baseTone);
 
         if (editorMode) {
             toneEntity.setId(baseTone.getId());

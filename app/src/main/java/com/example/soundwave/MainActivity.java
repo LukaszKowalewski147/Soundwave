@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.soundwave.databinding.ActivityMainBinding;
-import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.WavCreator;
 import com.example.soundwave.view.HomepageFragment;
@@ -25,7 +23,6 @@ import com.example.soundwave.viewmodel.MainActivityViewModel;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

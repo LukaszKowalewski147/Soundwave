@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.soundwave.R;
 import com.example.soundwave.databinding.FragmentHomepageBinding;
-import com.example.soundwave.model.entity.Tone;
+import com.example.soundwave.Tone;
 import com.example.soundwave.recyclerviews.OnToneClickListener;
 import com.example.soundwave.recyclerviews.ToneViewAdapter;
 import com.example.soundwave.utils.Options;

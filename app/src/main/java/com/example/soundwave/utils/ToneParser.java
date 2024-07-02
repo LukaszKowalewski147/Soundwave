@@ -10,19 +10,13 @@ import java.util.ArrayList;
 
 public class ToneParser {
 
-    private final com.example.soundwave.model.entity.Tone dbTone;
-
-    public ToneParser(com.example.soundwave.model.entity.Tone dbTone) {
-        this.dbTone = dbTone;
-    }
-
-    public Tone parseToneFromDb() {
+    public Tone parseToneFromDb(com.example.soundwave.model.entity.Tone dbTone) {
         int id = dbTone.getId();
         String name = dbTone.getName();
-        SampleRate sampleRate = parseSampleRate();
-        EnvelopeComponent ec = parseEnvelopeComponent();
-        FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent();
-        OvertonesComponent oc = parseOvertonesComponent();
+        SampleRate sampleRate = parseSampleRate(dbTone);
+        EnvelopeComponent ec = parseEnvelopeComponent(dbTone);
+        FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent(dbTone);
+        OvertonesComponent oc = parseOvertonesComponent(dbTone);
 
         Tone tone = new ToneGenerator(sampleRate, ec, ffc, oc).generateTone();
         tone.setId(id);
@@ -31,11 +25,36 @@ public class ToneParser {
         return tone;
     }
 
-    private SampleRate parseSampleRate(){
+    public com.example.soundwave.model.entity.Tone parseToneToDbEntity(Tone tone) {
+        String toneName = tone.getName();
+        int toneFrequency = tone.getFundamentalFrequency();
+        int toneVolume = tone.getMasterVolume();
+        String envelopeComponent = tone.getEnvelopeComponent().toString();
+        String overtonesPreset = tone.getOvertonesPreset().toString();
+
+        String overtonesDetails = "";
+
+        ArrayList<Overtone> overtones = tone.getOvertones();
+        if (overtones != null) {
+            StringBuilder overtonesDetailsBuilder = new StringBuilder();
+            for (Overtone overtone : overtones) {
+                overtonesDetailsBuilder.append(overtone.toString());
+            }
+            overtonesDetails = overtonesDetailsBuilder.toString();
+        }
+        String overtonesComponent = overtonesPreset + "!" + overtonesDetails;
+        String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
+
+        return new com.example.soundwave.model.entity.Tone(toneName, toneFrequency,
+                toneVolume, envelopeComponent, overtonesComponent, sampleRate);
+    }
+
+
+    private SampleRate parseSampleRate(com.example.soundwave.model.entity.Tone dbTone){
         return UnitsConverter.convertStringToSampleRate(dbTone.getSampleRate());
     }
 
-    private EnvelopeComponent parseEnvelopeComponent() {
+    private EnvelopeComponent parseEnvelopeComponent(com.example.soundwave.model.entity.Tone dbTone) {
         String dbEC = dbTone.getEnvelopeComponent();
 
         if (dbEC == null || dbEC.trim().isEmpty())
@@ -57,11 +76,11 @@ public class ToneParser {
         return eC;
     }
 
-    private FundamentalFrequencyComponent parseFundamentalFrequencyComponent() {
+    private FundamentalFrequencyComponent parseFundamentalFrequencyComponent(com.example.soundwave.model.entity.Tone dbTone) {
         return new FundamentalFrequencyComponent(dbTone.getFundamentalFrequency(), dbTone.getVolume());
     }
 
-    private OvertonesComponent parseOvertonesComponent() {
+    private OvertonesComponent parseOvertonesComponent(com.example.soundwave.model.entity.Tone dbTone) {
         String overtones = dbTone.getOvertonesComponent();
 
         if (overtones == null || overtones.trim().isEmpty())

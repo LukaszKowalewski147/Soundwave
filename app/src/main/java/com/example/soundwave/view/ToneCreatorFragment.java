@@ -542,7 +542,7 @@ public class ToneCreatorFragment extends Fragment {
                 builder.setMessage(R.string.alert_dialog_tone_creator_generate_message);
                 builder.setPositiveButton(R.string.alert_dialog_tone_creator_generate_positive, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        takeGenerateToneAction();
+                        viewModel.generateTone(editorMode);
                     }
                 });
                 builder.setNegativeButton(R.string.alert_dialog_tone_creator_generate_negative, new DialogInterface.OnClickListener() {
@@ -591,7 +591,7 @@ public class ToneCreatorFragment extends Fragment {
                             public void onClick(View view) {
                                 String nameToSave = toneName.getText().toString().trim();
                                 if (!nameToSave.isEmpty()) {
-                                    takeSaveToneAction(nameToSave);
+                                    viewModel.saveTone(nameToSave, editorMode);
                                     dialog.dismiss();
                                 } else {
                                     toneName.setError(getString(R.string.error_msg_empty_name));
@@ -633,15 +633,6 @@ public class ToneCreatorFragment extends Fragment {
         if (viewModel.getTone().getValue().getOvertonesPreset() != PresetOvertones.NONE) {
             binding.toneCreatorOvertonesActivator.setChecked(true);
         }
-    }
-
-    private void takeGenerateToneAction() {
-        viewModel.generateTone(editorMode);
-    }
-
-    private void takeSaveToneAction(String toneName) {
-        File file = getActivity().getExternalFilesDir(WavCreator.getFileFolder());
-        viewModel.saveTone(toneName, file, editorMode);
     }
 
     private void takeResetAction() {
