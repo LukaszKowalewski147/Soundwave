@@ -15,6 +15,7 @@
     <color name="transparent_black">#33000000</color>
     <color name="tone_not_active">#80000000</color>
     <color name="header_separator">#67603B</color>
+    <color name="delete_bin">#D9FF1F1F</color>
 
     <!--    gradients   -->
     <color name="background_start">#4C006D</color>
