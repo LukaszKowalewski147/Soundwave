@@ -27,6 +27,8 @@ public class HomepageViewModel extends AndroidViewModel {
     private AudioPlayer currentAudioPlayer;         // null if no tone is playing
     private int currentlyPlayingTonePosition;       //   -1 if no tone is playing
     private int lastPlayedTonePosition;             //   -1 if no tone is playing
+    private Handler handler;
+    private Runnable runnable;
 
     public HomepageViewModel(@NonNull Application application) {
         super(application);
@@ -104,19 +106,30 @@ public class HomepageViewModel extends AndroidViewModel {
         lastPlayedTonePosition = position;
         isTonePlaying.postValue(true);
 
-        new Handler().postDelayed(() -> {
-            if (isTonePlaying(position)) {
-                stopTonePlaying();
-                isTonePlaying.postValue(false);
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (isTonePlaying(position)) {
+                    stopTonePlaying();
+                    isTonePlaying.postValue(false);
+                }
             }
-        }, toneToPlay.getDurationInMilliseconds());
+        };
+
+        handler.postDelayed(runnable, toneToPlay.getDurationInMilliseconds());
     }
 
     public int stopTonePlaying() {
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+
         if (currentAudioPlayer != null) {
             currentAudioPlayer.stop();
             currentAudioPlayer = null;
         }
+
         currentlyPlayingTonePosition = -1;
 
         return lastPlayedTonePosition;
