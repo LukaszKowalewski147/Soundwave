@@ -575,16 +575,32 @@ public class ToneCreatorFragment extends Fragment {
 
                 builder.setView(toneName);
 
-                builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        takeSaveToneAction(toneName.getText().toString());
-                    }
-                });
+                builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, null);
                 builder.setNegativeButton(R.string.alert_dialog_tone_creator_save_negative, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 });
+
                 AlertDialog dialog = builder.create();
+
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                String nameToSave = toneName.getText().toString().trim();
+                                if (!nameToSave.isEmpty()) {
+                                    takeSaveToneAction(nameToSave);
+                                    dialog.dismiss();
+                                } else {
+                                    toneName.setError(getString(R.string.error_msg_empty_name));
+                                }
+                            }
+                        });
+                    }
+                });
+
                 dialog.show();
             }
         });

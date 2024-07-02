@@ -85,6 +85,7 @@
 
     <!--    Error messages      -->
     <string name="error_msg_filepath_to_download_fail">Filepath to download error</string>
+    <string name="error_msg_empty_name">Name cannot be empty</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">

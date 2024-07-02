@@ -80,24 +80,40 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
         final EditText toneNewName = new EditText(getContext());
         toneNewName.setInputType(InputType.TYPE_CLASS_TEXT);
         toneNewName.setText(tone.getName());
+
         builder.setView(toneNewName);
 
-        builder.setPositiveButton(R.string.alert_dialog_homepage_rename_positive, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                viewModel.renameTone(tone, toneNewName.getText().toString()).observe(getViewLifecycleOwner(), success -> {
-                    if (success)
-                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_success, Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_fail, Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
+        builder.setPositiveButton(R.string.alert_dialog_homepage_rename_positive, null);
         builder.setNegativeButton(R.string.alert_dialog_homepage_rename_negative, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             }
         });
 
         AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String newName = toneNewName.getText().toString().trim();
+                        if (!newName.isEmpty()) {
+                            viewModel.renameTone(tone, newName).observe(getViewLifecycleOwner(), success -> {
+                                if (success)
+                                    Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_success, Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_fail, Toast.LENGTH_SHORT).show();
+                            });
+                            dialog.dismiss();
+                        } else {
+                            toneNewName.setError(getString(R.string.error_msg_empty_name));
+                        }
+                    }
+                });
+            }
+        });
+
         dialog.show();
     }
 
