@@ -23,10 +23,10 @@ import java.util.Map;
 
 public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<Tone> tones;
-    private OnToneClickListener listener;
-    private Map<Integer, Boolean> expandedPositions;
+    private final OnToneClickListener listener;
+    private final Map<Integer, Boolean> expandedPositions;
 
     public ToneViewAdapter(Context context, List<Tone> tones, OnToneClickListener listener) {
         this.context = context;
@@ -43,7 +43,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ToneViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        boolean isExpanded = expandedPositions.getOrDefault(position, false);
+        boolean isExpanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
         setMoreInfoVisibility(holder, isExpanded);
 
         com.example.soundwave.Tone tone = tones.get(position);
@@ -75,7 +75,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneDeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopPlaybackIfOccurs(position);
+                stopPlaybackIfOccurs(holder, position);
                 listener.onDeleteClick(tone);
             }
         });
@@ -91,27 +91,21 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             public void onClick(View v) {
                 if (listener.isTonePlaying(position)) {
                     listener.stopTonePlaying(false);
-
-                    holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_item);
-                    holder.tonePlayStopBtn.setImageResource(R.drawable.ic_play_tone);
-                    holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN);
+                    setNotPlayingLayout(holder);
                     return;
                 }
                 if (listener.isAnyTonePlaying()) {
                     listener.stopTonePlaying(true);
                 }
                 listener.playTone(tone, position);
-
-                holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_active );
-                holder.tonePlayStopBtn.setImageResource(R.drawable.ic_stop);
-                holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.delete_bin), PorterDuff.Mode.SRC_IN);
+                setPlayingLayout(holder);
             }
         });
 
         holder.toneEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stopPlaybackIfOccurs(position);
+                stopPlaybackIfOccurs(holder, position);
                 if (context instanceof MainActivity) {
                     MainActivity mainActivity = (MainActivity) context;
                     mainActivity.openToneCreatorInEditionMode(tone);
@@ -129,7 +123,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneMoreInfoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean expanded = expandedPositions.getOrDefault(position, false);
+                boolean expanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
                 expandedPositions.put(position, !expanded);
                 notifyItemChanged(position);
             }
@@ -141,6 +135,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         return tones.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setToneItems(List<Tone> newTones) {
         if (newTones != null) {
             tones = newTones;
@@ -148,13 +143,27 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         }
     }
 
-    private void stopPlaybackIfOccurs(int position) {
+    private void stopPlaybackIfOccurs(ToneViewHolder holder, int position) {
         if (listener.isAnyTonePlaying()) {
-            if (listener.isTonePlaying(position))
+            if (listener.isTonePlaying(position)) {
                 listener.stopTonePlaying(false);
+                setNotPlayingLayout(holder);
+            }
             else
                 listener.stopTonePlaying(true);
         }
+    }
+
+    private void setPlayingLayout(ToneViewHolder holder) {
+        holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_active);
+        holder.tonePlayStopBtn.setImageResource(R.drawable.ic_stop);
+        holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.delete_bin), PorterDuff.Mode.SRC_IN);
+    }
+
+    private void setNotPlayingLayout(ToneViewHolder holder) {
+        holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_item);
+        holder.tonePlayStopBtn.setImageResource(R.drawable.ic_play_tone);
+        holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN);
     }
 
     private void setMoreInfoVisibility(ToneViewHolder holder, boolean visible) {
