@@ -77,10 +77,10 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        Options.lastOvertonePreset = PresetOvertones.FLAT;
         binding = null;
         overtoneBindings = null;
-        Options.lastOvertonePreset = PresetOvertones.FLAT;
+        super.onDestroyView();
     }
 
     private void initializeOvertoneBindings() {
