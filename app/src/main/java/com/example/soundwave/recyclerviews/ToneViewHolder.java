@@ -6,12 +6,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundwave.R;
 
 public class ToneViewHolder extends RecyclerView.ViewHolder {
 
+    ConstraintLayout parentLayout;
     TextView toneName;
     TextView toneFrequency;
     TextView toneEnvelope;
@@ -34,6 +36,8 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
 
     public ToneViewHolder(@NonNull View itemView) {
         super(itemView);
+
+        parentLayout = itemView.findViewById(R.id.parent_tone_layout);
         toneName = itemView.findViewById(R.id.tone_name);
         toneFrequency = itemView.findViewById(R.id.tone_details_frequency);
         toneEnvelope = itemView.findViewById(R.id.tone_details_envelope_preset);

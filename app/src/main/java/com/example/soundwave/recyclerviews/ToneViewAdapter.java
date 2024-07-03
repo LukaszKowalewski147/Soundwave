@@ -2,12 +2,14 @@ package com.example.soundwave.recyclerviews;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundwave.MainActivity;
@@ -77,20 +79,31 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             }
         });
 
-        holder.tonePlayStopBtn.setImageResource(listener.isTonePlaying(position) ? R.drawable.ic_stop : R.drawable.ic_play_tone);
+        boolean isTonePlaying = listener.isTonePlaying(position);
+
+        holder.parentLayout.setBackgroundResource(isTonePlaying ? R.drawable.background_shadow_active : R.drawable.background_shadow_item);
+        holder.tonePlayStopBtn.setImageResource(isTonePlaying ? R.drawable.ic_stop : R.drawable.ic_play_tone);
+        holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, (isTonePlaying ? R.color.delete_bin : R.color.white)), PorterDuff.Mode.SRC_IN);
+
         holder.tonePlayStopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener.isTonePlaying(position)) {
                     listener.stopTonePlaying(false);
+
+                    holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_item);
                     holder.tonePlayStopBtn.setImageResource(R.drawable.ic_play_tone);
+                    holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN);
                     return;
                 }
                 if (listener.isAnyTonePlaying()) {
                     listener.stopTonePlaying(true);
                 }
                 listener.playTone(tone, position);
+
+                holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_active );
                 holder.tonePlayStopBtn.setImageResource(R.drawable.ic_stop);
+                holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.delete_bin), PorterDuff.Mode.SRC_IN);
             }
         });
 
