@@ -2,20 +2,18 @@ package com.example.soundwave.recyclerviews;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.Tone;
 import com.example.soundwave.utils.UnitsConverter;
-import com.example.soundwave.view.ToneCreatorFragment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -99,18 +97,10 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToneCreatorFragment fragment = new ToneCreatorFragment();
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("tone", tone);
-
-                fragment.setArguments(bundle);
-
-                FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
-
-                fragmentManager.beginTransaction()
-                        .replace(R.id.main_fragment_container, fragment)
-                        .commit();
+                if (context instanceof MainActivity) {
+                    MainActivity mainActivity = (MainActivity) context;
+                    mainActivity.openToneCreatorInEditionMode(tone);
+                }
             }
         });
 

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import com.example.soundwave.view.HomepageFragment;
 import com.example.soundwave.view.ToneCreatorFragment;
 import com.example.soundwave.view.ToneMixerFragment;
 import com.example.soundwave.view.ToneStreamingFragment;
-import com.example.soundwave.viewmodel.MainActivityViewModel;
 import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
@@ -27,9 +25,8 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private MainActivityViewModel mainActivityViewModel;
-    boolean userClick = true;
     private Fragment currentFragment;
+    private Bundle toneToEditBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        mainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-
         currentFragment = new HomepageFragment();
         loadFragment(currentFragment);
 
@@ -49,37 +44,41 @@ public class MainActivity extends AppCompatActivity {
         binding.mainBottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (userClick) {
-                    switch (item.getItemId()) {
-                        case R.id.tone_creator:
-                            if (!(currentFragment instanceof ToneCreatorFragment)) {
-                                manageVisibilityOfTopMenu(false);
-                                currentFragment = new ToneCreatorFragment();
-                                loadFragment(currentFragment);
-                            }
-                            break;
-                        case R.id.tone_mixer:
-                            if (!(currentFragment instanceof ToneMixerFragment)) {
-                                manageVisibilityOfTopMenu(false);
-                                currentFragment = new ToneMixerFragment();
-                                loadFragment(currentFragment);
-                            }
-                            break;
-                        case R.id.my_homepage:
-                            if (!(currentFragment instanceof HomepageFragment)) {
-                                manageVisibilityOfTopMenu(true);
-                                currentFragment = new HomepageFragment();
-                                loadFragment(currentFragment);
-                            }
-                            break;
-                        case R.id.tone_streaming:
-                            if (!(currentFragment instanceof ToneStreamingFragment)) {
-                                manageVisibilityOfTopMenu(false);
-                                currentFragment = new ToneStreamingFragment();
-                                loadFragment(currentFragment);
-                            }
-                            break;
-                    }
+                int fragmentId = item.getItemId();
+
+                if ((currentFragment instanceof ToneCreatorFragment) && (fragmentId != R.id.tone_creator)) {
+                    if (!((ToneCreatorFragment) currentFragment).onFragmentExit(fragmentId))
+                        return false;
+                }
+                switch (fragmentId) {
+                    case R.id.tone_creator:
+                        if (!(currentFragment instanceof ToneCreatorFragment)) {
+                            manageVisibilityOfTopMenu(false);
+                            currentFragment = new ToneCreatorFragment();
+                            loadFragment(currentFragment);
+                        }
+                        break;
+                    case R.id.tone_mixer:
+                        if (!(currentFragment instanceof ToneMixerFragment)) {
+                            manageVisibilityOfTopMenu(false);
+                            currentFragment = new ToneMixerFragment();
+                            loadFragment(currentFragment);
+                        }
+                        break;
+                    case R.id.my_homepage:
+                        if (!(currentFragment instanceof HomepageFragment)) {
+                            manageVisibilityOfTopMenu(true);
+                            currentFragment = new HomepageFragment();
+                            loadFragment(currentFragment);
+                        }
+                        break;
+                    case R.id.tone_streaming:
+                        if (!(currentFragment instanceof ToneStreamingFragment)) {
+                            manageVisibilityOfTopMenu(false);
+                            currentFragment = new ToneStreamingFragment();
+                            loadFragment(currentFragment);
+                        }
+                        break;
                 }
                 return true;
             }
@@ -95,14 +94,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void selectToneCreatorOnBottomNav() {
-        if (binding != null) {
-            manageVisibilityOfTopMenu(false);
-            currentFragment = new ToneCreatorFragment();
-            userClick = false;
-            binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
-            userClick = true;
-        }
+    public void openToneCreatorInEditionMode(Tone tone) {
+        toneToEditBundle = new Bundle();
+        toneToEditBundle.putSerializable("tone", tone);
+
+        binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
+    }
+
+    public void changeFragmentFromToneCreator(int fragmentId) {
+        currentFragment = null;
+        binding.mainBottomNavView.setSelectedItemId(fragmentId);
     }
 
     private void setFilepathToDownload() {
@@ -130,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        if (fragment instanceof ToneCreatorFragment && toneToEditBundle != null) {
+            fragment.setArguments(toneToEditBundle);
+            toneToEditBundle = null;
+        }
+
         fragmentTransaction.replace(R.id.main_fragment_container, fragment);
         fragmentTransaction.commit();
     }

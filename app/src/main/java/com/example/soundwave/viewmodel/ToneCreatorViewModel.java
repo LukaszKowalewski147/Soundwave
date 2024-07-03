@@ -42,11 +42,13 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private AudioPlayer audioPlayer;
     private boolean overtonesActivator;
+    private boolean anyChange;
 
     public ToneCreatorViewModel(@NonNull Application application) {
         super(application);
         repository = new SoundwaveRepo(application);
         initializeDefaultValues();
+        anyChange = false;
     }
 
     @Override
@@ -80,6 +82,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public LiveData<Tone> getTone() {
         return tone;
+    }
+
+    public boolean getAnyChange() {
+        return anyChange;
     }
 
     public int getEnvelopePresetPosition() {
@@ -371,11 +377,14 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 playStopBtnState,
                 ControlPanelComponent.ButtonState.DONE,
                 resetBtnState));
+
+        anyChange = false;
     }
 
     public void resetTone() {
         initializeDefaultValues();
         tone.setValue(null);
+        anyChange = false;
     }
 
     public String getIndexWithSuffix(int index) {
@@ -405,6 +414,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                 ControlPanelComponent.ButtonState.STANDARD,
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.INACTIVE));
+
+        anyChange = false;
     }
 
     private void loadSampleRate(SampleRate editedSampleRate) {
@@ -530,6 +541,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void setAnyChange() {
+        anyChange = true;
         HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
         ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
         ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);

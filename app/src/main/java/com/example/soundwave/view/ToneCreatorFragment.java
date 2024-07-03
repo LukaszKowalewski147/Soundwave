@@ -26,10 +26,10 @@ import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
 import com.example.soundwave.MainActivity;
+import com.example.soundwave.utils.OnFragmentExitListener;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.Tone;
-import com.example.soundwave.utils.WavCreator;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
@@ -44,9 +44,7 @@ import com.example.soundwave.utils.Scale;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
-import java.io.File;
-
-public class ToneCreatorFragment extends Fragment {
+public class ToneCreatorFragment extends Fragment implements OnFragmentExitListener {
 
     private ToneCreatorViewModel viewModel;
     private FragmentToneCreatorBinding binding;
@@ -65,10 +63,6 @@ public class ToneCreatorFragment extends Fragment {
         initializeUIListeners();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            if (getActivity() != null) {
-                MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.selectToneCreatorOnBottomNav();
-            }
             editorMode = true;
             editedTone = (Tone) bundle.getSerializable("tone");
             viewModel.loadEditedTone(editedTone);
@@ -759,5 +753,29 @@ public class ToneCreatorFragment extends Fragment {
             overtoneBindings[overtoneIndex].overtoneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_normal);
         else
             overtoneBindings[overtoneIndex].overtoneCreatorVolumeIcon.setImageResource(R.drawable.ic_volume_high);
+    }
+
+    @Override
+    public boolean onFragmentExit(int fragmentId) {
+        if (!viewModel.getAnyChange())
+            return true;
+        checkIfExit(fragmentId);
+        return false;
+    }
+
+    private void checkIfExit(int fragmentId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage(R.string.alert_dialog_tone_creator_exit_message);
+        builder.setPositiveButton(R.string.alert_dialog_tone_creator_exit_positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity mainActivity = (MainActivity) requireActivity();
+                mainActivity.changeFragmentFromToneCreator(fragmentId);
+            }
+        });
+        builder.setNegativeButton(R.string.alert_dialog_tone_creator_exit_negative, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
