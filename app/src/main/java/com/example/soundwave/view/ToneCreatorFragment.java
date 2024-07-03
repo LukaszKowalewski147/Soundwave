@@ -57,10 +57,13 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentToneCreatorBinding.inflate(inflater, container, false);
         initializeOvertoneBindings();
+
         viewModel = new ViewModelProvider(this).get(ToneCreatorViewModel.class);
+
         initializeDefaultLayout();
         initializeObservers();
         initializeUIListeners();
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             editorMode = true;
@@ -68,6 +71,7 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             viewModel.loadEditedTone(editedTone);
             initializeToneEditorLayout();
         }
+
         return binding.getRoot();
     }
 
@@ -475,8 +479,6 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
                 if (isChecked) {
                     binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
                     binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
-                    if (editorMode)
-                        viewModel.setNoChange();
                     return;
                 }
                 binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
@@ -502,8 +504,6 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     viewModel.updateOvertoneState(index, isChecked);
-                    if (editorMode)
-                        viewModel.setNoChange();
                 }
             });
 
@@ -626,7 +626,17 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
         if (viewModel.getTone().getValue().getOvertonesPreset() != PresetOvertones.NONE) {
             binding.toneCreatorOvertonesActivator.setChecked(true);
+            binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
+            binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
+
+            Overtone[] overtones = viewModel.getOvertones().getValue();
+            for (int i = 0; i < overtones.length; ++i) {
+                boolean isActive = overtones[i].isActive();
+                overtoneBindings[i].overtoneCreatorActivator.setChecked(isActive);
+            }
         }
+
+        viewModel.setNoChange();
     }
 
     private void takeResetAction() {
