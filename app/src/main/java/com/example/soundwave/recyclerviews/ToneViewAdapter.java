@@ -75,7 +75,8 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneDeleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               listener.onDeleteClick(tone);
+                stopPlaybackIfOccurs(position);
+                listener.onDeleteClick(tone);
             }
         });
 
@@ -110,6 +111,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneEditBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopPlaybackIfOccurs(position);
                 if (context instanceof MainActivity) {
                     MainActivity mainActivity = (MainActivity) context;
                     mainActivity.openToneCreatorInEditionMode(tone);
@@ -143,6 +145,15 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         if (newTones != null) {
             tones = newTones;
             notifyDataSetChanged();
+        }
+    }
+
+    private void stopPlaybackIfOccurs(int position) {
+        if (listener.isAnyTonePlaying()) {
+            if (listener.isTonePlaying(position))
+                listener.stopTonePlaying(false);
+            else
+                listener.stopTonePlaying(true);
         }
     }
 

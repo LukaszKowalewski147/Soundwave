@@ -44,6 +44,7 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
 
     @Override
     public void onDestroyView() {
+        viewModel.stopTonePlaying();
         super.onDestroyView();
         binding = null;
     }
