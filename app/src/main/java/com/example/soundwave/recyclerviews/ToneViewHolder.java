@@ -34,7 +34,6 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
     AppCompatButton toneRenameBtn;
     AppCompatButton toneMoreInfoBtn;
 
-
     public ToneViewHolder(@NonNull View itemView) {
         super(itemView);
 

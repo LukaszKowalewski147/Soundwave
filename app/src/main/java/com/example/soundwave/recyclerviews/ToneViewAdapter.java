@@ -19,6 +19,7 @@ import com.example.soundwave.utils.UnitsConverter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
@@ -56,9 +57,9 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         String envelopePreset = tone.getEnvelopePreset().toString();
         String timbre = tone.getOvertonesPreset().toString();
         String volumeDisplay = volume + context.getString(R.string.affix_percent);
-        String overonesNumber = String.valueOf(tone.getOvertonesComponent().getActiveOvertonesNumber());
+        String overtonesNumber = String.valueOf(tone.getOvertonesComponent().getActiveOvertonesNumber());
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
-        String duration = tone.getDurationInMilliseconds() + context.getString(R.string.affix_milliseconds);
+        String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
 
         holder.toneName.setSelected(true);
         holder.toneName.setText(tone.getName());
@@ -66,7 +67,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneEnvelope.setText(envelopePreset);
         holder.toneTimbre.setText(timbre);
         holder.toneVolume.setText(volumeDisplay);
-        holder.toneOvertonesNumber.setText(overonesNumber);
+        holder.toneOvertonesNumber.setText(overtonesNumber);
         holder.toneSampleRate.setText(sampleRate);
         holder.toneOtherInfo.setText("comming soon");
         holder.toneDuration.setText(duration);
@@ -79,10 +80,11 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         });
 
         boolean isTonePlaying = listener.isTonePlaying(position);
+        int color = isTonePlaying ? ContextCompat.getColor(context, R.color.delete_bin) : ContextCompat.getColor(context, R.color.white);
 
         holder.parentLayout.setBackgroundResource(isTonePlaying ? R.drawable.background_shadow_active : R.drawable.background_shadow_item);
         holder.tonePlayStopBtn.setImageResource(isTonePlaying ? R.drawable.ic_stop : R.drawable.ic_play_tone);
-        holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, (isTonePlaying ? R.color.delete_bin : R.color.white)), PorterDuff.Mode.SRC_IN);
+        holder.tonePlayStopBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN);
 
         holder.tonePlayStopBtn.setOnClickListener(v -> {
             if (listener.isTonePlaying(position)) {
@@ -139,15 +141,19 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
     }
 
     private void setPlayingLayout(ToneViewHolder holder) {
+        int color = ContextCompat.getColor(context, R.color.delete_bin);
+
         holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_active);
         holder.tonePlayStopBtn.setImageResource(R.drawable.ic_stop);
-        holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.delete_bin), PorterDuff.Mode.SRC_IN);
+        holder.tonePlayStopBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     private void setNotPlayingLayout(ToneViewHolder holder) {
+        int color = ContextCompat.getColor(context, R.color.white);
+
         holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_item);
         holder.tonePlayStopBtn.setImageResource(R.drawable.ic_play_tone);
-        holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN);
+        holder.tonePlayStopBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
 
     private void setMoreInfoVisibility(ToneViewHolder holder, boolean visible) {
