@@ -43,11 +43,7 @@ public class SeekBarUpdater implements Runnable {
                 break;
         }
         int finalProgress = frequency;
-        handler.post(new Runnable() {
-            public void run() {
-                toUpdateTxt.setText(String.valueOf(finalProgress));
-            }
-        });
+        handler.post(() -> toUpdateTxt.setText(String.valueOf(finalProgress)));
     }
 
     private Options.ButtonLongPressState getState() {

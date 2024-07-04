@@ -22,13 +22,15 @@ import java.util.concurrent.Executors;
 
 public class HomepageViewModel extends AndroidViewModel {
 
-    private SoundwaveRepo repository;
-    private LiveData<List<Tone>> allTones;
-    private MutableLiveData<Boolean> isTonePlaying = new MutableLiveData<>();
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final SoundwaveRepo repository;
+    private final LiveData<List<Tone>> allTones;
+    private final MutableLiveData<Boolean> isTonePlaying = new MutableLiveData<>();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     private AudioPlayer currentAudioPlayer;         // null if no tone is playing
     private int currentlyPlayingTonePosition;       //   -1 if no tone is playing
     private int lastPlayedTonePosition;             //   -1 if no tone is playing
+
     private Handler handler;
     private Runnable runnable;
 
@@ -46,6 +48,12 @@ public class HomepageViewModel extends AndroidViewModel {
 
         currentlyPlayingTonePosition = -1;
         lastPlayedTonePosition = -1;
+    }
+
+    @Override
+    protected void onCleared() {
+        repository.shutdownExecutorService();
+        super.onCleared();
     }
 
     public LiveData<List<Tone>> getAllTones() {
@@ -122,13 +130,10 @@ public class HomepageViewModel extends AndroidViewModel {
         isTonePlaying.postValue(true);
 
         handler = new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isTonePlaying(position)) {
-                    stopTonePlaying();
-                    isTonePlaying.postValue(false);
-                }
+        runnable = () -> {
+            if (isTonePlaying(position)) {
+                stopTonePlaying();
+                isTonePlaying.postValue(false);
             }
         };
 

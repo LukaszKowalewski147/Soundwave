@@ -1,13 +1,12 @@
 package com.example.soundwave.view;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
@@ -20,9 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.SeekBar;
 
 import com.example.soundwave.MainActivity;
@@ -32,14 +29,12 @@ import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.Tone;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
-import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
 import com.example.soundwave.Overtone;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.databinding.FragmentToneCreatorBinding;
-import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.Scale;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
@@ -54,7 +49,7 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     private boolean editorMode = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentToneCreatorBinding.inflate(inflater, container, false);
         initializeOvertoneBindings();
 
@@ -145,89 +140,66 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     }
 
     private void initializeObservers() {
-        viewModel.getSampleRate().observe(getViewLifecycleOwner(), new Observer<SampleRate>() {
-            @Override
-            public void onChanged(SampleRate sampleRate) {
-                binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate));
-            }
+        viewModel.getSampleRate().observe(getViewLifecycleOwner(), sampleRate -> binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate)));
+
+        viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), envelopeComponent -> {
+            int attackDuration = envelopeComponent.getAttackDuration();
+            int decayDuration = envelopeComponent.getDecayDuration();
+            int sustainLevel = envelopeComponent.getSustainLevel();
+            int sustainDuration = envelopeComponent.getSustainDuration();
+            int releaseDuration = envelopeComponent.getReleaseDuration();
+
+            if (!binding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDuration)))
+                binding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
+            if (!binding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDuration)))
+                binding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
+            if (!binding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevel)))
+                binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
+            if (!binding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDuration)))
+                binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
+            if (!binding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDuration)))
+                binding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
         });
 
-        viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), new Observer<EnvelopeComponent>() {
-            @Override
-            public void onChanged(EnvelopeComponent envelopeComponent) {
-                int attackDuration = envelopeComponent.getAttackDuration();
-                int decayDuration = envelopeComponent.getDecayDuration();
-                int sustainLevel = envelopeComponent.getSustainLevel();
-                int sustainDuration = envelopeComponent.getSustainDuration();
-                int releaseDuration = envelopeComponent.getReleaseDuration();
+        viewModel.getFundamentalFrequencyComponent().observe(getViewLifecycleOwner(), fundamentalFrequencyComponent -> {
+            int fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
+            int fundamentalFrequencyBar = fundamentalFrequencyComponent.getFundamentalFrequencyBar();
+            int masterVolume = fundamentalFrequencyComponent.getMasterVolume();
+            int noteIndex = fundamentalFrequencyComponent.getNoteIndex();
 
-                if (!binding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDuration)))
-                    binding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
-                if (!binding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDuration)))
-                    binding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
-                if (!binding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevel)))
-                    binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
-                if (!binding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDuration)))
-                    binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
-                if (!binding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDuration)))
-                    binding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
-            }
+            if (!binding.toneCreatorFundamentalFrequencyInput.getText().toString().equals(String.valueOf(fundamentalFrequency)))
+                binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(fundamentalFrequency));
+
+            binding.toneCreatorNoteInput.setValue(noteIndex);
+            binding.toneCreatorFundamentalFrequencyBar.setProgress(fundamentalFrequencyBar);
+            binding.toneCreatorMasterVolumeInput.setText(String.valueOf(masterVolume));
+            binding.toneCreatorMasterVolumeBar.setProgress(masterVolume);
+
+            manageMasterVolumeIcon(masterVolume);
         });
 
-        viewModel.getFundamentalFrequencyComponent().observe(getViewLifecycleOwner(), new Observer<FundamentalFrequencyComponent>() {
-            @Override
-            public void onChanged(FundamentalFrequencyComponent fundamentalFrequencyComponent) {
-                int fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
-                int fundamentalFrequencyBar = fundamentalFrequencyComponent.getFundamentalFrequencyBar();
-                int masterVolume = fundamentalFrequencyComponent.getMasterVolume();
-                int noteIndex = fundamentalFrequencyComponent.getNoteIndex();
+        viewModel.getControlPanelComponent().observe(getViewLifecycleOwner(), this::manageControlPanel);
 
-                if (!binding.toneCreatorFundamentalFrequencyInput.getText().toString().equals(String.valueOf(fundamentalFrequency)))
-                    binding.toneCreatorFundamentalFrequencyInput.setText(String.valueOf(fundamentalFrequency));
-
-                binding.toneCreatorNoteInput.setValue(noteIndex);
-                binding.toneCreatorFundamentalFrequencyBar.setProgress(fundamentalFrequencyBar);
-                binding.toneCreatorMasterVolumeInput.setText(String.valueOf(masterVolume));
-                binding.toneCreatorMasterVolumeBar.setProgress(masterVolume);
-
-                manageMasterVolumeIcon(masterVolume);
+        viewModel.getOvertones().observe(getViewLifecycleOwner(), overtones -> {
+            for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
+                updateOvertoneView(i, overtones[i]);
+                manageOvertoneVolumeIcon(i, overtones[i].getAmplitude());
             }
+            binding.toneCreatorOvertonesPreset.setSelection(viewModel.getOvertonesPresetPosition());
         });
 
-        viewModel.getControlPanelComponent().observe(getViewLifecycleOwner(), new Observer<ControlPanelComponent>() {
-            @Override
-            public void onChanged(ControlPanelComponent controlPanelComponent) {
-                manageControlPanel(controlPanelComponent);
-            }
-        });
-
-        viewModel.getOvertones().observe(getViewLifecycleOwner(), new Observer<Overtone[]>() {
-            @Override
-            public void onChanged(Overtone[] overtones) {
-                for (int i = 0; i < Config.OVERTONES_NUMBER.value; ++i) {
-                    updateOvertoneView(i, overtones[i]);
-                    manageOvertoneVolumeIcon(i, overtones[i].getAmplitude());
-                }
-                binding.toneCreatorOvertonesPreset.setSelection(viewModel.getOvertonesPresetPosition());
-            }
-        });
-
-        viewModel.getTone().observe(getViewLifecycleOwner(), new Observer<Tone>() {
-            @Override
-            public void onChanged(Tone tone) {
-                manageToneDetails(tone);
-            }
-        });
+        viewModel.getTone().observe(getViewLifecycleOwner(), this::manageToneDetails);
     }
 
     private void updateOvertoneView(int overtoneIndex, Overtone overtone) {
-        overtoneBindings[overtoneIndex].overtoneCreatorActivator.setChecked(overtone.isActive());
-        overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(String.valueOf(overtone.getFrequency()) + "Hz");
         double amplitude = overtone.getAmplitude();
-        String volumeInputSuffix = "";
-        if (amplitude >= 0.0d)
-            volumeInputSuffix = "+";
-        overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(volumeInputSuffix + amplitude + "dB");
+        String overtoneFrequency = overtone.getFrequency() + getString(R.string.affix_Hz);
+        String overtoneVolume = amplitude >= 0 ? "+" : "";
+        overtoneVolume += amplitude + getString(R.string.affix_dB);
+
+        overtoneBindings[overtoneIndex].overtoneCreatorActivator.setChecked(overtone.isActive());
+        overtoneBindings[overtoneIndex].overtoneCreatorFrequency.setText(overtoneFrequency);
+        overtoneBindings[overtoneIndex].overtoneCreatorVolumeInput.setText(overtoneVolume);
         overtoneBindings[overtoneIndex].overtoneCreatorVolumeBar.setProgress(UnitsConverter.convertOvertoneDbHumanValueToSliderProgress(amplitude));
     }
 
@@ -344,12 +316,7 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             }
         });
 
-        binding.toneCreatorNoteInput.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                viewModel.updateNoteName(newVal);
-            }
-        });
+        binding.toneCreatorNoteInput.setOnValueChangedListener((picker, oldVal, newVal) -> viewModel.updateNoteName(newVal));
 
         binding.toneCreatorFundamentalFrequencyInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -368,12 +335,9 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             }
         });
 
-        binding.toneCreatorFundamentalFrequencyInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus)
-                    viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
-            }
+        binding.toneCreatorFundamentalFrequencyInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
         });
 
         binding.toneCreatorFundamentalFrequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -394,64 +358,40 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             }
         });
 
-        binding.toneCreatorFrequencyDecrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.decrementOnceFundamentalFrequency();
-            }
+        binding.toneCreatorFrequencyDecrementBtn.setOnClickListener(v -> viewModel.decrementOnceFundamentalFrequency());
+
+        binding.toneCreatorFrequencyDecrementBtn.setOnLongClickListener(v -> {
+            Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+            SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneCreatorFundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
+            Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+            seekBarUpdaterThread.start();
+            return true;
         });
 
-        binding.toneCreatorFrequencyDecrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneCreatorFundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
-                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-                seekBarUpdaterThread.start();
-                return true;
-            }
+        binding.toneCreatorFrequencyDecrementBtn.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+                Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+            return false;
         });
 
-        binding.toneCreatorFrequencyDecrementBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                    viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
-                }
-                return false;
-            }
+        binding.toneCreatorFrequencyIncrementBtn.setOnClickListener(v -> viewModel.incrementOnceFundamentalFrequency());
+
+        binding.toneCreatorFrequencyIncrementBtn.setOnLongClickListener(v -> {
+            Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+            SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneCreatorFundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
+            Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+            seekBarUpdaterThread.start();
+            return true;
         });
 
-        binding.toneCreatorFrequencyIncrementBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.incrementOnceFundamentalFrequency();
-            }
-        });
-
-        binding.toneCreatorFrequencyIncrementBtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
-                SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneCreatorFundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
-                Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
-                seekBarUpdaterThread.start();
-                return true;
-            }
-        });
-
-        binding.toneCreatorFrequencyIncrementBtn.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                    viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                    Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
-                }
-                return false;
-            }
+        binding.toneCreatorFrequencyIncrementBtn.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                viewModel.validateFundamentalFrequencyInput(binding.toneCreatorFundamentalFrequencyInput.getText().toString());
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+                Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+            return false;
         });
 
         binding.toneCreatorMasterVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -472,18 +412,15 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             }
         });
 
-        binding.toneCreatorOvertonesActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                viewModel.updateOvertonesState(isChecked);
-                if (isChecked) {
-                    binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
-                    binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
-                    return;
-                }
-                binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
-                binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
+        binding.toneCreatorOvertonesActivator.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            viewModel.updateOvertonesState(isChecked);
+            if (isChecked) {
+                binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
+                binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
+                return;
             }
+            binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
+            binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
         });
 
         binding.toneCreatorOvertonesPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -500,12 +437,7 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
         for (int i = 0; i < overtoneBindings.length; ++i) {
             int index = i;
-            overtoneBindings[index].overtoneCreatorActivator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    viewModel.updateOvertoneState(index, isChecked);
-                }
-            });
+            overtoneBindings[index].overtoneCreatorActivator.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.updateOvertoneState(index, isChecked));
 
             overtoneBindings[index].overtoneCreatorVolumeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
@@ -529,93 +461,54 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             });
         }
 
-        binding.toneCreatorGenerateToneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.alert_dialog_tone_creator_generate_message);
-                builder.setPositiveButton(R.string.alert_dialog_tone_creator_generate_positive, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        viewModel.generateTone(editorMode);
-                    }
-                });
-                builder.setNegativeButton(R.string.alert_dialog_tone_creator_generate_negative, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+        binding.toneCreatorGenerateToneBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.alert_dialog_tone_creator_generate_message);
+            builder.setPositiveButton(R.string.alert_dialog_tone_creator_generate_positive, (dialog, id) -> viewModel.generateTone(editorMode));
+            builder.setNegativeButton(R.string.alert_dialog_tone_creator_generate_negative, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
 
-        binding.toneCreatorPlayStopToneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.playStopTone();
-            }
+        binding.toneCreatorPlayStopToneBtn.setOnClickListener(v -> viewModel.playStopTone());
+
+        binding.toneCreatorSaveToneBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.alert_dialog_tone_creator_save_message);
+
+            final EditText toneName = new EditText(getContext());
+            toneName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            if (editorMode)
+                toneName.setText(editedTone.getName());
+
+            builder.setView(toneName);
+
+            builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, null);
+            builder.setNegativeButton(R.string.alert_dialog_tone_creator_save_negative, null);
+
+            AlertDialog dialog = builder.create();
+
+            dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+                String nameToSave = toneName.getText().toString().trim();
+                if (!nameToSave.isEmpty()) {
+                    viewModel.saveTone(nameToSave, editorMode);
+                    dialog.dismiss();
+                } else {
+                    toneName.setError(getString(R.string.error_msg_empty_name));
+                }
+            }));
+
+            dialog.show();
         });
 
-        binding.toneCreatorSaveToneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.alert_dialog_tone_creator_save_message);
-
-                final EditText toneName = new EditText(getContext());
-                toneName.setInputType(InputType.TYPE_CLASS_TEXT);
-
-                if (editorMode)
-                    toneName.setText(editedTone.getName());
-
-                builder.setView(toneName);
-
-                builder.setPositiveButton(R.string.alert_dialog_tone_creator_save_positive, null);
-                builder.setNegativeButton(R.string.alert_dialog_tone_creator_save_negative, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-
-                AlertDialog dialog = builder.create();
-
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String nameToSave = toneName.getText().toString().trim();
-                                if (!nameToSave.isEmpty()) {
-                                    viewModel.saveTone(nameToSave, editorMode);
-                                    dialog.dismiss();
-                                } else {
-                                    toneName.setError(getString(R.string.error_msg_empty_name));
-                                }
-                            }
-                        });
-                    }
-                });
-
-                dialog.show();
-            }
-        });
-
-        binding.toneCreatorResetToneBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(R.string.alert_dialog_tone_creator_reset_message);
-                builder.setPositiveButton(R.string.alert_dialog_tone_creator_reset_positive, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        takeResetAction();
-                    }
-                });
-                builder.setNegativeButton(R.string.alert_dialog_tone_creator_reset_negative, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
+        binding.toneCreatorResetToneBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.alert_dialog_tone_creator_reset_message);
+            builder.setPositiveButton(R.string.alert_dialog_tone_creator_reset_positive, (dialog, id) -> takeResetAction());
+            builder.setNegativeButton(R.string.alert_dialog_tone_creator_reset_negative, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
     }
 
@@ -776,12 +669,9 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     private void checkIfExit(int fragmentId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage(R.string.alert_dialog_tone_creator_exit_message);
-        builder.setPositiveButton(R.string.alert_dialog_tone_creator_exit_positive, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                MainActivity mainActivity = (MainActivity) requireActivity();
-                mainActivity.changeFragmentFromToneCreator(fragmentId);
-            }
+        builder.setPositiveButton(R.string.alert_dialog_tone_creator_exit_positive, (dialog, which) -> {
+            MainActivity mainActivity = (MainActivity) requireActivity();
+            mainActivity.changeFragmentFromToneCreator(fragmentId);
         });
         builder.setNegativeButton(R.string.alert_dialog_tone_creator_exit_negative, null);
 

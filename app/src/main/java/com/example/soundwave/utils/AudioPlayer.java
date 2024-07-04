@@ -19,15 +19,17 @@ public class AudioPlayer {
 
     public void load() {
         if (!isReadyToWrite()) {
+            // TODO: getErrorMessage
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
             return;
         }
         audioTrack.flush();
         audioTrack.write(tone.getSamples(), 0, tone.getSamples().length);
-        if (!isReadyToPlay()) {
+        /*if (!isReadyToPlay()) {
+            // TODO: getErrorMessage
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
-            return;
-        }
+            //return;
+        }*/
     }
 
     public void reload() {

@@ -31,14 +31,14 @@ import java.util.HashMap;
 
 public class ToneCreatorViewModel extends AndroidViewModel {
 
-    private SoundwaveRepo repository;
+    private final SoundwaveRepo repository;
 
-    private MutableLiveData<SampleRate> sampleRate = new MutableLiveData<>();
-    private MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
-    private MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
-    private MutableLiveData<ControlPanelComponent> controlPanelComponent = new MutableLiveData<>();
-    private MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
-    private MutableLiveData<Tone> tone = new MutableLiveData<>();
+    private final MutableLiveData<SampleRate> sampleRate = new MutableLiveData<>();
+    private final MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
+    private final MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
+    private final MutableLiveData<ControlPanelComponent> controlPanelComponent = new MutableLiveData<>();
+    private final MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
+    private final MutableLiveData<Tone> tone = new MutableLiveData<>();
 
     private AudioPlayer audioPlayer;
     private boolean overtonesActivator;
@@ -57,6 +57,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             audioPlayer.stop();
             audioPlayer = null;
         }
+        repository.shutdownExecutorService();
         super.onCleared();
     }
 

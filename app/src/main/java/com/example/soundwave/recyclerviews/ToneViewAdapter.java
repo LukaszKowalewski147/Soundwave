@@ -49,35 +49,30 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         com.example.soundwave.Tone tone = tones.get(position);
 
         int frequency = tone.getFundamentalFrequency();
-        String scale = UnitsConverter.convertFrequencyToNote(frequency);
-        String envelopePreset = tone.getEnvelopePreset().toString();
-        String overtonesPreset = tone.getOvertonesPreset().toString();
         int volume = tone.getMasterVolume();
+        String scale = UnitsConverter.convertFrequencyToNote(frequency);
+
+        String frequencyDisplay = frequency + context.getString(R.string.affix_Hz) + " (" + scale + ")";
+        String envelopePreset = tone.getEnvelopePreset().toString();
+        String timbre = tone.getOvertonesPreset().toString();
+        String volumeDisplay = volume + context.getString(R.string.affix_percent);
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
 
         holder.toneName.setSelected(true);
         holder.toneName.setText(tone.getName());
-        holder.toneFrequency.setText(frequency + "Hz (" + scale + ")");
+        holder.toneFrequency.setText(frequencyDisplay);
         holder.toneEnvelope.setText(envelopePreset);
-        holder.toneTimbre.setText(overtonesPreset);
-        holder.toneVolume.setText(volume + "%");
+        holder.toneTimbre.setText(timbre);
+        holder.toneVolume.setText(volumeDisplay);
         holder.toneOvertonesNumber.setText("14");
         holder.toneSampleRate.setText(sampleRate);
         holder.toneOtherInfo.setText("comming soon");
 
-        holder.toneRenameBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onRenameClick(tone);
-            }
-        });
+        holder.toneRenameBtn.setOnClickListener(v -> listener.onRenameClick(tone));
 
-        holder.toneDeleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopPlaybackIfOccurs(holder, position);
-                listener.onDeleteClick(tone);
-            }
+        holder.toneDeleteBtn.setOnClickListener(v -> {
+            stopPlaybackIfOccurs(holder, position);
+            listener.onDeleteClick(tone);
         });
 
         boolean isTonePlaying = listener.isTonePlaying(position);
@@ -86,47 +81,33 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.tonePlayStopBtn.setImageResource(isTonePlaying ? R.drawable.ic_stop : R.drawable.ic_play_tone);
         holder.tonePlayStopBtn.setColorFilter(ContextCompat.getColor(context, (isTonePlaying ? R.color.delete_bin : R.color.white)), PorterDuff.Mode.SRC_IN);
 
-        holder.tonePlayStopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener.isTonePlaying(position)) {
-                    listener.stopTonePlaying(false);
-                    setNotPlayingLayout(holder);
-                    return;
-                }
-                if (listener.isAnyTonePlaying()) {
-                    listener.stopTonePlaying(true);
-                }
-                listener.playTone(tone, position);
-                setPlayingLayout(holder);
+        holder.tonePlayStopBtn.setOnClickListener(v -> {
+            if (listener.isTonePlaying(position)) {
+                listener.stopTonePlaying(false);
+                setNotPlayingLayout(holder);
+                return;
+            }
+            if (listener.isAnyTonePlaying()) {
+                listener.stopTonePlaying(true);
+            }
+            listener.playTone(tone, position);
+            setPlayingLayout(holder);
+        });
+
+        holder.toneEditBtn.setOnClickListener(v -> {
+            stopPlaybackIfOccurs(holder, position);
+            if (context instanceof MainActivity) {
+                MainActivity mainActivity = (MainActivity) context;
+                mainActivity.openToneCreatorInEditionMode(tone);
             }
         });
 
-        holder.toneEditBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopPlaybackIfOccurs(holder, position);
-                if (context instanceof MainActivity) {
-                    MainActivity mainActivity = (MainActivity) context;
-                    mainActivity.openToneCreatorInEditionMode(tone);
-                }
-            }
-        });
+        holder.toneDownloadBtn.setOnClickListener(v -> listener.onDownloadClick(tone));
 
-        holder.toneDownloadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onDownloadClick(tone);
-            }
-        });
-
-        holder.toneMoreInfoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean expanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
-                expandedPositions.put(position, !expanded);
-                notifyItemChanged(position);
-            }
+        holder.toneMoreInfoBtn.setOnClickListener(v -> {
+            boolean expanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
+            expandedPositions.put(position, !expanded);
+            notifyItemChanged(position);
         });
     }
 

@@ -1,5 +1,7 @@
 package com.example.soundwave.components;
 
+import androidx.annotation.NonNull;
+
 import com.example.soundwave.utils.PresetEnvelope;
 
 import java.io.Serializable;
@@ -83,6 +85,7 @@ public class EnvelopeComponent implements Serializable {
         return totalDurationInMilliseconds / 1000.0d;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return envelopePreset + "," + attackDuration + "," + decayDuration + "," +

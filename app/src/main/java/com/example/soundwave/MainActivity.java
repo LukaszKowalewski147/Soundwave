@@ -1,13 +1,11 @@
 package com.example.soundwave;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,7 +16,6 @@ import com.example.soundwave.view.HomepageFragment;
 import com.example.soundwave.view.ToneCreatorFragment;
 import com.example.soundwave.view.ToneMixerFragment;
 import com.example.soundwave.view.ToneStreamingFragment;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
 
@@ -41,47 +38,41 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);
 
-        binding.mainBottomNavView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int fragmentId = item.getItemId();
+        binding.mainBottomNavView.setOnItemSelectedListener(item -> {
+            int fragmentId = item.getItemId();
 
-                if ((currentFragment instanceof ToneCreatorFragment) && (fragmentId != R.id.tone_creator)) {
-                    if (!((ToneCreatorFragment) currentFragment).onFragmentExit(fragmentId))
-                        return false;
-                }
-                switch (fragmentId) {
-                    case R.id.tone_creator:
-                        if (!(currentFragment instanceof ToneCreatorFragment)) {
-                            manageVisibilityOfTopMenu(false);
-                            currentFragment = new ToneCreatorFragment();
-                            loadFragment(currentFragment);
-                        }
-                        break;
-                    case R.id.tone_mixer:
-                        if (!(currentFragment instanceof ToneMixerFragment)) {
-                            manageVisibilityOfTopMenu(false);
-                            currentFragment = new ToneMixerFragment();
-                            loadFragment(currentFragment);
-                        }
-                        break;
-                    case R.id.my_homepage:
-                        if (!(currentFragment instanceof HomepageFragment)) {
-                            manageVisibilityOfTopMenu(true);
-                            currentFragment = new HomepageFragment();
-                            loadFragment(currentFragment);
-                        }
-                        break;
-                    case R.id.tone_streaming:
-                        if (!(currentFragment instanceof ToneStreamingFragment)) {
-                            manageVisibilityOfTopMenu(false);
-                            currentFragment = new ToneStreamingFragment();
-                            loadFragment(currentFragment);
-                        }
-                        break;
-                }
-                return true;
+            // Making sure of safety exit of ToneCreatorFragment by onFragmentExit() if changes are not saved
+            if ((currentFragment instanceof ToneCreatorFragment) && (fragmentId != R.id.tone_creator)) {
+                if (!((ToneCreatorFragment) currentFragment).onFragmentExit(fragmentId))
+                    return false;
             }
+
+            if (fragmentId == R.id.tone_creator) {
+                if (!(currentFragment instanceof ToneCreatorFragment)) {
+                    manageVisibilityOfTopMenu(false);
+                    currentFragment = new ToneCreatorFragment();
+                    loadFragment(currentFragment);
+                }
+            } else if (fragmentId == R.id.tone_mixer) {
+                if (!(currentFragment instanceof ToneMixerFragment)) {
+                    manageVisibilityOfTopMenu(false);
+                    currentFragment = new ToneMixerFragment();
+                    loadFragment(currentFragment);
+                }
+            } else if (fragmentId == R.id.my_homepage) {
+                if (!(currentFragment instanceof HomepageFragment)) {
+                    manageVisibilityOfTopMenu(true);
+                    currentFragment = new HomepageFragment();
+                    loadFragment(currentFragment);
+                }
+            } else if (fragmentId == R.id.tone_streaming) {
+                if (!(currentFragment instanceof ToneStreamingFragment)) {
+                    manageVisibilityOfTopMenu(false);
+                    currentFragment = new ToneStreamingFragment();
+                    loadFragment(currentFragment);
+                }
+            }
+            return true;
         });
     }
 

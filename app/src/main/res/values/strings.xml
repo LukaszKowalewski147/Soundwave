@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Soundwave</string>
 
+    <!--    Affixes             -->
+    <string name="affix_Hz">Hz</string>
+    <string name="affix_dB">dB</string>
+    <string name="affix_percent">%</string>
+
     <!--    Layout headers      -->
     <string name="my_tones_header">My tones</string>
     <string name="tone_streaming_header">Tone streaming</string>
