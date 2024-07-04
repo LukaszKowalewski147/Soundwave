@@ -58,6 +58,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         String volumeDisplay = volume + context.getString(R.string.affix_percent);
         String overonesNumber = String.valueOf(tone.getOvertonesComponent().getActiveOvertonesNumber());
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
+        String duration = tone.getDurationInMilliseconds() + context.getString(R.string.affix_milliseconds);
 
         holder.toneName.setSelected(true);
         holder.toneName.setText(tone.getName());
@@ -68,6 +69,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneOvertonesNumber.setText(overonesNumber);
         holder.toneSampleRate.setText(sampleRate);
         holder.toneOtherInfo.setText("comming soon");
+        holder.toneDuration.setText(duration);
 
         holder.toneRenameBtn.setOnClickListener(v -> listener.onRenameClick(tone));
 

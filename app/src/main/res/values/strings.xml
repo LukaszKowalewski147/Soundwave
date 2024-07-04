@@ -5,6 +5,7 @@
     <string name="affix_Hz">Hz</string>
     <string name="affix_dB">dB</string>
     <string name="affix_percent">%</string>
+    <string name="affix_milliseconds">ms</string>
 
     <!--    Layout headers      -->
     <string name="my_tones_header">My tones</string>

@@ -43,12 +43,18 @@
 
     <ImageView
         android:id="@+id/tone_rename_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="4dp"
+        android:contentDescription="@null"
+        android:paddingStart="4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="1dp"
         android:scaleType="centerInside"
         android:src="@drawable/ic_edit_name"
         app:layout_constraintBottom_toBottomOf="@id/tone_name"
+        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintStart_toEndOf="@id/tone_name"
         app:layout_constraintTop_toTopOf="@id/tone_name"
         app:tint="@color/white" />
@@ -77,15 +83,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tone_rename_icon" />
 
+    <ImageView
+        android:id="@+id/tone_details_frequency_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:padding="2dp"
+        android:src="@drawable/ic_frequency"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_frequency_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_details_frequency_header" />
+
     <TextView
         android:id="@+id/tone_details_frequency_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:ems="5"
         android:text="@string/frequency_header"
         android:textColor="@color/white"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_frequency_icon"
         app:layout_constraintTop_toBottomOf="@id/tone_icon" />
 
     <TextView
@@ -94,42 +113,65 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@id/tone_details_frequency_header"
         app:layout_constraintTop_toTopOf="@id/tone_details_frequency_header"
         tools:text="432Hz (A4)" />
+
+    <ImageView
+        android:id="@+id/tone_details_envelope_preset_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_envelope"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_envelope_preset_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_details_envelope_preset_header" />
 
     <TextView
         android:id="@+id/tone_details_envelope_preset_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:ems="5"
         android:text="@string/envelope_header"
         android:textColor="@color/white"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_envelope_preset_icon"
         app:layout_constraintTop_toBottomOf="@id/tone_details_frequency_header" />
 
     <TextView
-
         android:id="@+id/tone_details_envelope_preset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
         app:layout_constraintTop_toTopOf="@id/tone_details_envelope_preset_header"
         tools:text="Acoustic guitar" />
+
+    <ImageView
+        android:id="@+id/tone_details_timbre_preset_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_timbre"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_timbre_preset_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_details_timbre_preset_header" />
 
     <TextView
         android:id="@+id/tone_details_timbre_preset_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:ems="5"
         android:text="@string/timbre_header"
         android:textColor="@color/white"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_timbre_preset_icon"
         app:layout_constraintTop_toBottomOf="@id/tone_details_envelope_preset_header" />
 
     <TextView
@@ -137,20 +179,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
         app:layout_constraintTop_toTopOf="@id/tone_details_timbre_preset_header"
         tools:text="Acoustic guitar" />
+
+    <ImageView
+        android:id="@+id/tone_details_volume_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_volume_high"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_volume_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_details_volume_header" />
 
     <TextView
         android:id="@+id/tone_details_volume_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:ems="5"
         android:text="@string/tone_volume_header"
         android:textColor="@color/white"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_volume_icon"
         app:layout_constraintTop_toBottomOf="@id/tone_details_timbre_preset_header" />
 
     <TextView
@@ -158,20 +212,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
         app:layout_constraintTop_toTopOf="@id/tone_details_volume_header"
         tools:text="100%" />
+
+    <ImageView
+        android:id="@+id/tone_details_overtones_number_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_overtones"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_overtones_number_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_details_overtones_number_header" />
 
     <TextView
         android:id="@+id/tone_details_overtones_number_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:ems="5"
         android:text="@string/overtones_header"
         android:textColor="@color/white"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_overtones_number_icon"
         app:layout_constraintTop_toBottomOf="@id/tone_details_volume_header" />
 
     <TextView
@@ -179,20 +245,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
         app:layout_constraintTop_toTopOf="@id/tone_details_overtones_number_header"
         tools:text="15" />
+
+    <ImageView
+        android:id="@+id/tone_details_sample_rate_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_sample_rate"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_sample_rate_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_details_sample_rate_header" />
 
     <TextView
         android:id="@+id/tone_details_sample_rate_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:ems="5"
         android:text="@string/sample_rate_header"
         android:textColor="@color/white"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tone_details_sample_rate_icon"
         app:layout_constraintTop_toBottomOf="@id/tone_details_overtones_number_header" />
 
     <TextView
@@ -200,7 +278,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
         app:layout_constraintTop_toTopOf="@id/tone_details_sample_rate_header"
         tools:text="44.1kHz" />
@@ -212,7 +290,7 @@
         android:ems="5"
         android:text="Other info"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tone_details_sample_rate_header" />
 
@@ -221,7 +299,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
         app:layout_constraintTop_toTopOf="@id/tone_details_other_header"
         tools:text="comming soon" />
@@ -238,6 +316,30 @@
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tone_details_other_header" />
+
+    <ImageView
+        android:id="@+id/tone_details_duration_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_duration"
+        app:layout_constraintBottom_toBottomOf="@id/tone_details_duration"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toStartOf="@id/tone_details_duration"
+        app:layout_constraintTop_toTopOf="@id/tone_details_duration" />
+
+    <TextView
+        android:id="@+id/tone_details_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/tone_play_stop_btn"
+        app:layout_constraintEnd_toStartOf="@id/tone_play_stop_btn"
+        app:layout_constraintTop_toTopOf="@id/tone_play_stop_btn"
+        tools:text="1250ms" />
 
     <ImageButton
         android:id="@+id/tone_play_stop_btn"
