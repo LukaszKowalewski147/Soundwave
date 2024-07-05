@@ -16,7 +16,7 @@
     <string name="control_panel_header">Control panel</string>
     <string name="create_sound_header">Create sound</string>
     <string name="sound_details_header">Sound details</string>
-    <string name="options_header">Options</string>
+    <string name="settings_header">Settings</string>
 
     <!--    Element headers     -->
     <string name="overtones_header">Overtones</string>
@@ -45,6 +45,8 @@
     <string name="reset_btn">Reset</string>
     <string name="more_info_btn">More…</string>
     <string name="less_info_btn">Less…</string>
+    <string name="add_tone_btn">Add tone</string>
+    <string name="remove_tone_btn">Remove tone</string>
 
     <!--    Units               -->
     <string name="percent_unit">%</string>
