@@ -14,8 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.soundwave.R;
 import com.example.soundwave.Tone;
+import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneMixerViewModel;
 import java.util.List;
+import java.util.Locale;
 
 public class SelectToneToMixDialogFragment extends DialogFragment {
     private final OnToneSelectedListener listener;
@@ -47,18 +49,34 @@ public class SelectToneToMixDialogFragment extends DialogFragment {
     }
 
     private View createToneView(Tone tone) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_tone_to_mix, null);
+        View toneToMix = getLayoutInflater().inflate(R.layout.dialog_tone_to_mix, null);
 
-        TextView toneNameTextView = view.findViewById(R.id.tone_name_text_view);
-        toneNameTextView.setText(tone.getName());
+        TextView toneName = toneToMix.findViewById(R.id.tone_to_mix_tone_name);
+        TextView toneFrequency = toneToMix.findViewById(R.id.tone_to_mix_frequency);
+        TextView toneVolume = toneToMix.findViewById(R.id.tone_to_mix_volume);
+        TextView toneDuration = toneToMix.findViewById(R.id.tone_to_mix_duration);
 
-        view.setOnClickListener(v -> {
+        int frequency = tone.getFundamentalFrequency();
+
+        String name = tone.getName();
+        String scale = UnitsConverter.convertFrequencyToNote(frequency);
+        String frequencyDisplay = frequency + getString(R.string.affix_Hz) + " (" + scale + ")";
+        String volume = tone.getMasterVolume() + getString(R.string.affix_percent);
+        String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
+
+        toneName.setSelected(true);
+        toneName.setText(name);
+        toneFrequency.setText(frequencyDisplay);
+        toneVolume.setText(volume);
+        toneDuration.setText(duration);
+
+        toneToMix.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onToneSelected(tone);
                 dismiss();
             }
         });
 
-        return view;
+        return toneToMix;
     }
 }

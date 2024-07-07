@@ -145,7 +145,6 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         };
     }
 
-
     private void setupDragAndDrop() {
         View.OnDragListener dragListener = new View.OnDragListener() {
             @Override
