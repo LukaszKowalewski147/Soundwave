@@ -316,4 +316,8 @@ public class UnitsConverter {
         int index = convertFrequencyToNoteIndex(frequency);
         return Scale.values()[index].noteName;
     }
+
+    public static int dpToPx(int dp) {
+        return Math.round(dp * Options.displayDensity);
+    }
 }

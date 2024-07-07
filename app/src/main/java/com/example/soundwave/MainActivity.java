@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setDisplayDensity();
         setFilepathToDownload();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -104,6 +106,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, R.string.error_msg_filepath_to_download_fail, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setDisplayDensity() {
+        Options.displayDensity = getResources().getDisplayMetrics().density;
     }
 
     private void manageVisibilityOfTopMenu(boolean visible) {
