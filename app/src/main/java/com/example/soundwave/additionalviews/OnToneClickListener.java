@@ -1,4 +1,4 @@
-package com.example.soundwave.recyclerviews;
+package com.example.soundwave.additionalviews;
 
 import com.example.soundwave.Tone;
 

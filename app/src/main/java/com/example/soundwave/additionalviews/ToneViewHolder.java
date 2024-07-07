@@ -1,4 +1,4 @@
-package com.example.soundwave.recyclerviews;
+package com.example.soundwave.additionalviews;
 
 import android.view.View;
 import android.widget.ImageButton;
