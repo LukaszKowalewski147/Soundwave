@@ -35,4 +35,12 @@ public class ToneMixerViewModel extends AndroidViewModel {
     public LiveData<List<Tone>> getAllTones() {
         return allTones;
     }
+
+    public void addTone(Tone tone) {
+        // Twoja implementacja dodawania tonu
+    }
+
+    public void generateMusic() {
+
+    }
 }

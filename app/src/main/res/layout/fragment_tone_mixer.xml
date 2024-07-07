@@ -7,38 +7,301 @@
     android:background="@drawable/background_shadow_layout"
     tools:background="@color/dark_gray"
     tools:context=".view.ToneMixerFragment">
-<!--
-    <TextView
-        android:id="@+id/home_my_tones_header"
-        android:layout_width="wrap_content"
+
+    <HorizontalScrollView
+        android:id="@+id/tone_mixer_music_scroll_view"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/tone_mixer_header"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_shadow_layout"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_timeline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/dark_gray"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_track1"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tone_mixer_track_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_track2"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tone_mixer_track_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_track3"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tone_mixer_track_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_track4"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tone_mixer_track_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_track5"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tone_mixer_track_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/gray" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@color/app_yellow_gradient_end"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/tone_mixer_music_scroll_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/home_my_tones_header_underline"
+    <HorizontalScrollView
+        android:id="@+id/tone_mixer_workbench_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/header_separator"
-        app:layout_constraintTop_toBottomOf="@id/home_my_tones_header" />
--->
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="tu kiedyś będzie mikser :)"
-        android:textColor="@color/white"
+        android:layout_marginTop="2dp"
+        android:background="@color/dark_gray"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tone_mixer_music_scroll_view">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/app_yellow_gradient_end" />
+
+            <LinearLayout
+                android:id="@+id/tone_mixer_workbench"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/tone_mixer_workbench_height"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/app_yellow_gradient_end" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/tone_mixer_workbench_scroll_view">
+
+        <TextView
+            android:id="@+id/tone_mixer_control_panel_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/control_panel_header"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/tone_mixer_control_panel_header_underline"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/header_separator"
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tone_mixer_add_tone_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:background="@drawable/background_btn_standard"
+            android:drawableStart="@drawable/ic_add"
+            android:foreground="?android:selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/add_tone_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toTopOf="@id/tone_mixer_generate_music_btn"
+            app:layout_constraintEnd_toStartOf="@id/tone_mixer_remove_tone_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header_underline" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tone_mixer_remove_tone_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:background="@drawable/background_btn_standard"
+            android:drawableStart="@drawable/ic_remove"
+            android:foreground="?android:selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/remove_tone_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tone_mixer_add_tone_btn"
+            app:layout_constraintTop_toTopOf="@id/tone_mixer_add_tone_btn" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tone_mixer_generate_music_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:background="@drawable/background_btn_standard"
+            android:drawableStart="@drawable/ic_generate"
+            android:foreground="?android:selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/generate_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toTopOf="@id/tone_mixer_save_music_btn"
+            app:layout_constraintEnd_toStartOf="@id/tone_mixer_play_stop_music_btn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_add_tone_btn" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tone_mixer_play_stop_music_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:background="@drawable/background_btn_standard"
+            android:drawableStart="@drawable/ic_play_note"
+            android:foreground="?android:selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/play_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/tone_mixer_generate_music_btn"
+            app:layout_constraintTop_toTopOf="@id/tone_mixer_generate_music_btn" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tone_mixer_save_music_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:background="@drawable/background_btn_standard"
+            android:drawableStart="@drawable/ic_save"
+            android:foreground="?android:selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/save_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tone_mixer_reset_music_btn"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_generate_music_btn" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tone_mixer_reset_music_btn"
+            android:layout_width="120dp"
+            android:layout_height="38dp"
+            android:background="@drawable/background_btn_standard"
+            android:drawableStart="@drawable/ic_reset"
+            android:foreground="?android:selectableItemBackground"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/reset_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@id/tone_mixer_save_music_btn"
+            app:layout_constraintTop_toTopOf="@id/tone_mixer_save_music_btn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
