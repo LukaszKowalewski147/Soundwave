@@ -57,16 +57,16 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private void setupScale() {
-        int totalLabels = 25;
+        int totalLabels = 50;
 
         for (int i = 0; i <= totalLabels; i++) {
             TextView label = new TextView(requireContext());
             label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12.0f);
             label.setText(String.format(Locale.US, "|%.1fs", i/2.0f));   // i/2.0f = 0.5s every Config.TONE_MIXER_SCALE_LABEL_WIDTH_DP.value
 
+            int width = UnitsConverter.dpToPx(Config.TONE_MIXER_SCALE_LABEL_WIDTH_DP.value);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Config.TONE_MIXER_SCALE_LABEL_WIDTH_DP.value,
-                            getResources().getDisplayMetrics()), ViewGroup.LayoutParams.WRAP_CONTENT
+                    width, ViewGroup.LayoutParams.WRAP_CONTENT
             );
             label.setLayoutParams(params);
             binding.toneMixerTimeline.addView(label);
