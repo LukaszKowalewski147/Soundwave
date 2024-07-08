@@ -1,7 +1,7 @@
 package com.example.soundwave.utils;
 
 import com.example.soundwave.Overtone;
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
@@ -18,7 +18,7 @@ public class ToneParser {
         FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent(dbTone);
         OvertonesComponent oc = parseOvertonesComponent(dbTone);
 
-        Tone tone = new ToneGenerator(sampleRate, ec, ffc, oc).generateTone();
+        Tone tone = new ToneGenerator(sampleRate, ec.getTotalDurationInSeconds()).generateTone(ec, ffc, oc);
         tone.setId(id);
         tone.setName(name);
 

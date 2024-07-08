@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.soundwave.R;
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
 import com.example.soundwave.databinding.FragmentToneMixerBinding;

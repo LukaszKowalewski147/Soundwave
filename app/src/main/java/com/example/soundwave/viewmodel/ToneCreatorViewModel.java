@@ -15,7 +15,7 @@ import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
 import com.example.soundwave.Overtone;
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.Options;
@@ -298,16 +298,15 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void generateTone(boolean editorMode) {
-        OvertonesComponent oC = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
-        ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(),
-                envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue(), oC);
+        OvertonesComponent oc = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
+        ToneGenerator toneGenerator = new ToneGenerator(sampleRate.getValue(), envelopeComponent.getValue().getTotalDurationInSeconds());
+        Tone newTone = toneGenerator.generateTone(envelopeComponent.getValue(), fundamentalFrequencyComponent.getValue(), oc);
 
-        Tone newTone = toneGenerator.generateTone();
         if (editorMode)
             newTone.setId(tone.getValue().getId());
 
-        audioPlayer = new AudioPlayer(newTone);
-        audioPlayer.load();
+        audioPlayer = new AudioPlayer();
+        audioPlayer.loadTone(newTone);
 
         tone.setValue(newTone);
 
@@ -380,8 +379,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public void loadEditedTone(Tone editedTone) {
-        audioPlayer = new AudioPlayer(editedTone);
-        audioPlayer.load();
+        audioPlayer = new AudioPlayer();
+        audioPlayer.loadTone(editedTone);
 
         loadSampleRate(editedTone.getSampleRate());
         loadEnvelopeComponent(editedTone.getEnvelopeComponent());

@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.AudioPlayer;
 import com.example.soundwave.utils.ToneParser;
@@ -121,8 +121,8 @@ public class HomepageViewModel extends AndroidViewModel {
     }
 
     public void playTone(Tone tone, int position) {
-        currentAudioPlayer = new AudioPlayer(tone);
-        currentAudioPlayer.load();
+        currentAudioPlayer = new AudioPlayer();
+        currentAudioPlayer.loadTone(tone);
         currentAudioPlayer.play();
 
         currentlyPlayingTonePosition = position;

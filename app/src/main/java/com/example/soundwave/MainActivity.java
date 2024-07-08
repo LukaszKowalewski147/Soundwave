@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.databinding.ActivityMainBinding;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.WavCreator;

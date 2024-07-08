@@ -26,7 +26,7 @@ import com.example.soundwave.MainActivity;
 import com.example.soundwave.utils.OnFragmentExitListener;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SeekBarUpdater;
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;

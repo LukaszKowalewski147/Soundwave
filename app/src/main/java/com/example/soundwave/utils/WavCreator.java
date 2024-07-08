@@ -2,7 +2,7 @@ package com.example.soundwave.utils;
 
 import android.os.Environment;
 
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 
 import java.io.File;
 import java.io.FileOutputStream;

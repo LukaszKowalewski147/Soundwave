@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 import com.example.soundwave.utils.UnitsConverter;
 
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         boolean isExpanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
         setMoreInfoVisibility(holder, isExpanded);
 
-        com.example.soundwave.Tone tone = tones.get(position);
+        Tone tone = tones.get(position);
 
         int frequency = tone.getFundamentalFrequency();
         int volume = tone.getMasterVolume();

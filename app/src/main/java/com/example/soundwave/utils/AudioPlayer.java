@@ -6,25 +6,39 @@ import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.widget.Toast;
 
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Music;
+import com.example.soundwave.components.Tone;
 
 public class AudioPlayer {
-    private final Tone tone;
     private AudioTrack audioTrack;
 
-    public AudioPlayer(Tone tone) {
-        this.tone = tone;
+    public AudioPlayer() {
         audioTrack = null;
     }
 
-    public void load() {
-        if (!isReadyToWrite()) {
+    public void loadTone(Tone tone) {
+        if (!isReadyToWriteTone(tone)) {
             // TODO: getErrorMessage
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
             return;
         }
         audioTrack.flush();
         audioTrack.write(tone.getSamples(), 0, tone.getSamples().length);
+        /*if (!isReadyToPlay()) {
+            // TODO: getErrorMessage
+            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
+            //return;
+        }*/
+    }
+
+    public void loadMusic(Music music) {
+        if (!isReadyToWriteMusic(music)) {
+            // TODO: getErrorMessage
+            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        audioTrack.flush();
+        audioTrack.write(music.getSamples(), 0, music.getSamples().length);
         /*if (!isReadyToPlay()) {
             // TODO: getErrorMessage
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
@@ -64,9 +78,15 @@ public class AudioPlayer {
         return audioTrack.getPlaybackHeadPosition();
     }
 
-    private boolean isReadyToWrite() {
+    private boolean isReadyToWriteTone(Tone tone) {
         if (audioTrack == null)
-            buildAudioTrack();
+            buildAudioTrackTone(tone);
+        return audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED;
+    }
+
+    private boolean isReadyToWriteMusic(Music music) {
+        if (audioTrack == null)
+            buildAudioTrackMusic(music);
         return audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED;
     }
 
@@ -83,7 +103,7 @@ public class AudioPlayer {
         }
     }
 
-    private void buildAudioTrack() {
+    private void buildAudioTrackTone(Tone tone) {
         audioTrack = new AudioTrack.Builder()
                 .setAudioAttributes(new AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -96,6 +116,22 @@ public class AudioPlayer {
                         .build())
                 .setTransferMode(AudioTrack.MODE_STATIC)
                 .setBufferSizeInBytes(tone.getSamples().length)
+                .build();
+    }
+
+    private void buildAudioTrackMusic(Music music) {
+        audioTrack = new AudioTrack.Builder()
+                .setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                .setAudioFormat(new AudioFormat.Builder()
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setSampleRate(music.getSampleRate().sampleRate)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build())
+                .setTransferMode(AudioTrack.MODE_STATIC)
+                .setBufferSizeInBytes(music.getSamples().length)
                 .build();
     }
 

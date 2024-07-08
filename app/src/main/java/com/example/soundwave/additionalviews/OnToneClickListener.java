@@ -1,6 +1,6 @@
 package com.example.soundwave.additionalviews;
 
-import com.example.soundwave.Tone;
+import com.example.soundwave.components.Tone;
 
 public interface OnToneClickListener {
     void onRenameClick(Tone tone);
