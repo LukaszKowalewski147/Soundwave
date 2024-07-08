@@ -149,8 +149,24 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View workbenchTone = inflater.inflate(R.layout.tone_mixer_workbench_tone, binding.toneMixerWorkbench, false);
 
-        TextView name = workbenchTone.findViewById(R.id.tone_mixer_workbench_tone_name);
-        name.setText(tone.getName());
+        TextView toneName = workbenchTone.findViewById(R.id.tone_mixer_workbench_tone_name);
+        TextView toneFrequency = workbenchTone.findViewById(R.id.tone_mixer_workbench_tone_frequency);
+        TextView toneVolume = workbenchTone.findViewById(R.id.tone_mixer_workbench_tone_volume);
+        TextView toneDuration = workbenchTone.findViewById(R.id.tone_mixer_workbench_tone_duration);
+
+        int frequency = tone.getFundamentalFrequency();
+
+        String name = tone.getName();
+        String scale = UnitsConverter.convertFrequencyToNote(frequency);
+        String frequencyDisplay = frequency + getString(R.string.affix_Hz) + " (" + scale + ")";
+        String volume = tone.getMasterVolume() + getString(R.string.affix_percent);
+        String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
+
+        toneName.setSelected(true);
+        toneName.setText(name);
+        toneFrequency.setText(frequencyDisplay);
+        toneVolume.setText(volume);
+        toneDuration.setText(duration);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 (int) getResources().getDimension(R.dimen.tone_mixer_tone_width),
