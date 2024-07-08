@@ -3,6 +3,7 @@ package com.example.soundwave.view;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.TypedValue;
@@ -14,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.soundwave.R;
+import com.example.soundwave.components.MixerComponent;
+import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
@@ -22,6 +25,8 @@ import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneMixerViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ToneMixerFragment extends Fragment implements OnToneSelectedListener {
@@ -40,6 +45,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         setupScale();
         setupDragAndDrop();
         setupLongClickListeners();
+
+        setObservers();
         setOnClickListeners();
 
         return binding.getRoot();
@@ -132,11 +139,50 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         };
     }
 
+    private void setObservers() {
+        viewModel.getMusic().observe(getViewLifecycleOwner(), new Observer<Music>() {
+            @Override
+            public void onChanged(Music music) {
+
+            }
+        });
+    }
+
     private void setOnClickListeners() {
         binding.toneMixerAddToneBtn.setOnClickListener(v -> {
             SelectToneToMixDialogFragment dialog = new SelectToneToMixDialogFragment(this);
             dialog.show(getParentFragmentManager(), "SelectToneToMixDialogFragment");
         });
+
+        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> {
+            viewModel.generateMusic(getMixerComponent());
+        });
+
+        binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> {
+            viewModel.playStopMusic();
+        });
+    }
+
+    private MixerComponent getMixerComponent() {
+        List<Tone> track1Tones = getTonesFromTrack(binding.toneMixerTrack1);
+        List<Tone> track2Tones = getTonesFromTrack(binding.toneMixerTrack2);
+        List<Tone> track3Tones = getTonesFromTrack(binding.toneMixerTrack3);
+        List<Tone> track4Tones = getTonesFromTrack(binding.toneMixerTrack4);
+        List<Tone> track5Tones = getTonesFromTrack(binding.toneMixerTrack5);
+
+        return  new MixerComponent(track1Tones, track2Tones, track3Tones, track4Tones, track5Tones);
+    }
+
+    private List<Tone> getTonesFromTrack(LinearLayout track) {
+        List<Tone> tones = new ArrayList<>();
+        int childCount = track.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = track.getChildAt(i);
+            Object tag = child.getTag();
+            if (tag instanceof Tone)
+                tones.add((Tone)tag);
+        }
+        return tones;
     }
 
     private void addToneToWorkbench(Tone tone) {
