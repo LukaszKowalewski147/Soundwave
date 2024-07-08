@@ -33,6 +33,11 @@
     <string name="timbre_header">Timbre</string>
     <string name="tones_number_header">Tones number</string>
     <string name="tone_volume_header">Volume</string>
+    <string name="tone_mixer_track_1">TRACK 1</string>
+    <string name="tone_mixer_track_2">TRACK 2</string>
+    <string name="tone_mixer_track_3">TRACK 3</string>
+    <string name="tone_mixer_track_4">TRACK 4</string>
+    <string name="tone_mixer_track_5">TRACK 5</string>
 
 
     <!--    Buttons             -->

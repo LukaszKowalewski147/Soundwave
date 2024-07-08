@@ -25,7 +25,6 @@ import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneMixerViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -164,25 +163,13 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private MixerComponent getMixerComponent() {
-        List<Tone> track1Tones = getTonesFromTrack(binding.toneMixerTrack1);
-        List<Tone> track2Tones = getTonesFromTrack(binding.toneMixerTrack2);
-        List<Tone> track3Tones = getTonesFromTrack(binding.toneMixerTrack3);
-        List<Tone> track4Tones = getTonesFromTrack(binding.toneMixerTrack4);
-        List<Tone> track5Tones = getTonesFromTrack(binding.toneMixerTrack5);
+        List<Tone> track1Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack1);
+        List<Tone> track2Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack2);
+        List<Tone> track3Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack3);
+        List<Tone> track4Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack4);
+        List<Tone> track5Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack5);
 
-        return  new MixerComponent(track1Tones, track2Tones, track3Tones, track4Tones, track5Tones);
-    }
-
-    private List<Tone> getTonesFromTrack(LinearLayout track) {
-        List<Tone> tones = new ArrayList<>();
-        int childCount = track.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = track.getChildAt(i);
-            Object tag = child.getTag();
-            if (tag instanceof Tone)
-                tones.add((Tone)tag);
-        }
-        return tones;
+        return new MixerComponent(track1Tones, track2Tones, track3Tones, track4Tones, track5Tones);
     }
 
     private void addToneToWorkbench(Tone tone) {

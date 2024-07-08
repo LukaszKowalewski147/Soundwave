@@ -1,6 +1,8 @@
 package com.example.soundwave.viewmodel;
 
 import android.app.Application;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -134,5 +136,17 @@ public class ToneMixerViewModel extends AndroidViewModel {
             totalDurationInSeconds += tone.getDurationInSeconds();
         }
         return totalDurationInSeconds;
+    }
+
+    public List<Tone> getTonesFromTrack(LinearLayout track) {
+        List<Tone> tones = new ArrayList<>();
+        int childCount = track.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = track.getChildAt(i);
+            Object tag = child.getTag();
+            if (tag instanceof Tone)
+                tones.add((Tone)tag);
+        }
+        return tones;
     }
 }

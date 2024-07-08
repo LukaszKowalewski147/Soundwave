@@ -17,11 +17,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/background_shadow_layout"
-            android:orientation="vertical">
+            android:background="@drawable/background_shadow_layout">
 
             <LinearLayout
                 android:id="@+id/tone_mixer_timeline"
@@ -30,106 +29,211 @@
                 android:background="@color/dark_gray"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:padding="8dp">
+                android:padding="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
             </LinearLayout>
 
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/sep1"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tone_mixer_timeline" />
 
             <LinearLayout
                 android:id="@+id/tone_mixer_track1"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sep1">
 
                 <View
                     android:layout_width="8dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:text="@string/tone_mixer_track_1"
+                android:textColor="@color/white50transparent"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tone_mixer_track1"
+                tools:ignore="SpUsage" />
+
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/sep2"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tone_mixer_track1" />
 
             <LinearLayout
                 android:id="@+id/tone_mixer_track2"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sep2">
 
                 <View
                     android:layout_width="8dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:text="@string/tone_mixer_track_2"
+                android:textColor="@color/white50transparent"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tone_mixer_track2"
+                tools:ignore="SpUsage" />
+
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/sep3"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tone_mixer_track2" />
 
             <LinearLayout
                 android:id="@+id/tone_mixer_track3"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sep3">
 
                 <View
                     android:layout_width="8dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:text="@string/tone_mixer_track_3"
+                android:textColor="@color/white50transparent"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tone_mixer_track3"
+                tools:ignore="SpUsage" />
+
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/sep4"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tone_mixer_track3" />
 
             <LinearLayout
                 android:id="@+id/tone_mixer_track4"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sep4">
 
                 <View
                     android:layout_width="8dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:text="@string/tone_mixer_track_4"
+                android:textColor="@color/white50transparent"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tone_mixer_track4"
+                tools:ignore="SpUsage" />
+
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/sep5"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/gray" />
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tone_mixer_track4" />
 
             <LinearLayout
                 android:id="@+id/tone_mixer_track5"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
+                android:elevation="1dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sep5">
 
                 <View
                     android:layout_width="8dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gray" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="64dp"
+                android:text="@string/tone_mixer_track_5"
+                android:textColor="@color/white50transparent"
+                android:textSize="24dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tone_mixer_track5"
+                tools:ignore="SpUsage" />
 
-        </LinearLayout>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/gray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tone_mixer_track5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </HorizontalScrollView>
 
@@ -167,6 +271,7 @@
                 android:id="@+id/tone_mixer_workbench"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_workbench_height"
+                android:layout_marginEnd="42dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -180,6 +285,22 @@
         </LinearLayout>
 
     </HorizontalScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/tone_mixer_add_tone_btn"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/background_btn_standard"
+        android:drawableTop="@drawable/ic_add"
+        android:foreground="?android:selectableItemBackground"
+        android:paddingTop="7dp"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="@id/tone_mixer_workbench_scroll_view"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -214,41 +335,6 @@
             app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/tone_mixer_add_tone_btn"
-            android:layout_width="120dp"
-            android:layout_height="38dp"
-            android:background="@drawable/background_btn_standard"
-            android:drawableStart="@drawable/ic_add"
-            android:foreground="?android:selectableItemBackground"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/add_tone_btn"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@id/tone_mixer_generate_music_btn"
-            app:layout_constraintEnd_toStartOf="@id/tone_mixer_remove_tone_btn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header_underline" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/tone_mixer_remove_tone_btn"
-            android:layout_width="120dp"
-            android:layout_height="38dp"
-            android:background="@drawable/background_btn_standard"
-            android:drawableStart="@drawable/ic_remove"
-            android:foreground="?android:selectableItemBackground"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/remove_tone_btn"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="11sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tone_mixer_add_tone_btn"
-            app:layout_constraintTop_toTopOf="@id/tone_mixer_add_tone_btn" />
-
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_generate_music_btn"
             android:layout_width="120dp"
             android:layout_height="38dp"
@@ -265,7 +351,7 @@
             app:layout_constraintEnd_toStartOf="@id/tone_mixer_play_stop_music_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tone_mixer_add_tone_btn" />
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header_underline" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_play_stop_music_btn"

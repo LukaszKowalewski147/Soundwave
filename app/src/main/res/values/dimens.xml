@@ -2,9 +2,9 @@
 <resources>
     <dimen name="tone_mixer_tone_width">100dp</dimen>
     <dimen name="tone_mixer_track_height">60dp</dimen>
-    <dimen name="tone_mixer_workbench_height">90dp</dimen>
+    <dimen name="tone_mixer_workbench_height">100dp</dimen>
     <dimen name="tone_mixer_track_tone_height">58dp</dimen>
-    <dimen name="tone_mixer_workbench_tone_height">82dp</dimen>
+    <dimen name="tone_mixer_workbench_tone_height">92dp</dimen>
     <dimen name="tone_mixer_tone_workbench_margin_left">2dp</dimen>
     <dimen name="tone_mixer_tone_workbench_margin_right">2dp</dimen>
     <dimen name="tone_mixer_tone_workbench_margin_top">0dp</dimen>
