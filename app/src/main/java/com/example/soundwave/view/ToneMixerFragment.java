@@ -35,6 +35,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
     private View.OnLongClickListener toneWorkbenchLongClickListener;
     private View.OnLongClickListener toneTrackLongClickListener;
+    private View.OnClickListener toneClickListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
         setupScale();
         setupDragAndDrop();
-        setupLongClickListeners();
+        setupClickListeners();
 
         setObservers();
         setOnClickListeners();
@@ -120,9 +121,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         binding.toneMixerTrack5.setOnDragListener(dragListener);
     }
 
-    private void setupLongClickListeners() {
+    private void setupClickListeners() {
         toneWorkbenchLongClickListener = v -> {
             View trackTone = createTrackTone(v);
+            trackTone.setOnClickListener(toneClickListener);
             trackTone.setOnLongClickListener(toneTrackLongClickListener);
             binding.toneMixerTrack1.addView(trackTone);
 
@@ -135,6 +137,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             v.setVisibility(View.INVISIBLE);
 
             return true;
+        };
+
+        toneClickListener = v -> {
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null)
+                parent.removeView(v);
         };
     }
 
@@ -174,6 +182,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
     private void addToneToWorkbench(Tone tone) {
         View workbenchTone = createWorkbenchTone(tone);
+        workbenchTone.setOnClickListener(toneClickListener);
         workbenchTone.setOnLongClickListener(toneWorkbenchLongClickListener);
         binding.toneMixerWorkbench.addView(workbenchTone);
     }
