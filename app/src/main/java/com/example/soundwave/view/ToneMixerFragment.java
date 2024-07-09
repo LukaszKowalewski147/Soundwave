@@ -103,23 +103,28 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                 case DragEvent.ACTION_DRAG_STARTED:
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
+                    v.setBackgroundResource(R.color.green50transparent);
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
+                    v.setBackgroundResource(R.color.transparent);
                     return true;
                 case DragEvent.ACTION_DROP:
                     View draggedView = (View) event.getLocalState();
                     ViewGroup owner = (ViewGroup) draggedView.getParent();
 
-                    owner.removeView(draggedView);
+                    if (owner != null)
+                        owner.removeView(draggedView);
                     ((LinearLayout) v).addView(draggedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
                     draggedView.setVisibility(View.VISIBLE);
+                    v.setBackgroundResource(R.color.transparent);
 
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     View endedView = (View) event.getLocalState();
                     endedView.setVisibility(View.VISIBLE);
+                    v.setBackgroundResource(R.color.transparent);
                     return true;
                 default:
                     break;
@@ -129,9 +134,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
         toneWorkbenchLongClickListener = v -> {
             View trackTone = createTrackTone(v);
+
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(trackTone);
+            v.startDragAndDrop(null, shadowBuilder, trackTone, 0);
+
             trackTone.setOnClickListener(toneClickListener);
             trackTone.setOnLongClickListener(toneTrackLongClickListener);
-            binding.toneMixerTrack1.addView(trackTone);
 
             return true;
         };
@@ -301,6 +309,14 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                 (int) getResources().getDimension(R.dimen.tone_mixer_track_tone_height)
         );
         trackTone.setLayoutParams(layoutParams);
+
+        // Measure and layout the view to ensure it has the correct dimensions to drag from workbench
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(widthInPx, View.MeasureSpec.EXACTLY);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec((int) getResources().getDimension(R.dimen.tone_mixer_track_tone_height), View.MeasureSpec.EXACTLY);
+        trackTone.measure(widthSpec, heightSpec);
+        trackTone.layout(0, 0, trackTone.getMeasuredWidth(), trackTone.getMeasuredHeight());
+
+        trackTone.setVisibility(View.INVISIBLE);
 
         return trackTone;
     }

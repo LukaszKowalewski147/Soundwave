@@ -18,6 +18,8 @@
     <color name="delete_bin">#D9FF1F1F</color>
     <color name="white50transparent">#80FFFFFF</color>
     <color name="black50transparent">#80000000</color>
+    <color name="green50transparent">#8026FF00</color>
+    <color name="transparent">#00000000</color>
 
     <!--    gradients   -->
     <color name="background_start">#4C006D</color>
