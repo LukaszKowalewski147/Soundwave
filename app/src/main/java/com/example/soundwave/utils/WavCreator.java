@@ -43,7 +43,7 @@ public class WavCreator {
             try {
                 out = new FileOutputStream(wavFile);
                 writeWavHeader(out);
-                out.write(tone.getSamples());
+                out.write(tone.getPcmSound());
                 updateWavHeader(wavFile);
                 success = true;
             } catch (IOException e) {

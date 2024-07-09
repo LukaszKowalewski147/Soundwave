@@ -4,9 +4,9 @@ import com.example.soundwave.utils.SampleRate;
 
 public class Track {
     private final SampleRate sampleRate;
-    private final byte[] samples;
+    private final double[] samples;
 
-    public Track(SampleRate sampleRate, byte[] samples) {
+    public Track(SampleRate sampleRate, double[] samples) {
         this.sampleRate = sampleRate;
         this.samples = samples;
     }
@@ -15,11 +15,11 @@ public class Track {
         return sampleRate;
     }
 
-    public byte[] getSamples() {
+    public double[] getSamples() {
         return samples;
     }
 
-    public double getTrackDuration() {
-        return 0.0d;
+    public double getTrackDurationInSeconds() {
+        return (double) samples.length  / sampleRate.sampleRate;
     }
 }

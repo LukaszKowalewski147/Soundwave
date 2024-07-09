@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.soundwave.R;
 import com.example.soundwave.components.MixerComponent;
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
@@ -86,7 +87,9 @@ public class ToneMixerViewModel extends AndroidViewModel {
         if (!track5Tones.isEmpty())
             tracks.add(generateTrack(sampleRate, track5Tones));
 
-        ToneGenerator generator = new ToneGenerator(sampleRate, getTrackDuration(track1Tones)); // TODO: get highestTrackDuration
+        double musicDuration = getMusicDuration(tracks);
+
+        ToneGenerator generator = new ToneGenerator(sampleRate, musicDuration);
         Music newMusic = generator.generateMusic(tracks);
 
         audioPlayer = new AudioPlayer();
@@ -138,12 +141,24 @@ public class ToneMixerViewModel extends AndroidViewModel {
         return totalDurationInSeconds;
     }
 
+    private double getMusicDuration(List<Track> tracks) {
+        double longestTrackDurationInSeconds = 0.0d;
+
+        for (Track track : tracks) {
+            double trackDurationInSeconds = track.getTrackDurationInSeconds();
+            if (longestTrackDurationInSeconds < trackDurationInSeconds)
+                longestTrackDurationInSeconds = trackDurationInSeconds;
+        }
+
+        return longestTrackDurationInSeconds;   // music duration = longest track duration
+    }
+
     public List<Tone> getTonesFromTrack(LinearLayout track) {
         List<Tone> tones = new ArrayList<>();
         int childCount = track.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = track.getChildAt(i);
-            Object tag = child.getTag();
+            Object tag = child.getTag(R.id.tag_tone);
             if (tag instanceof Tone)
                 tones.add((Tone)tag);
         }

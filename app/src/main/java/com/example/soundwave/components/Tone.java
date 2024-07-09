@@ -17,10 +17,11 @@ public class Tone implements Serializable {
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
     private final OvertonesComponent overtonesComponent;
-    private final byte[] samples;
+    private final double[] samples;
+    private final byte[] pcmSound;
 
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
-                OvertonesComponent oc, byte[] samples) {
+                OvertonesComponent oc, double[] samples, byte[] pcmSound) {
         this.id = -1;
         this.name = "";
         this.sampleRate = sampleRate;
@@ -28,6 +29,7 @@ public class Tone implements Serializable {
         this.fundamentalFrequencyComponent = ffc;
         this.overtonesComponent = oc;
         this.samples = samples;
+        this.pcmSound = pcmSound;
     }
 
     public void setId(int id) {
@@ -62,8 +64,12 @@ public class Tone implements Serializable {
         return overtonesComponent;
     }
 
-    public byte[] getSamples() {
+    public double[] getSamples() {
         return samples;
+    }
+
+    public byte[] getPcmSound() {
+        return pcmSound;
     }
 
     public PresetEnvelope getEnvelopePreset() {

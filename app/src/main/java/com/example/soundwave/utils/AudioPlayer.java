@@ -23,7 +23,7 @@ public class AudioPlayer {
             return;
         }
         audioTrack.flush();
-        audioTrack.write(tone.getSamples(), 0, tone.getSamples().length);
+        audioTrack.write(tone.getPcmSound(), 0, tone.getPcmSound().length);
         /*if (!isReadyToPlay()) {
             // TODO: getErrorMessage
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
@@ -115,7 +115,7 @@ public class AudioPlayer {
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
                 .setTransferMode(AudioTrack.MODE_STATIC)
-                .setBufferSizeInBytes(tone.getSamples().length)
+                .setBufferSizeInBytes(tone.getPcmSound().length)
                 .build();
     }
 

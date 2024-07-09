@@ -9,6 +9,7 @@ import com.example.soundwave.Overtone;
 import com.example.soundwave.components.Track;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ToneGenerator {
@@ -44,7 +45,7 @@ public class ToneGenerator {
         fadeOutFlatZero();
         convertTo16BitPCM();
 
-        return new Tone(sampleRate, ec, ffc, oc, outputSound);
+        return new Tone(sampleRate, ec, ffc, oc, samples, outputSound);
     }
 
     public Track generateTrack(List<Tone> tones) {
@@ -52,33 +53,37 @@ public class ToneGenerator {
         int toneIndex = 0;
         int toneSampleIndex = 0;
 
-        byte[] toneSamples = tones.get(toneIndex).getSamples();
+        double[] toneSamples = tones.get(toneIndex).getSamples();
 
-        for (int i = lastSampleIndex; i < outputSound.length; ++i) {
-            outputSound[i] = toneSamples[toneSampleIndex++];
+        for (int i = lastSampleIndex; i < samples.length; ++i) {
+            samples[i] = toneSamples[toneSampleIndex++];
             if (toneSampleIndex == toneSamples.length && ++toneIndex < tones.size()) {
                 toneSampleIndex = 0;
                 toneSamples = tones.get(toneIndex).getSamples();
             }
         }
 
-        return new Track(sampleRate, outputSound);
+        return new Track(sampleRate, samples);
     }
 
     public Music generateMusic(List<Track> tracks) {
-        int lastSampleIndex = 0;
-        int trackIndex = 0;
-        int trackSampleIndex = 0;
+        Arrays.fill(samples, (double) 0);     // Initialize samples with zeros.
 
-        byte[] trackSamples = tracks.get(0).getSamples();
+        double[] trackSamples;
 
-        for (int i = lastSampleIndex; i < outputSound.length; ++i) {
-            outputSound[i] = trackSamples[trackSampleIndex++];
-            if (trackSampleIndex == trackSamples.length && ++trackIndex < tracks.size()) {
-                trackSampleIndex = 0;
-                trackSamples = tracks.get(trackIndex).getSamples();
+        for (Track track : tracks) {
+            trackSamples = track.getSamples();
+
+            for (int i = 0; i < samples.length; ++i) {
+                if (i < trackSamples.length)
+                    samples[i] += trackSamples[i];
+                else
+                    break;
             }
         }
+
+        compressToMasterVolume(95);     //compressing to higher values than 95 induces cracking sound
+        convertTo16BitPCM();
 
         return new Music(sampleRate, outputSound);
     }
