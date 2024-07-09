@@ -36,6 +36,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     private FragmentToneMixerBinding binding;
 
     private View.OnTouchListener mainTouchListener;
+    private View.OnDragListener trackToneDragListener;
     private View.OnLongClickListener toneWorkbenchLongClickListener;
     private View.OnLongClickListener toneTrackLongClickListener;
     private View.OnClickListener toneClickListener;
@@ -49,11 +50,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         viewModel = new ViewModelProvider(this).get(ToneMixerViewModel.class);
 
         setupScale();
-        setupDragAndDrop();
-        setupClickListeners();
+        setupListeners();
 
         setObservers();
-        setOnClickListeners();
+        setListeners();
 
         return binding.getRoot();
     }
@@ -86,48 +86,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         }
     }
 
-    private void setupDragAndDrop() {
-        View.OnDragListener dragListener = new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                switch (event.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        return true;
-                    case DragEvent.ACTION_DRAG_LOCATION:
-                        return true;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        return true;
-                    case DragEvent.ACTION_DROP:
-                        View draggedView = (View) event.getLocalState();
-                        ViewGroup owner = (ViewGroup) draggedView.getParent();
-                        owner.removeView(draggedView);
-
-                        ((LinearLayout) v).addView(draggedView);
-                        draggedView.setVisibility(View.VISIBLE);
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        if (!event.getResult()) {
-                            View droppedView = (View) event.getLocalState();
-                            droppedView.setVisibility(View.VISIBLE);
-                        }
-                        return true;
-                    default:
-                        break;
-                }
-                return false;
-            }
-        };
-
-        binding.toneMixerTrack1.setOnDragListener(dragListener);
-        binding.toneMixerTrack2.setOnDragListener(dragListener);
-        binding.toneMixerTrack3.setOnDragListener(dragListener);
-        binding.toneMixerTrack4.setOnDragListener(dragListener);
-        binding.toneMixerTrack5.setOnDragListener(dragListener);
-    }
-
-    private void setupClickListeners() {
+    private void setupListeners() {
         mainTouchListener = (v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 if (toneToRemove != null) {
@@ -135,6 +94,35 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     if (tag == null || Boolean.FALSE.equals(tag))
                         setToneStateToIrremovable();
                 }
+            }
+            return false;
+        };
+
+        trackToneDragListener = (v, event) -> {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return true;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    return true;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    View draggedView = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) draggedView.getParent();
+
+                    owner.removeView(draggedView);
+                    ((LinearLayout) v).addView(draggedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
+                    draggedView.setVisibility(View.VISIBLE);
+
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    View endedView = (View) event.getLocalState();
+                    endedView.setVisibility(View.VISIBLE);
+                    return true;
+                default:
+                    break;
             }
             return false;
         };
@@ -180,7 +168,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         });
     }
 
-    private void setOnClickListeners() {
+    private void setListeners() {
         binding.toneMixerMainLayout.setOnTouchListener(mainTouchListener);
 
         binding.toneMixerMusicScrollView.setOnTouchListener((v, event) -> {
@@ -192,6 +180,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             mainTouchListener.onTouch(v, event); // Return touch event to main layout
             return false;
         });
+
+        binding.toneMixerTrack1.setOnDragListener(trackToneDragListener);
+        binding.toneMixerTrack2.setOnDragListener(trackToneDragListener);
+        binding.toneMixerTrack3.setOnDragListener(trackToneDragListener);
+        binding.toneMixerTrack4.setOnDragListener(trackToneDragListener);
+        binding.toneMixerTrack5.setOnDragListener(trackToneDragListener);
 
         binding.toneMixerAddToneBtn.setOnClickListener(v -> {
             SelectToneToMixDialogFragment dialog = new SelectToneToMixDialogFragment(this);
@@ -314,16 +308,18 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     private int calculateDropIndex(LinearLayout parent, int dropX) {
         for (int i = 0; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
+
             int childLeft = child.getLeft();
             int childRight = child.getRight();
+
             if (dropX < childLeft + child.getWidth() / 2) {
-                return i;  // Umieść przed tym elementem
+                return i;                   // Drop item before child
             } else if (dropX > childRight - child.getWidth() / 2) {
-                continue;  // Sprawdź kolejny element
+                continue;                   // Check next child
             } else {
-                return i + 1;  // Umieść za tym elementem
+                return i + 1;               // Drop item after child
             }
         }
-        return parent.getChildCount();  // Umieść na końcu
+        return parent.getChildCount();      // Drop item at the end
     }
 }
