@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,9 +35,13 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     private ToneMixerViewModel viewModel;
     private FragmentToneMixerBinding binding;
 
+    private View.OnTouchListener mainTouchListener;
     private View.OnLongClickListener toneWorkbenchLongClickListener;
     private View.OnLongClickListener toneTrackLongClickListener;
     private View.OnClickListener toneClickListener;
+    private View.OnClickListener toneRemoveClickListener;
+
+    private View toneToRemove;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -122,6 +128,17 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private void setupClickListeners() {
+        mainTouchListener = (v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (toneToRemove != null) {
+                    Object tag = v.getTag(R.id.tag_to_remove);
+                    if (tag == null || Boolean.FALSE.equals(tag))
+                        setToneStateToIrremovable();
+                }
+            }
+            return false;
+        };
+
         toneWorkbenchLongClickListener = v -> {
             View trackTone = createTrackTone(v);
             trackTone.setOnClickListener(toneClickListener);
@@ -140,9 +157,17 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         };
 
         toneClickListener = v -> {
+            if (toneToRemove != null)
+                setToneStateToIrremovable();
+            setToneStateToRemovable(v);
+        };
+
+        toneRemoveClickListener = v -> {
             ViewGroup parent = (ViewGroup) v.getParent();
-            if (parent != null)
+            if (parent != null) {
+                toneToRemove = null;
                 parent.removeView(v);
+            }
         };
     }
 
@@ -156,6 +181,18 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private void setOnClickListeners() {
+        binding.toneMixerMainLayout.setOnTouchListener(mainTouchListener);
+
+        binding.toneMixerMusicScrollView.setOnTouchListener((v, event) -> {
+            mainTouchListener.onTouch(v, event); // Return touch event to main layout
+            return false;
+        });
+
+        binding.toneMixerWorkbenchScrollView.setOnTouchListener((v, event) -> {
+            mainTouchListener.onTouch(v, event); // Return touch event to main layout
+            return false;
+        });
+
         binding.toneMixerAddToneBtn.setOnClickListener(v -> {
             SelectToneToMixDialogFragment dialog = new SelectToneToMixDialogFragment(this);
             dialog.show(getParentFragmentManager(), "SelectToneToMixDialogFragment");
@@ -168,6 +205,29 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> {
             viewModel.playStopMusic();
         });
+    }
+
+    private void setToneStateToIrremovable() {
+        boolean trackTone = true;
+        LinearLayout parent = (LinearLayout) toneToRemove.getParent();
+        if (parent.getId() == R.id.tone_mixer_workbench)
+            trackTone = false;
+
+        ImageView deleteIcon = toneToRemove.findViewById(R.id.tone_mixer_tone_delete_icon);
+        deleteIcon.setVisibility(View.INVISIBLE);
+        toneToRemove.setBackgroundResource(trackTone ? R.drawable.background_track_tone : R.drawable.background_workbench_tone);
+        toneToRemove.setOnClickListener(toneClickListener);
+        toneToRemove.setTag(R.id.tag_to_remove, false);
+        toneToRemove = null;
+    }
+
+    private void setToneStateToRemovable(View tone) {
+        tone.setTag(R.id.tag_to_remove, true);
+        ImageView deleteIcon = tone.findViewById(R.id.tone_mixer_tone_delete_icon);
+        deleteIcon.setVisibility(View.VISIBLE);
+        tone.setBackgroundResource(R.drawable.background_mixer_tone_remove);
+        tone.setOnClickListener(toneRemoveClickListener);
+        toneToRemove = tone;
     }
 
     private MixerComponent getMixerComponent() {
@@ -221,7 +281,9 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                 (int) getResources().getDimension(R.dimen.tone_mixer_tone_workbench_margin_bottom)
         );
         workbenchTone.setLayoutParams(layoutParams);
-        workbenchTone.setTag(tone);
+
+        workbenchTone.setTag(R.id.tag_tone, tone);
+        workbenchTone.setTag(R.id.tag_to_remove, false);
 
         return workbenchTone;
     }
@@ -230,8 +292,9 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View trackTone = inflater.inflate(R.layout.tone_mixer_track_tone, binding.toneMixerTrack1, false);
 
-        Tone tone = (Tone) v.getTag();
-        trackTone.setTag(tone);
+        Tone tone = (Tone) v.getTag(R.id.tag_tone);
+        trackTone.setTag(R.id.tag_tone, tone);
+        trackTone.setTag(R.id.tag_to_remove, false);
 
         TextView mixerName = trackTone.findViewById(R.id.tone_mixer_track_tone_name);
         mixerName.setText(tone.getName());
