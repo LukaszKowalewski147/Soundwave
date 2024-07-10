@@ -11,16 +11,20 @@
     <color name="dark_gray">#202020</color>
 
     <!--    app color palette   -->
+    <color name="transparent">#00000000</color>
     <color name="app_yellow">#FFEA4A</color>
-    <color name="transparent_black">#33000000</color>
     <color name="tone_not_active">#80000000</color>
     <color name="header_separator">#67603B</color>
     <color name="delete_bin">#D9FF1F1F</color>
+    <color name="white20transparent">#33FFFFFF</color>
     <color name="white50transparent">#80FFFFFF</color>
+    <color name="black20transparent">#33000000</color>
     <color name="black50transparent">#80000000</color>
     <color name="green25transparent">#4026FF00</color>
     <color name="green50transparent">#8026FF00</color>
-    <color name="transparent">#00000000</color>
+    <color name="red50transparent">#80FF0000</color>
+    <color name="red10transparent">#1AFF0000</color>
+
 
     <!--    gradients   -->
     <color name="background_start">#4C006D</color>

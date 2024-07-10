@@ -40,6 +40,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
     private View.OnTouchListener mainTouchListener;
     private View.OnDragListener trackToneDragListener;
+    private View.OnDragListener trackToneRemoveDragListener;
     private View.OnLongClickListener toneWorkbenchLongClickListener;
     private View.OnLongClickListener toneTrackLongClickListener;
     private View.OnClickListener toneClickListener;
@@ -135,6 +136,43 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             return false;
         };
 
+        trackToneRemoveDragListener = (v, event) -> {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return true;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    int enteredColor = ContextCompat.getColor(requireContext(), R.color.delete_bin);
+                    binding.toneMixerRemoveTrackToneIcon.setColorFilter(enteredColor);
+                    binding.toneMixerRemoveTrackTone.setBackgroundResource(R.drawable.background_mixer_track_tone_remove_active);
+                    return true;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    int exitedColor = ContextCompat.getColor(requireContext(), R.color.gray);
+                    binding.toneMixerRemoveTrackToneIcon.setColorFilter(exitedColor);
+                    binding.toneMixerRemoveTrackTone.setBackgroundResource(R.drawable.background_mixer_track_tone_remove_inactive);
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    View draggedView = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) draggedView.getParent();
+
+                    if (owner != null)
+                        owner.removeView(draggedView);
+
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    binding.toneMixerRemoveTrackTone.setVisibility(View.GONE);
+                    int endedColor = ContextCompat.getColor(requireContext(), R.color.gray);
+                    binding.toneMixerRemoveTrackToneIcon.setColorFilter(endedColor);
+                    binding.toneMixerRemoveTrackTone.setBackgroundResource(R.drawable.background_mixer_track_tone_remove_inactive);
+                    binding.toneMixerRemoveTrackTone.setBackgroundResource(R.drawable.background_mixer_track_tone_remove_inactive);
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        };
+
         toneWorkbenchLongClickListener = v -> {
             View trackTone = createTrackTone(v);
 
@@ -143,7 +181,6 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(trackTone);
             v.startDragAndDrop(null, shadowBuilder, trackTone, 0);
 
-            trackTone.setOnClickListener(toneClickListener);
             trackTone.setOnLongClickListener(toneTrackLongClickListener);
 
             return true;
@@ -153,6 +190,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
             v.startDragAndDrop(null, shadowBuilder, v, 0);
             v.setVisibility(View.INVISIBLE);
+
+            binding.toneMixerRemoveTrackTone.setVisibility(View.VISIBLE);
 
             return true;
         };
@@ -199,6 +238,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         binding.toneMixerTrack3.setOnDragListener(trackToneDragListener);
         binding.toneMixerTrack4.setOnDragListener(trackToneDragListener);
         binding.toneMixerTrack5.setOnDragListener(trackToneDragListener);
+
+        binding.toneMixerRemoveTrackTone.setOnDragListener(trackToneRemoveDragListener);
 
         binding.toneMixerAddToneBtn.setOnClickListener(v -> {
             SelectToneToMixDialogFragment dialog = new SelectToneToMixDialogFragment(this);

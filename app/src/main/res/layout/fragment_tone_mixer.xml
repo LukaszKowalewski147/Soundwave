@@ -404,6 +404,32 @@
             app:layout_constraintStart_toEndOf="@id/tone_mixer_save_music_btn"
             app:layout_constraintTop_toTopOf="@id/tone_mixer_save_music_btn" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tone_mixer_remove_track_tone"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/background_mixer_track_tone_remove_inactive"
+            android:elevation="2dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header_underline">
+
+            <ImageView
+                android:id="@+id/tone_mixer_remove_track_tone_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:elevation="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/gray" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
