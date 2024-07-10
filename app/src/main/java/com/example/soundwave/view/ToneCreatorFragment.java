@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -415,6 +416,12 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         binding.toneCreatorOvertonesActivator.setOnCheckedChangeListener((buttonView, isChecked) -> {
             viewModel.updateOvertonesState(isChecked);
             if (isChecked) {
+                AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
+                fadeIn.setDuration(1000);
+
+                binding.toneCreatorOvertonesLayout.startAnimation(fadeIn);
+                binding.toneCreatorOvertonesPreset.startAnimation(fadeIn);
+
                 binding.toneCreatorOvertonesLayout.setVisibility(View.VISIBLE);
                 binding.toneCreatorOvertonesPreset.setVisibility(View.VISIBLE);
                 return;
