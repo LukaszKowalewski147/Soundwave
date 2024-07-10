@@ -110,20 +110,38 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     getDragOnTrackAnimation((LinearLayout) v, true).start();
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
+                    View draggedView = (View) event.getLocalState();
+
+                    int middleX = (int) event.getX();
+                    int width = draggedView.getWidth();
+
+                    int localLeft = (int) Math.round(middleX - width/2.0d);
+                    int localRight = localLeft + width;
+
+                    if (!isToneDroppable((LinearLayout) v, localLeft, localRight)) {
+                        // TODO: animate layout in red
+                    }
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
                     getDragOnTrackAnimation((LinearLayout) v, false).start();
                     return true;
                 case DragEvent.ACTION_DROP:
-                    View draggedView = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) draggedView.getParent();
+                    View droppedView = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) droppedView.getParent();
 
-                    if (owner != null)
-                        owner.removeView(draggedView);
+                    middleX = (int) event.getX();
+                    width = droppedView.getWidth();
 
-                    ((LinearLayout) v).addView(draggedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
-                    draggedView.setVisibility(View.VISIBLE);
+                    localLeft = (int) Math.round(middleX - width/2.0d);
+                    localRight = localLeft + width;
 
+                    if (isToneDroppable((LinearLayout) v, localLeft, localRight)) {
+                        if (owner != null)
+                            owner.removeView(droppedView);
+
+                        ((LinearLayout) v).addView(droppedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
+                        droppedView.setVisibility(View.VISIBLE);
+                    }
                     getDragOnTrackAnimation((LinearLayout) v, false).start();
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
