@@ -1,7 +1,10 @@
 package com.example.soundwave.view;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -103,12 +106,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                 case DragEvent.ACTION_DRAG_STARTED:
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    v.setBackgroundResource(R.color.green50transparent);
+                    getDragOnTrackAnimation((LinearLayout) v, true).start();
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    v.setBackgroundResource(R.color.transparent);
+                    getDragOnTrackAnimation((LinearLayout) v, false).start();
                     return true;
                 case DragEvent.ACTION_DROP:
                     View draggedView = (View) event.getLocalState();
@@ -116,15 +119,15 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
                     if (owner != null)
                         owner.removeView(draggedView);
+
                     ((LinearLayout) v).addView(draggedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
                     draggedView.setVisibility(View.VISIBLE);
-                    v.setBackgroundResource(R.color.transparent);
 
+                    getDragOnTrackAnimation((LinearLayout) v, false).start();
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     View endedView = (View) event.getLocalState();
                     endedView.setVisibility(View.VISIBLE);
-                    v.setBackgroundResource(R.color.transparent);
                     return true;
                 default:
                     break;
@@ -134,6 +137,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
         toneWorkbenchLongClickListener = v -> {
             View trackTone = createTrackTone(v);
+
+            getDragWorkbenchToneAnimation().start();
 
             View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(trackTone);
             v.startDragAndDrop(null, shadowBuilder, trackTone, 0);
@@ -337,5 +342,44 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             }
         }
         return parent.getChildCount();      // Drop item at the end
+    }
+
+    private ValueAnimator getDragWorkbenchToneAnimation() {
+        int colorFrom = ContextCompat.getColor(requireContext(), R.color.green25transparent);
+        int colorTo = ContextCompat.getColor(requireContext(), R.color.transparent);
+
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(500);
+
+        colorAnimation.addUpdateListener(animator -> {
+            int animatedValue = (int) animator.getAnimatedValue();
+            binding.toneMixerTrack1.setBackgroundColor(animatedValue);
+            binding.toneMixerTrack2.setBackgroundColor(animatedValue);
+            binding.toneMixerTrack3.setBackgroundColor(animatedValue);
+            binding.toneMixerTrack4.setBackgroundColor(animatedValue);
+            binding.toneMixerTrack5.setBackgroundColor(animatedValue);
+        });
+
+        return colorAnimation;
+    }
+
+    private ValueAnimator getDragOnTrackAnimation(LinearLayout track, boolean intoTrack) {
+        int colorFrom = ContextCompat.getColor(requireContext(), R.color.green50transparent);
+        int colorTo = ContextCompat.getColor(requireContext(), R.color.transparent);
+
+        if (intoTrack) {
+            colorFrom = ContextCompat.getColor(requireContext(), R.color.transparent);
+            colorTo = ContextCompat.getColor(requireContext(), R.color.green50transparent);
+        }
+
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(200);
+
+        colorAnimation.addUpdateListener(animator -> {
+            int animatedValue = (int) animator.getAnimatedValue();
+            track.setBackgroundColor(animatedValue);
+        });
+
+        return colorAnimation;
     }
 }

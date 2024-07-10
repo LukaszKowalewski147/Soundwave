@@ -49,13 +49,14 @@
                 android:id="@+id/tone_mixer_track1"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
-                android:layout_marginStart="8dp"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:minWidth="500dp"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sep1">
+                app:layout_constraintTop_toBottomOf="@id/sep1"
+                tools:ignore="RtlSymmetry">
 
             </LinearLayout>
 
@@ -85,13 +86,14 @@
                 android:id="@+id/tone_mixer_track2"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
-                android:layout_marginStart="8dp"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:minWidth="500dp"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sep2">
+                app:layout_constraintTop_toBottomOf="@id/sep2"
+                tools:ignore="RtlSymmetry">
 
             </LinearLayout>
 
@@ -121,13 +123,14 @@
                 android:id="@+id/tone_mixer_track3"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
-                android:layout_marginStart="8dp"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:minWidth="500dp"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sep3">
+                app:layout_constraintTop_toBottomOf="@id/sep3"
+                tools:ignore="RtlSymmetry">
 
             </LinearLayout>
 
@@ -157,13 +160,14 @@
                 android:id="@+id/tone_mixer_track4"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
-                android:layout_marginStart="8dp"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:minWidth="500dp"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sep4">
+                app:layout_constraintTop_toBottomOf="@id/sep4"
+                tools:ignore="RtlSymmetry">
 
             </LinearLayout>
 
@@ -193,13 +197,14 @@
                 android:id="@+id/tone_mixer_track5"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/tone_mixer_track_height"
-                android:layout_marginStart="8dp"
                 android:elevation="1dp"
                 android:gravity="center_vertical"
                 android:minWidth="500dp"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sep5">
+                app:layout_constraintTop_toBottomOf="@id/sep5"
+                tools:ignore="RtlSymmetry">
 
             </LinearLayout>
 
