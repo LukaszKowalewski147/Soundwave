@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="tone_mixer_tone_width">100dp</dimen>
-    <dimen name="tone_mixer_track_height">60dp</dimen>
+    <dimen name="tone_mixer_track_height">62dp</dimen>
     <dimen name="tone_mixer_workbench_height">100dp</dimen>
     <dimen name="tone_mixer_track_tone_height">58dp</dimen>
     <dimen name="tone_mixer_workbench_tone_height">92dp</dimen>

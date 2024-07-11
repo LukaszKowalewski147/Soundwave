@@ -4,4 +4,5 @@
     <item name="tag_tone_to_remove" type="id" />
     <item name="tag_silence_tone" type="id" />
     <item name="tag_track_droppable" type="id" />
+    <item name="tag_track_number" type="id" />
 </resources>
