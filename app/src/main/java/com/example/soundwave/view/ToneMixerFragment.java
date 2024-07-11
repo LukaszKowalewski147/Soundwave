@@ -2,6 +2,8 @@ package com.example.soundwave.view;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -54,6 +56,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         viewModel = new ViewModelProvider(this).get(ToneMixerViewModel.class);
 
         setupScale();
+        setupTracks();
         setupListeners();
 
         setObservers();
@@ -90,11 +93,19 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         }
     }
 
+    private void setupTracks() {
+        binding.toneMixerTrack1.setTag(R.id.tag_track_droppable, true);
+        binding.toneMixerTrack2.setTag(R.id.tag_track_droppable, true);
+        binding.toneMixerTrack3.setTag(R.id.tag_track_droppable, true);
+        binding.toneMixerTrack4.setTag(R.id.tag_track_droppable, true);
+        binding.toneMixerTrack5.setTag(R.id.tag_track_droppable, true);
+    }
+
     private void setupListeners() {
         mainTouchListener = (v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 if (toneToRemove != null) {
-                    Object tag = v.getTag(R.id.tag_to_remove);
+                    Object tag = v.getTag(R.id.tag_tone_to_remove);
                     if (tag == null || Boolean.FALSE.equals(tag))
                         setToneStateToIrremovable();
                 }
@@ -107,9 +118,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                 case DragEvent.ACTION_DRAG_STARTED:
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    getDragOnTrackAnimation((LinearLayout) v, true).start();
+                    getDragInOutTrackAnimation((LinearLayout) v, true).start();
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
+                    LinearLayout track = (LinearLayout) v;
                     View draggedView = (View) event.getLocalState();
 
                     int middleX = (int) event.getX();
@@ -118,31 +130,40 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     int localLeft = (int) Math.round(middleX - width/2.0d);
                     int localRight = localLeft + width;
 
-                    if (!isToneDroppable((LinearLayout) v, localLeft, localRight)) {
-                        // TODO: animate layout in red
-                    }
+                    boolean toneDroppable = isToneDroppable(draggedView, track, localLeft, localRight);
+                    track.setTag(R.id.tag_track_droppable, toneDroppable);
+
+                    Drawable background = track.getBackground();
+                    int colorFrom = ((ColorDrawable) background).getColor();
+                    int colorTo = toneDroppable ? ContextCompat.getColor(requireContext(), R.color.green50transparent)
+                            : ContextCompat.getColor(requireContext(), R.color.red50transparent);
+
+                    if (colorFrom != colorTo)
+                        track.setBackgroundColor(colorTo);
+
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    getDragOnTrackAnimation((LinearLayout) v, false).start();
+                    getDragInOutTrackAnimation((LinearLayout) v, false).start();
                     return true;
                 case DragEvent.ACTION_DROP:
-                    View droppedView = (View) event.getLocalState();
-                    ViewGroup owner = (ViewGroup) droppedView.getParent();
+                    track = (LinearLayout) v;
+                    draggedView = (View) event.getLocalState();
+                    ViewGroup owner = (ViewGroup) draggedView.getParent();
 
                     middleX = (int) event.getX();
-                    width = droppedView.getWidth();
+                    width = draggedView.getWidth();
 
                     localLeft = (int) Math.round(middleX - width/2.0d);
                     localRight = localLeft + width;
 
-                    if (isToneDroppable((LinearLayout) v, localLeft, localRight)) {
+                    if (isToneDroppable(draggedView, track, localLeft, localRight)) {
                         if (owner != null)
-                            owner.removeView(droppedView);
+                            owner.removeView(draggedView);
 
-                        ((LinearLayout) v).addView(droppedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
-                        droppedView.setVisibility(View.VISIBLE);
+                        track.addView(draggedView, calculateDropIndex((LinearLayout) v, (int) event.getX()));
+                        draggedView.setVisibility(View.VISIBLE);
                     }
-                    getDragOnTrackAnimation((LinearLayout) v, false).start();
+                    getDragInOutTrackAnimation((LinearLayout) v, false).start();
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     View endedView = (View) event.getLocalState();
@@ -283,12 +304,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         deleteIcon.setVisibility(View.INVISIBLE);
         toneToRemove.setBackgroundResource(trackTone ? R.drawable.background_track_tone : R.drawable.background_workbench_tone);
         toneToRemove.setOnClickListener(toneClickListener);
-        toneToRemove.setTag(R.id.tag_to_remove, false);
+        toneToRemove.setTag(R.id.tag_tone_to_remove, false);
         toneToRemove = null;
     }
 
     private void setToneStateToRemovable(View tone) {
-        tone.setTag(R.id.tag_to_remove, true);
+        tone.setTag(R.id.tag_tone_to_remove, true);
         ImageView deleteIcon = tone.findViewById(R.id.tone_mixer_tone_delete_icon);
         deleteIcon.setVisibility(View.VISIBLE);
         tone.setBackgroundResource(R.drawable.background_mixer_tone_remove);
@@ -349,7 +370,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         workbenchTone.setLayoutParams(layoutParams);
 
         workbenchTone.setTag(R.id.tag_tone, tone);
-        workbenchTone.setTag(R.id.tag_to_remove, false);
+        workbenchTone.setTag(R.id.tag_tone_to_remove, false);
+        workbenchTone.setTag(R.id.tag_silence_tone, false);
 
         return workbenchTone;
     }
@@ -360,7 +382,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
         Tone tone = (Tone) v.getTag(R.id.tag_tone);
         trackTone.setTag(R.id.tag_tone, tone);
-        trackTone.setTag(R.id.tag_to_remove, false);
+        trackTone.setTag(R.id.tag_tone_to_remove, false);
+        trackTone.setTag(R.id.tag_silence_tone, false);
 
         TextView mixerName = trackTone.findViewById(R.id.tone_mixer_track_tone_name);
         mixerName.setText(tone.getName());
@@ -383,6 +406,27 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         trackTone.setVisibility(View.INVISIBLE);
 
         return trackTone;
+    }
+
+    private boolean isToneDroppable(View draggedView, LinearLayout parentLayout, int leftEdge, int rightEdge) {
+        for (int i = 0; i < parentLayout.getChildCount(); i++) {
+            View child = parentLayout.getChildAt(i);
+
+            Object tag = child.getTag(R.id.tag_silence_tone);
+            if (tag == null || Boolean.TRUE.equals(tag))    //  Check if child is silence tone
+                continue;
+
+            if (draggedView.equals(child))
+                continue;
+
+            int childLeft = child.getLeft();
+            int childRight = child.getRight();
+
+            if (childRight >= leftEdge && childLeft <= rightEdge) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private int calculateDropIndex(LinearLayout parent, int dropX) {
@@ -422,17 +466,35 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return colorAnimation;
     }
 
-    private ValueAnimator getDragOnTrackAnimation(LinearLayout track, boolean intoTrack) {
-        int colorFrom = ContextCompat.getColor(requireContext(), R.color.green50transparent);
-        int colorTo = ContextCompat.getColor(requireContext(), R.color.transparent);
+    private ValueAnimator getDragInOutTrackAnimation(LinearLayout track, boolean intoTrack) {
+        boolean droppable = true;
+        int duration = 10;
+        int colorFrom;
+        int colorTo;
 
-        if (intoTrack) {
+        Object tag = track.getTag(R.id.tag_track_droppable);
+        if (tag != null)
+            droppable = (boolean) tag;
+
+        if (intoTrack && droppable) {   // when a tone was dragged on the track and is droppable on it
             colorFrom = ContextCompat.getColor(requireContext(), R.color.transparent);
             colorTo = ContextCompat.getColor(requireContext(), R.color.green50transparent);
         }
 
+        else if (intoTrack) {   // when a tone was dragged on the track and is not droppable on it
+            colorFrom = ContextCompat.getColor(requireContext(), R.color.transparent);
+            colorTo = ContextCompat.getColor(requireContext(), R.color.red50transparent);
+        }
+
+        else {  // when a tone was dragged off the track
+            Drawable background = track.getBackground();
+            colorFrom = ((ColorDrawable) background).getColor();
+            colorTo = ContextCompat.getColor(requireContext(), R.color.transparent);
+            duration = 300;
+        }
+
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(200);
+        colorAnimation.setDuration(duration);
 
         colorAnimation.addUpdateListener(animator -> {
             int animatedValue = (int) animator.getAnimatedValue();

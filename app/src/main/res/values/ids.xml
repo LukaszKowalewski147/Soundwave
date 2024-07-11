@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="tag_tone" type="id" />
-    <item name="tag_to_remove" type="id" />
+    <item name="tag_tone_to_remove" type="id" />
+    <item name="tag_silence_tone" type="id" />
+    <item name="tag_track_droppable" type="id" />
 </resources>
