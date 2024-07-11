@@ -88,9 +88,9 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         for (int i = 0; i <= totalLabels; i++) {
             TextView label = new TextView(requireContext());
             label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12.0f);
-            label.setText(String.format(Locale.US, "|%.1fs", i/2.0f));   // i/2.0f = 0.5s every Config.TONE_MIXER_SCALE_LABEL_WIDTH_DP.value
+            label.setText(String.format(Locale.US, "|%.1fs", i/2.0f));   // i/2.0f = 0.5s every R.dimen.tone_mixer_scale_label_width
 
-            int width = UnitsConverter.dpToPx(Config.TONE_MIXER_SCALE_LABEL_WIDTH_DP.value);
+            int width = getResources().getDimensionPixelSize(R.dimen.tone_mixer_scale_label_width);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     width, ViewGroup.LayoutParams.WRAP_CONTENT
             );
@@ -405,8 +405,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         TextView mixerName = trackTone.findViewById(R.id.tone_mixer_track_tone_name);
         mixerName.setText(tone.getName());
 
-        int widthInDp = (int) Math.round(2 * Config.TONE_MIXER_SCALE_LABEL_WIDTH_DP.value * tone.getDurationInSeconds());
-        int widthInPx = UnitsConverter.dpToPx(widthInDp);
+        int oneSecondWidthPixels = 2 * getResources().getDimensionPixelSize(R.dimen.tone_mixer_scale_label_width);    // 1 scale_label_width = 0.5s
+        int widthInPx = (int) Math.round(oneSecondWidthPixels * tone.getDurationInSeconds());
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 widthInPx,
@@ -429,7 +429,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         View tone = (View) event.getLocalState();
         int middleX = (int) event.getX();
         int width = tone.getWidth();
-        int leftEdge = (int) Math.round(middleX - width/2.0d);
+        int leftEdge = (int) Math.round(middleX - width / 2.0d);
         int rightEdge = leftEdge + width;
 
         for (int i = 0; i < track.getChildCount(); i++) {
