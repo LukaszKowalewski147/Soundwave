@@ -1,6 +1,7 @@
 package com.example.soundwave.viewmodel;
 
 import android.app.Application;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -20,6 +21,7 @@ import com.example.soundwave.utils.AudioPlayer;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.ToneGenerator;
 import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.utils.TrackToneShadow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,5 +165,94 @@ public class ToneMixerViewModel extends AndroidViewModel {
                 tones.add((Tone)tag);
         }
         return tones;
+    }
+
+    public boolean isToneDroppable(DragEvent event, LinearLayout track) {
+        View tone = (View) event.getLocalState();
+        int middleX = (int) event.getX();
+        int width = tone.getWidth();
+        int leftEdge = (int) Math.round(middleX - width / 2.0d);
+        int rightEdge = leftEdge + width;
+
+        for (int i = 0; i < track.getChildCount(); i++) {
+            View child = track.getChildAt(i);
+
+            Object tag = child.getTag(R.id.tag_silence_tone);
+            if (tag == null || Boolean.TRUE.equals(tag))    //  Check if child is silence tone
+                continue;
+
+            if (tone.equals(child))
+                continue;
+
+            int childLeft = child.getLeft();
+            int childRight = child.getRight();
+
+            if (childRight >= leftEdge && childLeft <= rightEdge) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int[] getToneWithSilenceWidth(TrackToneShadow toneShadow, LinearLayout track) {
+        if (isToneOnTheRight(toneShadow, track))
+            return getToneWithSilenceAroundParameters(toneShadow, track);
+        else
+            return getToneWithSilenceBeforeParameters(toneShadow, track);
+    }
+
+    public boolean isToneOnTheRight(TrackToneShadow toneShadow, LinearLayout track) {
+        if (track.getChildCount() == 0)
+            return false;
+
+        View child = track.getChildAt(track.getChildCount() - 1);
+        return child.getLeft() > toneShadow.getRightEdge();
+    }
+
+    public View getOldSilenceTone(TrackToneShadow toneShadow, LinearLayout track) {
+        for (int i = 0; i < track.getChildCount(); i++) {
+            View child = track.getChildAt(i);
+            int childLeft = child.getLeft();
+            int childRight = child.getRight();
+
+            if (childLeft <= toneShadow.getLeftEdge() && childRight >= toneShadow.getRightEdge())
+                return child;
+        }
+        return null;
+    }
+
+    private int[] getToneWithSilenceAroundParameters(TrackToneShadow toneShadow, LinearLayout track) {
+        View oldSilenceUnderTone = getOldSilenceTone(toneShadow, track);
+        int oldSilenceUnderToneIndex = track.indexOfChild(oldSilenceUnderTone);
+        int oldSilenceUnderToneWidth = track.getChildAt(oldSilenceUnderToneIndex).getWidth();
+        int oldSilenceUnderToneLeftEdge = track.getChildAt(oldSilenceUnderToneIndex).getLeft();
+        int beforeSilenceWidth = toneShadow.getLeftEdge() - oldSilenceUnderToneLeftEdge;
+        int afterSilenceWidth = oldSilenceUnderToneWidth - toneShadow.getWidth() - beforeSilenceWidth;
+
+        return new int[] {oldSilenceUnderToneIndex, beforeSilenceWidth, afterSilenceWidth};
+    }
+
+    private int[] getToneWithSilenceBeforeParameters(TrackToneShadow toneShadow, LinearLayout track) {
+        int dropIndex = track.getChildCount();
+        int rightEdgeOfLeftChild = findNearestLeftChildRightEdge(toneShadow, track);
+        int beforeSilenceWidth = toneShadow.getLeftEdge() - rightEdgeOfLeftChild;
+
+        return new int[] {dropIndex, beforeSilenceWidth, 0};
+    }
+
+    private int findNearestLeftChildRightEdge(TrackToneShadow toneShadow, LinearLayout track) {
+        int rightEdgeOfLeftChild = toneShadow.getTrackPaddingStart();
+        int leftEdge = toneShadow.getLeftEdge();
+
+        for (int i = 0; i < track.getChildCount(); i++) {
+            View child = track.getChildAt(i);
+            int childRightEdge = child.getRight();
+            if (childRightEdge < leftEdge) {
+                rightEdgeOfLeftChild = childRightEdge;
+                continue;
+            }
+            break;
+        }
+        return rightEdgeOfLeftChild;
     }
 }

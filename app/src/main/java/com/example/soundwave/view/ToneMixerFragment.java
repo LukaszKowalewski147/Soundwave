@@ -135,7 +135,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     if (owner != null) {
                         track = (LinearLayout) v;
                         if (track == owner) {
-                            toneDroppable = isToneDroppable(event, track);
+                            toneDroppable = viewModel.isToneDroppable(event, track);
                             track.setTag(R.id.tag_track_droppable, toneDroppable);
                         }
                     }
@@ -153,7 +153,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                 case DragEvent.ACTION_DRAG_LOCATION:
                     track = (LinearLayout) v;
 
-                    toneDroppable = isToneDroppable(event, track);
+                    toneDroppable = viewModel.isToneDroppable(event, track);
                     track.setTag(R.id.tag_track_droppable, toneDroppable);
 
                     Drawable background = track.getBackground();
@@ -384,125 +384,6 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return workbenchTone;
     }
 
-    private void addToneToTrack(DragEvent event, LinearLayout track) {
-        View draggedView = (View) event.getLocalState();
-        ViewGroup owner = (ViewGroup) draggedView.getParent();
-
-        if (isToneDroppable(event, track)) {
-            if (owner != null)
-                owner.removeView(draggedView);
-
-            int dropIndex = manageSilenceTones(event, track);
-            track.addView(draggedView, dropIndex);
-            draggedView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private int manageSilenceTones(DragEvent event, LinearLayout track) {
-        View tone = (View) event.getLocalState();
-        int middleX = (int) event.getX();
-        int width = tone.getWidth();
-        int leftEdge = (int) Math.round(middleX - width / 2.0d);
-        if (leftEdge < 0)
-            leftEdge = 0;
-        int rightEdge = leftEdge + width;
-
-        TrackToneShadow toneShadow = new TrackToneShadow(leftEdge, rightEdge);
-        int dropIndex = calculateDropIndex(track, middleX);
-
-        boolean isToneOnTheRight = isToneOnTheRight(toneShadow, track);
-        if (isToneOnTheRight) {
-            remakeSilenceUnderTone(toneShadow, track, middleX);
-        }
-        if (addSilenceOnTheLeft(toneShadow, track, dropIndex))
-            ++dropIndex;
-
-        return dropIndex;
-    }
-
-
-    private void remakeSilenceUnderTone(TrackToneShadow toneShadow, LinearLayout track, int middleX) {
-        int silenceUnderToneIndex = getSilenceUnderToneIndex(track, middleX);
-        View silenceUnderTone = track.getChildAt(silenceUnderToneIndex);
-        int silenceUnderToneRightEdge = silenceUnderTone.getRight();
-        int silenceToAddOnTheRightWidth = silenceUnderToneRightEdge - toneShadow.getRightEdge();
-
-        track.removeView(silenceUnderTone);
-        if (silenceToAddOnTheRightWidth > 1) {
-            View silenceToAddOnTheRight = createSilenceTone(silenceToAddOnTheRightWidth - 1);
-            track.addView(silenceToAddOnTheRight, silenceUnderToneIndex);
-        }
-    }
-
-    private int getSilenceUnderToneIndex(LinearLayout track, int dropX) {
-        for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
-            int childRight = child.getRight();
-
-            if (childRight > dropX)
-                return i;
-        }
-        return track.getChildCount();
-    }
-
-    private boolean isToneOnTheRight(TrackToneShadow toneShadow, LinearLayout track) {
-        if (track.getChildCount() == 0)
-            return false;
-
-        View child = track.getChildAt(track.getChildCount() - 1);
-        return child.getLeft() > toneShadow.getRightEdge();
-    }
-
-    private int findNearestLeftChildRightEdge(TrackToneShadow toneShadow, LinearLayout track) {
-        int rightEdgeOfLeftChild = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
-        int leftEdge = toneShadow.getLeftEdge();
-
-        for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
-            int childRightEdge = child.getRight();
-            if (childRightEdge < leftEdge) {
-                rightEdgeOfLeftChild = childRightEdge;
-                continue;
-            }
-            break;
-        }
-        return rightEdgeOfLeftChild;
-    }
-
-    private boolean addSilenceOnTheLeft(TrackToneShadow toneShadow, LinearLayout track, int toneDropIndex) {
-        boolean added = false;
-        int trackPaddingStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
-        if (toneShadow.getLeftEdge() > trackPaddingStart) {
-            int rightEdgeOfLeftChild = findNearestLeftChildRightEdge(toneShadow, track);
-            int silenceWidth = toneShadow.getLeftEdge() - rightEdgeOfLeftChild;
-            if (silenceWidth > 1) {
-                View silence = createSilenceTone(silenceWidth - 1);
-                track.addView(silence, toneDropIndex);
-                added = true;
-            }
-        }
-        return added;
-    }
-
-    private View createSilenceTone(int widthInPx) {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View silenceTone = inflater.inflate(R.layout.tone_mixer_track_tone, binding.toneMixerTrack1, false);
-
-        silenceTone.setTag(R.id.tag_tone, null);
-        silenceTone.setTag(R.id.tag_tone_to_remove, false);
-        silenceTone.setTag(R.id.tag_silence_tone, true);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                widthInPx,
-                (int) getResources().getDimension(R.dimen.tone_mixer_track_tone_height)
-        );
-        silenceTone.setLayoutParams(layoutParams);
-
-        //silenceTone.setVisibility(View.INVISIBLE);
-
-        return silenceTone;
-    }
-
     private View createTrackTone(View v) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View trackTone = inflater.inflate(R.layout.tone_mixer_track_tone, binding.toneMixerTrack1, false);
@@ -535,49 +416,59 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return trackTone;
     }
 
-    private boolean isToneDroppable(DragEvent event, LinearLayout track) {
-        View tone = (View) event.getLocalState();
-        int middleX = (int) event.getX();
-        int width = tone.getWidth();
-        int leftEdge = (int) Math.round(middleX - width / 2.0d);
-        int rightEdge = leftEdge + width;
+    private View createSilenceTone(int widthInPx) {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View silenceTone = inflater.inflate(R.layout.tone_mixer_track_tone, binding.toneMixerTrack1, false);
 
-        for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
+        silenceTone.setTag(R.id.tag_tone, null);
+        silenceTone.setTag(R.id.tag_tone_to_remove, false);
+        silenceTone.setTag(R.id.tag_silence_tone, true);
 
-            Object tag = child.getTag(R.id.tag_silence_tone);
-            if (tag == null || Boolean.TRUE.equals(tag))    //  Check if child is silence tone
-                continue;
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                widthInPx,
+                (int) getResources().getDimension(R.dimen.tone_mixer_track_tone_height)
+        );
+        silenceTone.setLayoutParams(layoutParams);
 
-            if (tone.equals(child))
-                continue;
+        silenceTone.setVisibility(View.INVISIBLE);
 
-            int childLeft = child.getLeft();
-            int childRight = child.getRight();
-
-            if (childRight >= leftEdge && childLeft <= rightEdge) {
-                return false;
-            }
-        }
-        return true;
+        return silenceTone;
     }
 
-    private int calculateDropIndex(LinearLayout track, int dropX) {
-        for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
+    private void addToneToTrack(DragEvent event, LinearLayout track) {
+        View draggedView = (View) event.getLocalState();
+        ViewGroup owner = (ViewGroup) draggedView.getParent();
 
-            int childLeft = child.getLeft();
-            int childRight = child.getRight();
+        if (viewModel.isToneDroppable(event, track)) {
+            if (owner != null)
+                owner.removeView(draggedView);
 
-            if (dropX < childLeft + child.getWidth() / 2) {
-                return i;                   // Drop item before child
-            } else if (dropX > childRight - child.getWidth() / 2) {
-                continue;                   // Check next child
-            } else {
-                return i + 1;               // Drop item after child
+            int trackPaddingStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
+            TrackToneShadow toneShadow = new TrackToneShadow(event, trackPaddingStart);
+
+            int[] toneWithSilenceParameters = viewModel.getToneWithSilenceWidth(toneShadow, track);
+
+            int toneDropIndex = toneWithSilenceParameters[0];
+            int beforeSilenceWidth = toneWithSilenceParameters[1];
+            int afterSilenceWidth = toneWithSilenceParameters[2];
+
+            if (viewModel.isToneOnTheRight(toneShadow, track))
+                track.removeView(viewModel.getOldSilenceTone(toneShadow, track));
+
+            if (beforeSilenceWidth > 0) {
+                View silenceBefore = createSilenceTone(beforeSilenceWidth);
+                track.addView(silenceBefore, toneDropIndex++);
             }
+
+            track.addView(toneShadow.getView(), toneDropIndex++);
+
+            if (afterSilenceWidth > 0) {
+                View silenceAfter = createSilenceTone(afterSilenceWidth);
+                track.addView(silenceAfter, toneDropIndex);
+            }
+
+            draggedView.setVisibility(View.VISIBLE);
         }
-        return track.getChildCount();      // Drop item at the end
     }
 
     private ValueAnimator getDragWorkbenchToneAnimation() {
