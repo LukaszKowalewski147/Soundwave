@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setDisplayDensity();
+        setTrackPaddingStart();
         setFilepathToDownload();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -111,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setDisplayDensity() {
         Options.displayDensity = getResources().getDisplayMetrics().density;
+    }
+
+    private void setTrackPaddingStart() {
+        Options.trackPaddingStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
     }
 
     private void manageVisibilityOfTopMenu(boolean visible) {

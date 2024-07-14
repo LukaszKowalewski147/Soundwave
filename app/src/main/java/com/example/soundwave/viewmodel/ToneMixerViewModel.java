@@ -18,6 +18,7 @@ import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.Track;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.AudioPlayer;
+import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.ToneGenerator;
 import com.example.soundwave.utils.ToneParser;
@@ -174,6 +175,9 @@ public class ToneMixerViewModel extends AndroidViewModel {
         int leftEdge = (int) Math.round(middleX - width / 2.0d);
         int rightEdge = leftEdge + width;
 
+        if (leftEdge < Options.trackPaddingStart)
+            return false;
+
         for (int i = 0; i < track.getChildCount(); i++) {
             View child = track.getChildAt(i);
 
@@ -241,7 +245,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
     }
 
     private int findNearestLeftChildRightEdge(TrackToneShadow toneShadow, LinearLayout track) {
-        int rightEdgeOfLeftChild = toneShadow.getTrackPaddingStart();
+        int rightEdgeOfLeftChild = Options.trackPaddingStart;
         int leftEdge = toneShadow.getLeftEdge();
 
         for (int i = 0; i < track.getChildCount(); i++) {

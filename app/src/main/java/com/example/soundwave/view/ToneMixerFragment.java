@@ -443,8 +443,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             if (owner != null)
                 owner.removeView(draggedView);
 
-            int trackPaddingStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
-            TrackToneShadow toneShadow = new TrackToneShadow(event, trackPaddingStart);
+            TrackToneShadow toneShadow = new TrackToneShadow(event);
 
             int[] toneWithSilenceParameters = viewModel.getToneWithSilenceWidth(toneShadow, track);
 

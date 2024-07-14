@@ -31,4 +31,5 @@ public class Options {
     public static volatile ButtonLongPressState buttonDecrementFrequencyState = ButtonLongPressState.RELEASED;
     public static volatile String filepathToDownload = "";
     public static volatile float displayDensity;
+    public static volatile int trackPaddingStart = 0;
 }
