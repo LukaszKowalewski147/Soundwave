@@ -6,9 +6,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.TypedValue;
@@ -23,15 +23,17 @@ import android.widget.TextView;
 
 import com.example.soundwave.R;
 import com.example.soundwave.components.MixerComponent;
-import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
 import com.example.soundwave.databinding.FragmentToneMixerBinding;
-import com.example.soundwave.utils.TrackToneShadow;
+import com.example.soundwave.utils.Options;
+import com.example.soundwave.utils.TrackData;
+import com.example.soundwave.utils.TrackToneData;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneMixerViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,16 +50,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     private View.OnClickListener toneClickListener;
     private View.OnClickListener toneRemoveClickListener;
 
-    private ValueAnimator track1animator;
-    private ValueAnimator track2animator;
-    private ValueAnimator track3animator;
-    private ValueAnimator track4animator;
-    private ValueAnimator track5animator;
-
     private View toneToRemove;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentToneMixerBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(ToneMixerViewModel.class);
 
@@ -87,8 +83,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
         for (int i = 0; i <= totalLabels; i++) {
             TextView label = new TextView(requireContext());
-            label.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12.0f);
-            label.setText(String.format(Locale.US, "|%.1fs", i/2.0f));   // i/2.0f = 0.5s every R.dimen.tone_mixer_scale_label_width
+            label.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12.0f);
+            label.setText(String.format(Locale.US, "|%.1fs", i / 2.0f));   // i/2.0f = 0.5s every R.dimen.tone_mixer_scale_label_width
 
             int width = getResources().getDimensionPixelSize(R.dimen.tone_mixer_scale_label_width);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -135,7 +131,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     if (owner != null) {
                         track = (LinearLayout) v;
                         if (track == owner) {
-                            toneDroppable = viewModel.isToneDroppable(event, track);
+                            toneDroppable = isToneDroppable(event, track);
                             track.setTag(R.id.tag_track_droppable, toneDroppable);
                         }
                     }
@@ -146,14 +142,14 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     int color = droppable ? ContextCompat.getColor(requireContext(), R.color.green50transparent)
                             : ContextCompat.getColor(requireContext(), R.color.red50transparent);
 
-                    stopPreviousTrackAnimation(track);
+                    viewModel.stopPreviousTrackAnimation((int) track.getTag(R.id.tag_track_number));
                     track.setBackgroundColor(color);
 
                     return true;
                 case DragEvent.ACTION_DRAG_LOCATION:
                     track = (LinearLayout) v;
 
-                    toneDroppable = viewModel.isToneDroppable(event, track);
+                    toneDroppable = isToneDroppable(event, track);
                     track.setTag(R.id.tag_track_droppable, toneDroppable);
 
                     Drawable background = track.getBackground();
@@ -186,13 +182,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         trackToneRemoveDragListener = (v, event) -> {
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
+                case DragEvent.ACTION_DRAG_LOCATION:
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     int enteredColor = ContextCompat.getColor(requireContext(), R.color.delete_bin);
                     binding.toneMixerRemoveTrackToneIcon.setColorFilter(enteredColor);
                     binding.toneMixerRemoveTrackTone.setBackgroundResource(R.drawable.background_mixer_track_tone_remove_active);
-                    return true;
-                case DragEvent.ACTION_DRAG_LOCATION:
                     return true;
                 case DragEvent.ACTION_DRAG_EXITED:
                     int exitedColor = ContextCompat.getColor(requireContext(), R.color.gray);
@@ -259,11 +254,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private void setObservers() {
-        viewModel.getMusic().observe(getViewLifecycleOwner(), new Observer<Music>() {
-            @Override
-            public void onChanged(Music music) {
+        viewModel.getMusic().observe(getViewLifecycleOwner(), music -> {
 
-            }
         });
     }
 
@@ -293,13 +285,9 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             dialog.show(getParentFragmentManager(), "SelectToneToMixDialogFragment");
         });
 
-        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> {
-            viewModel.generateMusic(getMixerComponent());
-        });
+        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> viewModel.generateMusic(getMixerComponent()));
 
-        binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> {
-            viewModel.playStopMusic();
-        });
+        binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> viewModel.playStopMusic());
     }
 
     private void setToneStateToIrremovable() {
@@ -326,13 +314,26 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private MixerComponent getMixerComponent() {
-        List<Tone> track1Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack1);
-        List<Tone> track2Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack2);
-        List<Tone> track3Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack3);
-        List<Tone> track4Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack4);
-        List<Tone> track5Tones = viewModel.getTonesFromTrack(binding.toneMixerTrack5);
+        List<Tone> track1Tones = getTonesFromTrack(binding.toneMixerTrack1);
+        List<Tone> track2Tones = getTonesFromTrack(binding.toneMixerTrack2);
+        List<Tone> track3Tones = getTonesFromTrack(binding.toneMixerTrack3);
+        List<Tone> track4Tones = getTonesFromTrack(binding.toneMixerTrack4);
+        List<Tone> track5Tones = getTonesFromTrack(binding.toneMixerTrack5);
 
         return new MixerComponent(track1Tones, track2Tones, track3Tones, track4Tones, track5Tones);
+    }
+
+    private List<Tone> getTonesFromTrack(LinearLayout track) {
+        List<Tone> tones = new ArrayList<>();
+
+        for (int i = 0; i < track.getChildCount(); i++) {
+            View child = track.getChildAt(i);
+            Object tag = child.getTag(R.id.tag_tone);
+
+            if (tag instanceof Tone)
+                tones.add((Tone) tag);
+        }
+        return tones;
     }
 
     private void addToneToWorkbench(Tone tone) {
@@ -435,31 +436,62 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return silenceTone;
     }
 
+    public boolean isToneDroppable(DragEvent event, LinearLayout track) {
+        View tone = (View) event.getLocalState();
+        int middleX = (int) event.getX();
+        int width = tone.getWidth();
+        int leftEdge = (int) Math.round(middleX - width / 2.0d);
+        int rightEdge = leftEdge + width;
+
+        if (leftEdge < Options.trackPaddingStart)
+            return false;
+
+        for (int i = 0; i < track.getChildCount(); i++) {
+            View child = track.getChildAt(i);
+
+            Object tag = child.getTag(R.id.tag_silence_tone);
+            if (tag == null || Boolean.TRUE.equals(tag))    //  Check if child is silence tone
+                continue;
+
+            if (tone.equals(child))
+                continue;
+
+            int childLeft = child.getLeft();
+            int childRight = child.getRight();
+
+            if (childRight >= leftEdge && childLeft <= rightEdge) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void addToneToTrack(DragEvent event, LinearLayout track) {
         View draggedView = (View) event.getLocalState();
         ViewGroup owner = (ViewGroup) draggedView.getParent();
 
-        if (viewModel.isToneDroppable(event, track)) {
+        if (isToneDroppable(event, track)) {
             if (owner != null)
                 owner.removeView(draggedView);
 
-            TrackToneShadow toneShadow = new TrackToneShadow(event);
+            TrackData trackData = new TrackData(getTrackChildren(track));
+            TrackToneData toneShadow = new TrackToneData(event);
 
-            int[] toneWithSilenceParameters = viewModel.getToneWithSilenceWidth(toneShadow, track);
+            int[] toneWithSilenceParameters = viewModel.getToneWithSilenceParameters(toneShadow, trackData);
 
             int toneDropIndex = toneWithSilenceParameters[0];
             int beforeSilenceWidth = toneWithSilenceParameters[1];
             int afterSilenceWidth = toneWithSilenceParameters[2];
 
-            if (viewModel.isToneOnTheRight(toneShadow, track))
-                track.removeView(viewModel.getOldSilenceTone(toneShadow, track));
+            if (viewModel.toneOnTheRightPresent(toneShadow, trackData))
+                track.removeViewAt(viewModel.getOldSilenceToneIndex(toneShadow, trackData));
 
             if (beforeSilenceWidth > 0) {
                 View silenceBefore = createSilenceTone(beforeSilenceWidth);
                 track.addView(silenceBefore, toneDropIndex++);
             }
 
-            track.addView(toneShadow.getView(), toneDropIndex++);
+            track.addView(draggedView, toneDropIndex++);
 
             if (afterSilenceWidth > 0) {
                 View silenceAfter = createSilenceTone(afterSilenceWidth);
@@ -468,6 +500,18 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
             draggedView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private List<TrackToneData> getTrackChildren(LinearLayout track) {
+        List<TrackToneData> trackChildren = new ArrayList<>();
+        int childCount = track.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            View child = track.getChildAt(i);
+            trackChildren.add(new TrackToneData(child.getWidth(), child.getLeft(), child.getRight()));
+        }
+
+        return trackChildren;
     }
 
     private ValueAnimator getDragWorkbenchToneAnimation() {
@@ -502,58 +546,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             track.setBackgroundColor(animatedValue);
         });
 
-        stopPreviousTrackAnimation(track);
-        setCurrentTrackAnimation(track, colorAnimation);
+        int trackNumber = (int) track.getTag(R.id.tag_track_number);
+        viewModel.stopPreviousTrackAnimation(trackNumber);
+        viewModel.setCurrentTrackAnimation(trackNumber, colorAnimation);
 
         return colorAnimation;
-    }
-
-    private void stopPreviousTrackAnimation(LinearLayout track) {
-        int trackNumber = (int) track.getTag(R.id.tag_track_number);
-
-        switch (trackNumber) {
-            case 1:
-                if (track1animator != null && track1animator.isRunning())
-                    track1animator.cancel();
-                break;
-            case 2:
-                if (track2animator != null && track2animator.isRunning())
-                    track2animator.cancel();
-                break;
-            case 3:
-                if (track3animator != null && track3animator.isRunning())
-                    track3animator.cancel();
-                break;
-            case 4:
-                if (track4animator != null && track4animator.isRunning())
-                    track4animator.cancel();
-                break;
-            case 5:
-                if (track5animator != null && track5animator.isRunning())
-                    track5animator.cancel();
-                break;
-        }
-    }
-
-    private void setCurrentTrackAnimation(LinearLayout track, ValueAnimator animator) {
-        int trackNumber = (int) track.getTag(R.id.tag_track_number);
-
-        switch (trackNumber) {
-            case 1:
-                track1animator = animator;
-                break;
-            case 2:
-                track2animator = animator;
-                break;
-            case 3:
-                track3animator = animator;
-                break;
-            case 4:
-                track4animator = animator;
-                break;
-            case 5:
-                track5animator = animator;
-                break;
-        }
     }
 }

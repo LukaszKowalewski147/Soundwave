@@ -1,9 +1,7 @@
 package com.example.soundwave.viewmodel;
 
+import android.animation.ValueAnimator;
 import android.app.Application;
-import android.view.DragEvent;
-import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.soundwave.R;
 import com.example.soundwave.components.MixerComponent;
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
@@ -22,7 +19,8 @@ import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.ToneGenerator;
 import com.example.soundwave.utils.ToneParser;
-import com.example.soundwave.utils.TrackToneShadow;
+import com.example.soundwave.utils.TrackData;
+import com.example.soundwave.utils.TrackToneData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +29,14 @@ public class ToneMixerViewModel extends AndroidViewModel {
 
     private final SoundwaveRepo repository;
     private final LiveData<List<Tone>> allTones;
-    private final MutableLiveData<Music> music = new MutableLiveData<>();;
+    private final MutableLiveData<Music> music = new MutableLiveData<>();
     private AudioPlayer audioPlayer;
+
+    private ValueAnimator track1animator;
+    private ValueAnimator track2animator;
+    private ValueAnimator track3animator;
+    private ValueAnimator track4animator;
+    private ValueAnimator track5animator;
 
     public ToneMixerViewModel(@NonNull Application application) {
         super(application);
@@ -156,100 +160,58 @@ public class ToneMixerViewModel extends AndroidViewModel {
         return longestTrackDurationInSeconds;   // music duration = longest track duration
     }
 
-    public List<Tone> getTonesFromTrack(LinearLayout track) {
-        List<Tone> tones = new ArrayList<>();
-        int childCount = track.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = track.getChildAt(i);
-            Object tag = child.getTag(R.id.tag_tone);
-            if (tag instanceof Tone)
-                tones.add((Tone)tag);
-        }
-        return tones;
-    }
+    //  TONE ADDING MANAGEMENT
 
-    public boolean isToneDroppable(DragEvent event, LinearLayout track) {
-        View tone = (View) event.getLocalState();
-        int middleX = (int) event.getX();
-        int width = tone.getWidth();
-        int leftEdge = (int) Math.round(middleX - width / 2.0d);
-        int rightEdge = leftEdge + width;
-
-        if (leftEdge < Options.trackPaddingStart)
-            return false;
-
-        for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
-
-            Object tag = child.getTag(R.id.tag_silence_tone);
-            if (tag == null || Boolean.TRUE.equals(tag))    //  Check if child is silence tone
-                continue;
-
-            if (tone.equals(child))
-                continue;
-
-            int childLeft = child.getLeft();
-            int childRight = child.getRight();
-
-            if (childRight >= leftEdge && childLeft <= rightEdge) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public int[] getToneWithSilenceWidth(TrackToneShadow toneShadow, LinearLayout track) {
-        if (isToneOnTheRight(toneShadow, track))
+    public int[] getToneWithSilenceParameters(TrackToneData toneShadow, TrackData track) {
+        if (toneOnTheRightPresent(toneShadow, track))
             return getToneWithSilenceAroundParameters(toneShadow, track);
         else
             return getToneWithSilenceBeforeParameters(toneShadow, track);
     }
 
-    public boolean isToneOnTheRight(TrackToneShadow toneShadow, LinearLayout track) {
+    public boolean toneOnTheRightPresent(TrackToneData toneShadow, TrackData track) {
         if (track.getChildCount() == 0)
             return false;
 
-        View child = track.getChildAt(track.getChildCount() - 1);
-        return child.getLeft() > toneShadow.getRightEdge();
+        TrackToneData child = track.getChildAt(track.getChildCount() - 1);
+        return child.getLeft() > toneShadow.getRight();
     }
 
-    public View getOldSilenceTone(TrackToneShadow toneShadow, LinearLayout track) {
+    public int getOldSilenceToneIndex(TrackToneData toneShadow, TrackData track) {
         for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
+            TrackToneData child = track.getChildAt(i);
             int childLeft = child.getLeft();
             int childRight = child.getRight();
 
-            if (childLeft <= toneShadow.getLeftEdge() && childRight >= toneShadow.getRightEdge())
-                return child;
+            if (childLeft <= toneShadow.getLeft() && childRight >= toneShadow.getRight())
+                return i;
         }
-        return null;
+        return -1;
     }
 
-    private int[] getToneWithSilenceAroundParameters(TrackToneShadow toneShadow, LinearLayout track) {
-        View oldSilenceUnderTone = getOldSilenceTone(toneShadow, track);
-        int oldSilenceUnderToneIndex = track.indexOfChild(oldSilenceUnderTone);
+    private int[] getToneWithSilenceAroundParameters(TrackToneData toneShadow, TrackData track) {
+        int oldSilenceUnderToneIndex = getOldSilenceToneIndex(toneShadow, track);
         int oldSilenceUnderToneWidth = track.getChildAt(oldSilenceUnderToneIndex).getWidth();
         int oldSilenceUnderToneLeftEdge = track.getChildAt(oldSilenceUnderToneIndex).getLeft();
-        int beforeSilenceWidth = toneShadow.getLeftEdge() - oldSilenceUnderToneLeftEdge;
+        int beforeSilenceWidth = toneShadow.getLeft() - oldSilenceUnderToneLeftEdge;
         int afterSilenceWidth = oldSilenceUnderToneWidth - toneShadow.getWidth() - beforeSilenceWidth;
 
-        return new int[] {oldSilenceUnderToneIndex, beforeSilenceWidth, afterSilenceWidth};
+        return new int[]{oldSilenceUnderToneIndex, beforeSilenceWidth, afterSilenceWidth};
     }
 
-    private int[] getToneWithSilenceBeforeParameters(TrackToneShadow toneShadow, LinearLayout track) {
+    private int[] getToneWithSilenceBeforeParameters(TrackToneData toneShadow, TrackData track) {
         int dropIndex = track.getChildCount();
         int rightEdgeOfLeftChild = findNearestLeftChildRightEdge(toneShadow, track);
-        int beforeSilenceWidth = toneShadow.getLeftEdge() - rightEdgeOfLeftChild;
+        int beforeSilenceWidth = toneShadow.getLeft() - rightEdgeOfLeftChild;
 
-        return new int[] {dropIndex, beforeSilenceWidth, 0};
+        return new int[]{dropIndex, beforeSilenceWidth, 0};
     }
 
-    private int findNearestLeftChildRightEdge(TrackToneShadow toneShadow, LinearLayout track) {
+    private int findNearestLeftChildRightEdge(TrackToneData toneShadow, TrackData track) {
         int rightEdgeOfLeftChild = Options.trackPaddingStart;
-        int leftEdge = toneShadow.getLeftEdge();
+        int leftEdge = toneShadow.getLeft();
 
-        for (int i = 0; i < track.getChildCount(); i++) {
-            View child = track.getChildAt(i);
+        for (TrackToneData child : track.getChildren()) {
             int childRightEdge = child.getRight();
             if (childRightEdge < leftEdge) {
                 rightEdgeOfLeftChild = childRightEdge;
@@ -258,5 +220,52 @@ public class ToneMixerViewModel extends AndroidViewModel {
             break;
         }
         return rightEdgeOfLeftChild;
+    }
+
+    //  ANIMATIONS
+
+    public void stopPreviousTrackAnimation(int trackNumber) {
+        switch (trackNumber) {
+            case 1:
+                if (track1animator != null && track1animator.isRunning())
+                    track1animator.cancel();
+                break;
+            case 2:
+                if (track2animator != null && track2animator.isRunning())
+                    track2animator.cancel();
+                break;
+            case 3:
+                if (track3animator != null && track3animator.isRunning())
+                    track3animator.cancel();
+                break;
+            case 4:
+                if (track4animator != null && track4animator.isRunning())
+                    track4animator.cancel();
+                break;
+            case 5:
+                if (track5animator != null && track5animator.isRunning())
+                    track5animator.cancel();
+                break;
+        }
+    }
+
+    public void setCurrentTrackAnimation(int trackNumber, ValueAnimator animator) {
+        switch (trackNumber) {
+            case 1:
+                track1animator = animator;
+                break;
+            case 2:
+                track2animator = animator;
+                break;
+            case 3:
+                track3animator = animator;
+                break;
+            case 4:
+                track4animator = animator;
+                break;
+            case 5:
+                track5animator = animator;
+                break;
+        }
     }
 }
