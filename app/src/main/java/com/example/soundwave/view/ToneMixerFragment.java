@@ -199,7 +199,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     ViewGroup owner = (ViewGroup) draggedView.getParent();
 
                     if (owner != null)
-                        owner.removeView(draggedView);
+                        manageOldPosition(draggedView);
 
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
