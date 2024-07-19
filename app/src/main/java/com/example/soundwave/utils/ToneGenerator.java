@@ -19,6 +19,7 @@ public class ToneGenerator {
     private final int samplesNumber;
     private final double[] samples;
     private final byte[] outputSound;
+    private final double durationInSeconds; //  Only for silence tone generation
 
     public ToneGenerator(SampleRate sampleRate, double totalDurationInSeconds) {
         this.sampleRate = sampleRate;
@@ -26,6 +27,8 @@ public class ToneGenerator {
         samplesNumber = (int) Math.ceil(totalDurationInSeconds * sampleRate.sampleRate);
         samples = new double[samplesNumber];
         outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
+
+        durationInSeconds = totalDurationInSeconds;
     }
 
     public Tone generateTone(EnvelopeComponent ec, FundamentalFrequencyComponent ffc, OvertonesComponent oc) {
@@ -46,6 +49,17 @@ public class ToneGenerator {
         convertTo16BitPCM();
 
         return new Tone(sampleRate, ec, ffc, oc, samples, outputSound);
+    }
+
+    public Tone generateSilence() {
+        int silenceDurationInMs = (int) Math.round(durationInSeconds * 1000);
+        EnvelopeComponent ec = new EnvelopeComponent(PresetEnvelope.CUSTOM, silenceDurationInMs, 0, 0, 0, 0);
+
+        Arrays.fill(samples, 0.0d);
+
+        convertTo16BitPCM();
+
+        return new Tone(ec, samples);
     }
 
     public Track generateTrack(List<Tone> tones) {

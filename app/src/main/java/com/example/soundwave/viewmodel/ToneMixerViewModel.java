@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.soundwave.components.MixerComponent;
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.Track;
@@ -69,30 +68,14 @@ public class ToneMixerViewModel extends AndroidViewModel {
         return music;
     }
 
-    public void generateMusic(MixerComponent mc) {
-        SampleRate sampleRate = getLowestSampleRate(mc);
+    public void generateMusic(List<List<Tone>> tracksData) {
         List<Track> tracks = new ArrayList<>();
+        SampleRate sampleRate = getLowestSampleRate(tracksData);
 
-        List<Tone> track1Tones = mc.getTrack1Tones();
-        List<Tone> track2Tones = mc.getTrack2Tones();
-        List<Tone> track3Tones = mc.getTrack3Tones();
-        List<Tone> track4Tones = mc.getTrack4Tones();
-        List<Tone> track5Tones = mc.getTrack5Tones();
-
-        if (!track1Tones.isEmpty())
-            tracks.add(generateTrack(sampleRate, track1Tones));
-
-        if (!track2Tones.isEmpty())
-            tracks.add(generateTrack(sampleRate, track2Tones));
-
-        if (!track3Tones.isEmpty())
-            tracks.add(generateTrack(sampleRate, track3Tones));
-
-        if (!track4Tones.isEmpty())
-            tracks.add(generateTrack(sampleRate, track4Tones));
-
-        if (!track5Tones.isEmpty())
-            tracks.add(generateTrack(sampleRate, track5Tones));
+        for (List<Tone> trackTones : tracksData) {
+            if (!trackTones.isEmpty())
+                tracks.add(generateTrack(sampleRate, trackTones));
+        }
 
         double musicDuration = getMusicDuration(tracks);
 
@@ -111,23 +94,23 @@ public class ToneMixerViewModel extends AndroidViewModel {
         audioPlayer.play();
     }
 
+    public Tone generateSilenceTone(double durationInSeconds) {
+        return new ToneGenerator(SampleRate.RATE_192_KHZ, durationInSeconds).generateSilence();
+    }
+
     private Track generateTrack(SampleRate sampleRate, List<Tone> tones) {
         ToneGenerator generator = new ToneGenerator(sampleRate, getTrackDuration(tones));
         return generator.generateTrack(tones);
     }
 
-    private SampleRate getLowestSampleRate(MixerComponent mc) {
+    private SampleRate getLowestSampleRate(List<List<Tone>> tracksData) {
         SampleRate lowestSampleRate = SampleRate.RATE_192_KHZ;
-        List<Tone>[] trackTones = new List[5];
 
-        trackTones[0] = mc.getTrack1Tones();
-        trackTones[1] = mc.getTrack2Tones();
-        trackTones[2] = mc.getTrack3Tones();
-        trackTones[3] = mc.getTrack4Tones();
-        trackTones[4] = mc.getTrack5Tones();
+        for (List<Tone> trackTones : tracksData) {
+            for (Tone tone : trackTones) {
+                if (tone.getSampleRate() == null)
+                    continue;
 
-        for (List<Tone> trackTone : trackTones) {
-            for (Tone tone : trackTone) {
                 SampleRate currentSampleRate = tone.getSampleRate();
 
                 if (currentSampleRate.sampleRate < lowestSampleRate.sampleRate)

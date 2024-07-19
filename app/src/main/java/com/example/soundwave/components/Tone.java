@@ -32,6 +32,17 @@ public class Tone implements Serializable {
         this.pcmSound = pcmSound;
     }
 
+    public Tone(EnvelopeComponent ec, double[] samples) {
+        this.id = -1;
+        this.envelopeComponent = ec;
+        this.samples = samples;
+        this.name = null;
+        this.sampleRate = null;
+        this.fundamentalFrequencyComponent = null;
+        this.overtonesComponent = null;
+        this.pcmSound = null;
+    }
+
     public void setId(int id) {
         this.id = id;
     }

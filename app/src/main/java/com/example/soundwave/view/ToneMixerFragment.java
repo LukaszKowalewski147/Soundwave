@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.soundwave.R;
-import com.example.soundwave.components.MixerComponent;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
@@ -285,7 +284,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             dialog.show(getParentFragmentManager(), "SelectToneToMixDialogFragment");
         });
 
-        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> viewModel.generateMusic(getMixerComponent()));
+        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> viewModel.generateMusic(getTracksData()));
 
         binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> viewModel.playStopMusic());
     }
@@ -313,14 +312,16 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         toneToRemove = tone;
     }
 
-    private MixerComponent getMixerComponent() {
-        List<Tone> track1Tones = getTonesFromTrack(binding.toneMixerTrack1);
-        List<Tone> track2Tones = getTonesFromTrack(binding.toneMixerTrack2);
-        List<Tone> track3Tones = getTonesFromTrack(binding.toneMixerTrack3);
-        List<Tone> track4Tones = getTonesFromTrack(binding.toneMixerTrack4);
-        List<Tone> track5Tones = getTonesFromTrack(binding.toneMixerTrack5);
+    private List<List<Tone>> getTracksData() {
+        List<List<Tone>> tracksData = new ArrayList<>();
 
-        return new MixerComponent(track1Tones, track2Tones, track3Tones, track4Tones, track5Tones);
+        tracksData.add(getTonesFromTrack(binding.toneMixerTrack1));
+        tracksData.add(getTonesFromTrack(binding.toneMixerTrack2));
+        tracksData.add(getTonesFromTrack(binding.toneMixerTrack3));
+        tracksData.add(getTonesFromTrack(binding.toneMixerTrack4));
+        tracksData.add(getTonesFromTrack(binding.toneMixerTrack5));
+
+        return tracksData;
     }
 
     private List<Tone> getTonesFromTrack(LinearLayout track) {
@@ -328,10 +329,17 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
         for (int i = 0; i < track.getChildCount(); i++) {
             View child = track.getChildAt(i);
-            Object tag = child.getTag(R.id.tag_tone);
+            Object toneTag = child.getTag(R.id.tag_tone);
 
-            if (tag instanceof Tone)
-                tones.add((Tone) tag);
+            if (toneTag instanceof Tone)
+                tones.add((Tone) toneTag);
+            else {
+                Object silenceTag = child.getTag(R.id.tag_silence_tone);
+                if (Boolean.TRUE.equals(silenceTag)) {
+                    double silenceDurationInSeconds = convertWidthInPxToDurationInSeconds(child.getWidth());
+                    tones.add(viewModel.generateSilenceTone(silenceDurationInSeconds));
+                }
+            }
         }
         return tones;
     }
@@ -397,8 +405,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         TextView mixerName = trackTone.findViewById(R.id.tone_mixer_track_tone_name);
         mixerName.setText(tone.getName());
 
-        int oneSecondWidthPixels = 2 * getResources().getDimensionPixelSize(R.dimen.tone_mixer_scale_label_width);    // 1 scale_label_width = 0.5s
-        int widthInPx = (int) Math.round(oneSecondWidthPixels * tone.getDurationInSeconds());
+        int widthInPx = convertDurationInSecondsToWidthInPx(tone.getDurationInSeconds());
         int heightInPx =  (int) getResources().getDimension(R.dimen.tone_mixer_track_tone_height);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(widthInPx, heightInPx);
@@ -598,5 +605,19 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         viewModel.setCurrentTrackAnimation(trackNumber, colorAnimation);
 
         return colorAnimation;
+    }
+
+    private int convertDurationInSecondsToWidthInPx(double duration) {
+        int oneSecondWidthPixels = getOneSecondWidthPixels();
+        return (int) Math.round(oneSecondWidthPixels * duration);
+    }
+
+    private double convertWidthInPxToDurationInSeconds(int widthInPx) {
+        int oneSecondWidthPixels = getOneSecondWidthPixels();
+        return (double) widthInPx / oneSecondWidthPixels;
+    }
+
+    private int getOneSecondWidthPixels() {
+        return 2 * getResources().getDimensionPixelSize(R.dimen.tone_mixer_scale_label_width);    // 1 scale_label_width = 0.5s
     }
 }
