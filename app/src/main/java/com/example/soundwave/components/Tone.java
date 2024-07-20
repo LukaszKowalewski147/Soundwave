@@ -110,4 +110,8 @@ public class Tone implements Serializable {
     public ArrayList<Overtone> getOvertones() {
         return overtonesComponent.getOvertones();
     }
+
+    public int getSamplesNumber() {
+        return samples.length;
+    }
 }

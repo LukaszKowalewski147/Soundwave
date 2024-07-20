@@ -77,9 +77,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
                 tracks.add(generateTrack(sampleRate, trackTones));
         }
 
-        double musicDuration = getMusicDuration(tracks);
-
-        ToneGenerator generator = new ToneGenerator(sampleRate, musicDuration);
+        ToneGenerator generator = new ToneGenerator(sampleRate, getMusicSamplesNumber(tracks));
         Music newMusic = generator.generateMusic(tracks);
 
         audioPlayer = new AudioPlayer();
@@ -99,7 +97,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
     }
 
     private Track generateTrack(SampleRate sampleRate, List<Tone> tones) {
-        ToneGenerator generator = new ToneGenerator(sampleRate, getTrackDuration(tones));
+        ToneGenerator generator = new ToneGenerator(sampleRate, getTrackSamplesNumber(tones));
         return generator.generateTrack(tones);
     }
 
@@ -123,24 +121,25 @@ public class ToneMixerViewModel extends AndroidViewModel {
         return lowestSampleRate;
     }
 
-    private double getTrackDuration(List<Tone> tones) {
-        double totalDurationInSeconds = 0.0d;
-        for (Tone tone : tones) {
-            totalDurationInSeconds += tone.getDurationInSeconds();
-        }
-        return totalDurationInSeconds;
+    private int getTrackSamplesNumber(List<Tone> tones) {
+        int trackSamplesNumber = 0;
+
+        for (Tone tone : tones)
+            trackSamplesNumber += tone.getSamplesNumber();
+
+        return trackSamplesNumber;
     }
 
-    private double getMusicDuration(List<Track> tracks) {
-        double longestTrackDurationInSeconds = 0.0d;
+    private int getMusicSamplesNumber(List<Track> tracks) {
+        int highestTrackSamplesNumber = 0;
 
         for (Track track : tracks) {
-            double trackDurationInSeconds = track.getTrackDurationInSeconds();
-            if (longestTrackDurationInSeconds < trackDurationInSeconds)
-                longestTrackDurationInSeconds = trackDurationInSeconds;
+            int trackSamplesNumber = track.getNumberOfSamples();
+            if (highestTrackSamplesNumber < trackSamplesNumber)
+                highestTrackSamplesNumber = trackSamplesNumber;
         }
 
-        return longestTrackDurationInSeconds;   // music duration = longest track duration
+        return highestTrackSamplesNumber;   // music samples number = highest track samples number
     }
 
     //  TONE ADDING MANAGEMENT

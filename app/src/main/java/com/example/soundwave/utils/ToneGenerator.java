@@ -31,6 +31,16 @@ public class ToneGenerator {
         durationInSeconds = totalDurationInSeconds;
     }
 
+    public ToneGenerator(SampleRate sampleRate, int samplesNumber) {
+        this.sampleRate = sampleRate;
+
+        this.samplesNumber = samplesNumber;
+        samples = new double[samplesNumber];
+        outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
+
+        durationInSeconds = 0;
+    }
+
     public Tone generateTone(EnvelopeComponent ec, FundamentalFrequencyComponent ffc, OvertonesComponent oc) {
         int sampleRateInHz = sampleRate.sampleRate;
         double fundamentalFrequency = ffc.getFundamentalFrequency();

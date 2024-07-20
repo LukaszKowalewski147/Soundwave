@@ -19,6 +19,10 @@ public class Track {
         return samples;
     }
 
+    public int getNumberOfSamples() {
+        return samples.length;
+    }
+
     public double getTrackDurationInSeconds() {
         return (double) samples.length  / sampleRate.sampleRate;
     }
