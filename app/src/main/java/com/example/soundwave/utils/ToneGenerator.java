@@ -16,29 +16,29 @@ public class ToneGenerator {
 
     private final SampleRate sampleRate;
 
-    private final int samplesNumber;
-    private final double[] samples;
-    private final byte[] outputSound;
+    private int samplesNumber;
+    private double[] samples;
+    private byte[] outputSound;
     private final double durationInSeconds; //  Only for silence tone generation
 
     public ToneGenerator(SampleRate sampleRate, double totalDurationInSeconds) {
         this.sampleRate = sampleRate;
 
-        samplesNumber = (int) Math.ceil(totalDurationInSeconds * sampleRate.sampleRate);
-        samples = new double[samplesNumber];
-        outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
+        this.samplesNumber = (int) Math.ceil(totalDurationInSeconds * sampleRate.sampleRate);
+        this.samples = new double[samplesNumber];
+        this.outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
 
-        durationInSeconds = totalDurationInSeconds;
+        this.durationInSeconds = totalDurationInSeconds;
     }
 
     public ToneGenerator(SampleRate sampleRate, int samplesNumber) {
         this.sampleRate = sampleRate;
 
         this.samplesNumber = samplesNumber;
-        samples = new double[samplesNumber];
-        outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
+        this.samples = new double[samplesNumber];
+        this.outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
 
-        durationInSeconds = 0;
+        this.durationInSeconds = 0;
     }
 
     public Tone generateTone(EnvelopeComponent ec, FundamentalFrequencyComponent ffc, OvertonesComponent oc) {
@@ -69,21 +69,26 @@ public class ToneGenerator {
 
         convertTo16BitPCM();
 
-        return new Tone(ec, samples);
+        return new Tone(sampleRate, ec, samples);
     }
 
     public Track generateTrack(List<Tone> tones) {
+        tones = prepareTonesForTrackGeneration(tones);
+        reassignSamplesNumber(tones);
+
         int lastSampleIndex = 0;
         int toneIndex = 0;
         int toneSampleIndex = 0;
 
-        double[] toneSamples = tones.get(toneIndex).getSamples();
+        Tone tone = tones.get(toneIndex);
+        double[] toneSamples = tone.getSamples();
 
         for (int i = lastSampleIndex; i < samples.length; ++i) {
             samples[i] = toneSamples[toneSampleIndex++];
             if (toneSampleIndex == toneSamples.length && ++toneIndex < tones.size()) {
                 toneSampleIndex = 0;
-                toneSamples = tones.get(toneIndex).getSamples();
+                tone = tones.get(toneIndex);
+                toneSamples = tone.getSamples();
             }
         }
 
@@ -110,6 +115,38 @@ public class ToneGenerator {
         convertTo16BitPCM();
 
         return new Music(sampleRate, outputSound);
+    }
+
+    private List<Tone> prepareTonesForTrackGeneration(List<Tone> tones) {
+        List<Tone> resampledTones = new ArrayList<>();
+
+        for (Tone tone : tones) {
+            if (tone.getSampleRate() != sampleRate)
+                tone = resampleTone(tone);
+            resampledTones.add(tone);
+        }
+
+        return resampledTones;
+    }
+
+    private Tone resampleTone(Tone tone) {
+        ToneGenerator generator = new ToneGenerator(sampleRate, tone.getDurationInSeconds());
+
+        if (tone.getFundamentalFrequencyComponent() == null)
+            return generator.generateSilence();
+
+        return generator.generateTone(tone.getEnvelopeComponent(), tone.getFundamentalFrequencyComponent(), tone.getOvertonesComponent());
+    }
+
+    private void reassignSamplesNumber(List<Tone> tones) {
+        int trackSamplesNumber = 0;
+
+        for (Tone tone : tones)
+            trackSamplesNumber += tone.getSamplesNumber();
+
+        this.samplesNumber = trackSamplesNumber;
+        this.samples = new double[trackSamplesNumber];
+        this.outputSound = new byte[2 * trackSamplesNumber];      // 2 bytes of data for 16bit sample
     }
 
     private void addOvertonesData(int sampleRateInHz, ArrayList<Overtone> overtones) {
