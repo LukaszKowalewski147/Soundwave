@@ -292,7 +292,14 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             dialog.show(getParentFragmentManager(), "SelectToneToMixDialogFragment");
         });
 
-        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> viewModel.generateMusic(getTracksData()));
+        binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.alert_dialog_tone_mixer_generate_message);
+            builder.setPositiveButton(R.string.alert_dialog_tone_mixer_generate_positive, (dialog, id) -> viewModel.generateMusic(getTracksData()));
+            builder.setNegativeButton(R.string.alert_dialog_tone_mixer_generate_negative, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
 
         binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> viewModel.playStopMusic());
 
