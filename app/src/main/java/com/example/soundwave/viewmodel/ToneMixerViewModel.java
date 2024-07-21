@@ -153,6 +153,12 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setControlPanelComponentStopMusic(buttonsStates);
     }
 
+    public void resetToneMixer() {
+        initializeDefaultValues();
+        music.setValue(null);
+        anyChange = false;
+    }
+
     public Tone generateSilenceTone(double durationInSeconds) {
         return new ToneGenerator(SampleRate.RATE_192_KHZ, durationInSeconds).generateSilence();
     }

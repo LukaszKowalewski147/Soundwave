@@ -295,6 +295,26 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> viewModel.generateMusic(getTracksData()));
 
         binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> viewModel.playStopMusic());
+
+        binding.toneMixerResetMusicBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.alert_dialog_tone_mixer_reset_message);
+            builder.setPositiveButton(R.string.alert_dialog_tone_mixer_reset_positive, (dialog, id) -> takeResetAction());
+            builder.setNegativeButton(R.string.alert_dialog_tone_mixer_reset_negative, null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+    }
+
+    private void takeResetAction() {
+        binding.toneMixerTrack1.removeAllViews();
+        binding.toneMixerTrack2.removeAllViews();
+        binding.toneMixerTrack3.removeAllViews();
+        binding.toneMixerTrack4.removeAllViews();
+        binding.toneMixerTrack5.removeAllViews();
+        binding.toneMixerWorkbench.removeAllViews();
+
+        viewModel.resetToneMixer();
     }
 
     private void setToneStateToIrremovable() {
