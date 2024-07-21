@@ -153,6 +153,11 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setControlPanelComponentStopMusic(buttonsStates);
     }
 
+    public void saveMusic(String musicName) {
+        setControlPanelComponentSaved();
+        anyChange = false;
+    }
+
     public void resetToneMixer() {
         initializeDefaultValues();
         music.setValue(null);

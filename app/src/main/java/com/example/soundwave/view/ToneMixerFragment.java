@@ -13,12 +13,14 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -302,6 +304,33 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         });
 
         binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> viewModel.playStopMusic());
+
+        binding.toneMixerSaveMusicBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.alert_dialog_tone_mixer_save_message);
+
+            final EditText musicName = new EditText(getContext());
+            musicName.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            builder.setView(musicName);
+
+            builder.setPositiveButton(R.string.alert_dialog_tone_mixer_save_positive, null);
+            builder.setNegativeButton(R.string.alert_dialog_tone_mixer_save_negative, null);
+
+            AlertDialog dialog = builder.create();
+
+            dialog.setOnShowListener(dialogInterface -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+                String nameToSave = musicName.getText().toString().trim();
+                if (!nameToSave.isEmpty()) {
+                    viewModel.saveMusic(nameToSave);
+                    dialog.dismiss();
+                } else {
+                    musicName.setError(getString(R.string.error_msg_empty_name));
+                }
+            }));
+
+            dialog.show();
+        });
 
         binding.toneMixerResetMusicBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
