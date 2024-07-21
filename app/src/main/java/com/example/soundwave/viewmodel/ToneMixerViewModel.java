@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.Track;
@@ -22,6 +23,7 @@ import com.example.soundwave.utils.TrackData;
 import com.example.soundwave.utils.TrackToneData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ToneMixerViewModel extends AndroidViewModel {
@@ -29,13 +31,16 @@ public class ToneMixerViewModel extends AndroidViewModel {
     private final SoundwaveRepo repository;
     private final LiveData<List<Tone>> allTones;
     private final MutableLiveData<Music> music = new MutableLiveData<>();
-    private AudioPlayer audioPlayer;
+    private final MutableLiveData<ControlPanelComponent> controlPanelComponent = new MutableLiveData<>();
 
     private ValueAnimator track1animator;
     private ValueAnimator track2animator;
     private ValueAnimator track3animator;
     private ValueAnimator track4animator;
     private ValueAnimator track5animator;
+
+    private AudioPlayer audioPlayer;
+    private boolean anyChange;
 
     public ToneMixerViewModel(@NonNull Application application) {
         super(application);
@@ -48,6 +53,8 @@ public class ToneMixerViewModel extends AndroidViewModel {
             }
             return tones;
         });
+
+        initializeDefaultValues();
     }
 
     @Override
@@ -60,12 +67,30 @@ public class ToneMixerViewModel extends AndroidViewModel {
         super.onCleared();
     }
 
+    private void initializeDefaultValues() {
+        audioPlayer = null;
+        setControlPanelComponentDefault();
+        anyChange = false;
+    }
+
     public LiveData<List<Tone>> getAllTones() {
         return allTones;
     }
 
     public LiveData<Music> getMusic() {
         return music;
+    }
+
+    public LiveData<ControlPanelComponent> getControlPanelComponent() {
+        return controlPanelComponent;
+    }
+
+    public void addToneToTrack() {
+        setAnyChange();
+    }
+
+    public void removeToneFromTrack() {
+        setAnyChange();
     }
 
     public void generateMusic(List<List<Tone>> tracksData) {
@@ -84,12 +109,38 @@ public class ToneMixerViewModel extends AndroidViewModel {
         audioPlayer.loadMusic(newMusic);
 
         music.setValue(newMusic);
+
+        setControlPanelComponentMusicGenerated();
     }
 
     public void playStopMusic() {
+        HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+        if (buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP) == ControlPanelComponent.ButtonState.STANDARD) {
+            audioPlayer.stop();
+            audioPlayer.reload();
+            audioPlayer.play();
+
+            setControlPanelComponentPlayMusic(buttonsStates);
+
+            Thread thread = new Thread() {
+                public void run() {
+                    int waitingTime = music.getValue().getDurationInMilliseconds();
+                    try {
+                        Thread.sleep(waitingTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStatesInThread = getControlPanelButtonsStates();
+                    if (buttonsStatesInThread.get(ControlPanelComponent.Button.PLAY_STOP) == ControlPanelComponent.ButtonState.SECOND_FUNCTION)
+                        setControlPanelComponentStopMusic(buttonsStatesInThread);
+                }
+            };
+            thread.start();
+            return;
+        }
         audioPlayer.stop();
-        audioPlayer.reload();
-        audioPlayer.play();
+
+        setControlPanelComponentStopMusic(buttonsStates);
     }
 
     public Tone generateSilenceTone(double durationInSeconds) {
@@ -249,5 +300,89 @@ public class ToneMixerViewModel extends AndroidViewModel {
                 track5animator = animator;
                 break;
         }
+    }
+
+    //  CONTROL PANEL
+    private HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> getControlPanelButtonsStates() {
+        return controlPanelComponent.getValue().getButtonsStates();
+    }
+
+    private void setControlPanelComponentDefault() {
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE));
+    }
+
+    private void setControlPanelComponentEditorDefault() {
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.INACTIVE));
+    }
+
+    private void setControlPanelComponentMusicGenerated() {
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.INACTIVE,
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.STANDARD));
+    }
+
+    private void setControlPanelComponentSaved() {
+        HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+        ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
+        ControlPanelComponent.ButtonState playStopBtnState = buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP);
+        ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
+
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                generateBtnState,
+                playStopBtnState,
+                ControlPanelComponent.ButtonState.DONE,
+                resetBtnState));
+    }
+
+    private void setControlPanelComponentPlayMusic(HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates) {
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                buttonsStates.get(ControlPanelComponent.Button.GENERATE),
+                ControlPanelComponent.ButtonState.SECOND_FUNCTION,
+                buttonsStates.get(ControlPanelComponent.Button.SAVE),
+                buttonsStates.get(ControlPanelComponent.Button.RESET)));
+    }
+
+    private void setControlPanelComponentStopMusic(HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates) {
+        controlPanelComponent.postValue(new ControlPanelComponent(
+                buttonsStates.get(ControlPanelComponent.Button.GENERATE),
+                ControlPanelComponent.ButtonState.STANDARD,
+                buttonsStates.get(ControlPanelComponent.Button.SAVE),
+                buttonsStates.get(ControlPanelComponent.Button.RESET)));
+    }
+
+    private void setControlPanelComponentAnyChange(HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates) {
+        controlPanelComponent.setValue(new ControlPanelComponent(
+                ControlPanelComponent.ButtonState.STANDARD,
+                buttonsStates.get(ControlPanelComponent.Button.PLAY_STOP),
+                buttonsStates.get(ControlPanelComponent.Button.SAVE),
+                ControlPanelComponent.ButtonState.STANDARD));
+    }
+
+    private void setAnyChange() {
+        anyChange = true;
+        HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
+        ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
+        ControlPanelComponent.ButtonState resetBtnState = buttonsStates.get(ControlPanelComponent.Button.RESET);
+
+        if (generateBtnState == ControlPanelComponent.ButtonState.STANDARD &&
+                resetBtnState == ControlPanelComponent.ButtonState.STANDARD)
+            return;
+
+        setControlPanelComponentAnyChange(buttonsStates);
+    }
+
+    public void setNoChange() {
+        setControlPanelComponentEditorDefault();
+        anyChange = false;
     }
 }

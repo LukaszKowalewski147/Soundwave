@@ -2,12 +2,14 @@ package com.example.soundwave.view;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
+import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
@@ -197,9 +201,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
                     View draggedView = (View) event.getLocalState();
                     ViewGroup owner = (ViewGroup) draggedView.getParent();
 
-                    if (owner != null)
+                    if (owner != null) {
                         manageOldPosition(draggedView);
-
+                        viewModel.removeToneFromTrack();
+                    }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     binding.toneMixerRemoveTrackTone.setVisibility(View.GONE);
@@ -256,6 +261,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         viewModel.getMusic().observe(getViewLifecycleOwner(), music -> {
 
         });
+
+        viewModel.getControlPanelComponent().observe(getViewLifecycleOwner(), this::manageControlPanel);
     }
 
     private void setListeners() {
@@ -480,6 +487,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
             final int middle = (int) event.getX();
             track.post(() -> addToneToTrack(draggedView, middle, track));
+            viewModel.addToneToTrack();
         }
     }
 
@@ -605,6 +613,80 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         viewModel.setCurrentTrackAnimation(trackNumber, colorAnimation);
 
         return colorAnimation;
+    }
+
+    private void manageControlPanel(ControlPanelComponent controlPanelComponent) {
+        Drawable icon;
+        ControlPanelComponent.ButtonState generateBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.GENERATE);
+        ControlPanelComponent.ButtonState playStopBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.PLAY_STOP);
+        ControlPanelComponent.ButtonState saveBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.SAVE);
+        ControlPanelComponent.ButtonState resetBtnState = controlPanelComponent.getButtonsStates().get(ControlPanelComponent.Button.RESET);
+
+        switch (generateBtnState) {
+            case STANDARD:
+                binding.toneMixerGenerateMusicBtn.setEnabled(true);
+                binding.toneMixerGenerateMusicBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                break;
+            case INACTIVE:
+                binding.toneMixerGenerateMusicBtn.setEnabled(false);
+                binding.toneMixerGenerateMusicBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        }
+
+        switch (playStopBtnState) {
+            case STANDARD:
+                binding.toneMixerPlayStopMusicBtn.setEnabled(true);
+                binding.toneMixerPlayStopMusicBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                binding.toneMixerPlayStopMusicBtn.setText(R.string.play_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_note, null);
+                binding.toneMixerPlayStopMusicBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case INACTIVE:
+                binding.toneMixerPlayStopMusicBtn.setEnabled(false);
+                binding.toneMixerPlayStopMusicBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+                binding.toneMixerPlayStopMusicBtn.setText(R.string.play_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_play_note, null);
+                binding.toneMixerPlayStopMusicBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case SECOND_FUNCTION:
+                binding.toneMixerPlayStopMusicBtn.setEnabled(true);
+                binding.toneMixerPlayStopMusicBtn.setBackgroundResource(R.drawable.background_btn_red);
+                binding.toneMixerPlayStopMusicBtn.setText(R.string.stop_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_stop, null);
+                binding.toneMixerPlayStopMusicBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        }
+
+        switch (saveBtnState) {
+            case STANDARD:
+                binding.toneMixerSaveMusicBtn.setEnabled(true);
+                binding.toneMixerSaveMusicBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                binding.toneMixerSaveMusicBtn.setText(R.string.save_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_save, null);
+                binding.toneMixerSaveMusicBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case INACTIVE:
+                binding.toneMixerSaveMusicBtn.setEnabled(false);
+                binding.toneMixerSaveMusicBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+                binding.toneMixerSaveMusicBtn.setText(R.string.save_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_save, null);
+                binding.toneMixerSaveMusicBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+                break;
+            case DONE:
+                binding.toneMixerSaveMusicBtn.setEnabled(false);
+                binding.toneMixerSaveMusicBtn.setBackgroundResource(R.drawable.background_btn_green);
+                binding.toneMixerSaveMusicBtn.setText(R.string.saved_btn);
+                icon = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_done, null);
+                binding.toneMixerSaveMusicBtn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+        }
+
+        switch (resetBtnState) {
+            case STANDARD:
+                binding.toneMixerResetMusicBtn.setEnabled(true);
+                binding.toneMixerResetMusicBtn.setBackgroundResource(R.drawable.background_btn_standard);
+                break;
+            case INACTIVE:
+                binding.toneMixerResetMusicBtn.setEnabled(false);
+                binding.toneMixerResetMusicBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        }
     }
 
     private int convertDurationInSecondsToWidthInPx(double duration) {

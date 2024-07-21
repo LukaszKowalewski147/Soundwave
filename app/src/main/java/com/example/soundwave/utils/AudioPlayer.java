@@ -38,7 +38,7 @@ public class AudioPlayer {
             return;
         }
         audioTrack.flush();
-        audioTrack.write(music.getSamples(), 0, music.getSamples().length);
+        audioTrack.write(music.getSamples16BitPCM(), 0, music.getSamples16BitPCM().length);
         /*if (!isReadyToPlay()) {
             // TODO: getErrorMessage
             //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
@@ -131,7 +131,7 @@ public class AudioPlayer {
                         .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                         .build())
                 .setTransferMode(AudioTrack.MODE_STATIC)
-                .setBufferSizeInBytes(music.getSamples().length)
+                .setBufferSizeInBytes(music.getSamples16BitPCM().length)
                 .build();
     }
 
