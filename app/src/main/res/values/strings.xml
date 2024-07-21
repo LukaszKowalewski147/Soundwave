@@ -82,6 +82,10 @@
     <string name="alert_dialog_tone_creator_exit_positive">YES</string>
     <string name="alert_dialog_tone_creator_exit_negative">NO</string>
 
+    <string name="alert_dialog_tone_mixer_exit_message">You have unsaved changes. Do you want to leave without saving?</string>
+    <string name="alert_dialog_tone_mixer_exit_positive">YES</string>
+    <string name="alert_dialog_tone_mixer_exit_negative">NO</string>
+
     <string name="alert_dialog_homepage_delete_message">Do you want to delete tone?</string>
     <string name="alert_dialog_homepage_delete_positive">YES</string>
     <string name="alert_dialog_homepage_delete_negative">NO</string>

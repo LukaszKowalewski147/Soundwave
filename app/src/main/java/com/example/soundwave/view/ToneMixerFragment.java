@@ -30,6 +30,7 @@ import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
 import com.example.soundwave.databinding.FragmentToneMixerBinding;
+import com.example.soundwave.utils.OnFragmentExitListener;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.TrackData;
 import com.example.soundwave.utils.TrackToneData;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ToneMixerFragment extends Fragment implements OnToneSelectedListener {
+public class ToneMixerFragment extends Fragment implements OnToneSelectedListener, OnFragmentExitListener {
 
     private ToneMixerViewModel viewModel;
     private FragmentToneMixerBinding binding;
@@ -701,5 +702,26 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
     private int getOneSecondWidthPixels() {
         return 2 * getResources().getDimensionPixelSize(R.dimen.tone_mixer_scale_label_width);    // 1 scale_label_width = 0.5s
+    }
+
+    @Override
+    public boolean onFragmentExit(int fragmentId) {
+        if (!viewModel.getAnyChange())
+            return true;
+        checkIfExit(fragmentId);
+        return false;
+    }
+
+    private void checkIfExit(int fragmentId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage(R.string.alert_dialog_tone_mixer_exit_message);
+        builder.setPositiveButton(R.string.alert_dialog_tone_mixer_exit_positive, (dialog, which) -> {
+            MainActivity mainActivity = (MainActivity) requireActivity();
+            mainActivity.changeFragmentFromToneMixer(fragmentId);
+        });
+        builder.setNegativeButton(R.string.alert_dialog_tone_mixer_exit_negative, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

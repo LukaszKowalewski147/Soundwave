@@ -51,6 +51,12 @@ public class MainActivity extends AppCompatActivity {
                     return false;
             }
 
+            // Making sure of safety exit of ToneMixerFragment by onFragmentExit() if changes are not saved
+            if ((currentFragment instanceof ToneMixerFragment) && (fragmentId != R.id.tone_mixer)) {
+                if (!((ToneMixerFragment) currentFragment).onFragmentExit(fragmentId))
+                    return false;
+            }
+
             if (fragmentId == R.id.tone_creator) {
                 if (!(currentFragment instanceof ToneCreatorFragment)) {
                     manageVisibilityOfTopMenu(false);
@@ -97,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void changeFragmentFromToneCreator(int fragmentId) {
+        currentFragment = null;
+        binding.mainBottomNavView.setSelectedItemId(fragmentId);
+    }
+
+    public void changeFragmentFromToneMixer(int fragmentId) {
         currentFragment = null;
         binding.mainBottomNavView.setSelectedItemId(fragmentId);
     }

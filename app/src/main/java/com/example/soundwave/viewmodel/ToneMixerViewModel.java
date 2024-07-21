@@ -85,6 +85,10 @@ public class ToneMixerViewModel extends AndroidViewModel {
         return controlPanelComponent;
     }
 
+    public boolean getAnyChange() {
+        return anyChange;
+    }
+
     public void addToneToTrack() {
         setAnyChange();
     }
