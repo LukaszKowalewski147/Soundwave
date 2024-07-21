@@ -98,6 +98,12 @@ public class ToneMixerViewModel extends AndroidViewModel {
     }
 
     public void generateMusic(List<List<Tone>> tracksData) {
+        if (areTracksEmpty(tracksData)) {
+            setControlPanelComponentDefault();
+            anyChange = false;
+            return;
+        }
+
         List<Track> tracks = new ArrayList<>();
         SampleRate sampleRate = getLowestSampleRate(tracksData);
 
@@ -149,6 +155,14 @@ public class ToneMixerViewModel extends AndroidViewModel {
 
     public Tone generateSilenceTone(double durationInSeconds) {
         return new ToneGenerator(SampleRate.RATE_192_KHZ, durationInSeconds).generateSilence();
+    }
+
+    private boolean areTracksEmpty(List<List<Tone>> tracksData) {
+        for (List<Tone> trackTones : tracksData) {
+            if (!trackTones.isEmpty())
+                return false;
+        }
+        return true;
     }
 
     private Track generateTrack(SampleRate sampleRate, List<Tone> tones) {
@@ -313,7 +327,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
 
     private void setControlPanelComponentDefault() {
         controlPanelComponent.setValue(new ControlPanelComponent(
-                ControlPanelComponent.ButtonState.STANDARD,
+                ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.INACTIVE,
                 ControlPanelComponent.ButtonState.INACTIVE));
