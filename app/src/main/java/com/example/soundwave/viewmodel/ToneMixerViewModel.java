@@ -154,6 +154,12 @@ public class ToneMixerViewModel extends AndroidViewModel {
     }
 
     public void saveMusic(String musicName) {
+        Music baseMusic = music.getValue();
+        baseMusic.setName(musicName);
+
+        com.example.soundwave.model.entity.Music musicEntity = new ToneParser().parseMusicToDbEntity(baseMusic);
+        repository.insert(musicEntity);
+
         setControlPanelComponentSaved();
         anyChange = false;
     }
