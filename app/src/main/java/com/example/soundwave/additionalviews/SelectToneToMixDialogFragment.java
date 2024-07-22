@@ -33,13 +33,19 @@ public class SelectToneToMixDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_select_tone_to_mix, container, false);
         LinearLayout toneContainer = view.findViewById(R.id.tone_container);
+        TextView emptyMsg = view.findViewById(R.id.empty_tones_msg);
 
         ToneMixerViewModel viewModel = new ViewModelProvider((FragmentActivity) requireContext()).get(ToneMixerViewModel.class);
+
         viewModel.getAllTones().observe(getViewLifecycleOwner(), tones -> {
-            toneContainer.removeAllViews();
-            for (Tone tone : tones) {
-                View toneView = createToneView(tone);
-                toneContainer.addView(toneView);
+            if (tones.isEmpty())
+                emptyMsg.setVisibility(View.VISIBLE);
+            else {
+                toneContainer.removeAllViews();
+                for (Tone tone : tones) {
+                    View toneView = createToneView(tone);
+                    toneContainer.addView(toneView);
+                }
             }
         });
 
