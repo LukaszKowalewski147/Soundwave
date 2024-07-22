@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/tone_to_mix_tone_name"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:focusable="true"
@@ -23,7 +23,6 @@
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="My first tone" />
@@ -44,7 +43,8 @@
         android:id="@+id/tone_to_mix_frequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@id/tone_to_mix_frequency_icon"
@@ -52,7 +52,7 @@
         tools:text="440Hz (A4)" />
 
     <ImageView
-        android:id="@+id/tone_to_mix_icon"
+        android:id="@+id/tone_to_mix_volume_icon"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@null"
@@ -66,12 +66,32 @@
         android:id="@+id/tone_to_mix_volume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintStart_toEndOf="@id/tone_to_mix_icon"
+        app:layout_constraintStart_toStartOf="@id/tone_to_mix_frequency"
         app:layout_constraintTop_toBottomOf="@id/tone_to_mix_frequency"
         tools:text="100%" />
+
+    <ImageView
+        android:id="@+id/tone_to_mix_sample_rate_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_sample_rate"
+        app:layout_constraintBottom_toBottomOf="@id/tone_to_mix_sample_rate"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tone_to_mix_sample_rate" />
+
+    <TextView
+        android:id="@+id/tone_to_mix_sample_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/tone_to_mix_frequency"
+        app:layout_constraintTop_toBottomOf="@id/tone_to_mix_volume"
+        tools:text="44.1kHz" />
 
     <ImageView
         android:id="@+id/tone_to_mix_duration_icon"

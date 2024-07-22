@@ -58,6 +58,7 @@ public class SelectToneToMixDialogFragment extends DialogFragment {
         TextView toneName = toneToMix.findViewById(R.id.tone_to_mix_tone_name);
         TextView toneFrequency = toneToMix.findViewById(R.id.tone_to_mix_frequency);
         TextView toneVolume = toneToMix.findViewById(R.id.tone_to_mix_volume);
+        TextView toneSampleRate = toneToMix.findViewById(R.id.tone_to_mix_sample_rate);
         TextView toneDuration = toneToMix.findViewById(R.id.tone_to_mix_duration);
 
         int frequency = tone.getFundamentalFrequency();
@@ -66,12 +67,14 @@ public class SelectToneToMixDialogFragment extends DialogFragment {
         String scale = UnitsConverter.convertFrequencyToNote(frequency);
         String frequencyDisplay = frequency + getString(R.string.affix_Hz) + " (" + scale + ")";
         String volume = tone.getMasterVolume() + getString(R.string.affix_percent);
+        String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
         String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
 
         toneName.setSelected(true);
         toneName.setText(name);
         toneFrequency.setText(frequencyDisplay);
         toneVolume.setText(volume);
+        toneSampleRate.setText(sampleRate);
         toneDuration.setText(duration);
 
         toneToMix.setOnClickListener(v -> {
