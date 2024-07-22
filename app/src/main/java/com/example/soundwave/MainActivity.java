@@ -50,16 +50,15 @@ public class MainActivity extends AppCompatActivity {
         binding.mainTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Fragment fragment = null;
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new HomepageTonesFragment();
+                        currentFragment = new HomepageTonesFragment();
                         break;
                     case 1:
-                        fragment = new HomepageMusicFragment();
+                        currentFragment = new HomepageMusicFragment();
                         break;
                 }
-                loadFragment(fragment);
+                loadFragment(currentFragment);
             }
 
             @Override
@@ -99,10 +98,11 @@ public class MainActivity extends AppCompatActivity {
                     loadFragment(currentFragment);
                 }
             } else if (fragmentId == R.id.my_homepage) {
-                if (!(currentFragment instanceof HomepageTonesFragment)) {
+                if (!(currentFragment instanceof HomepageTonesFragment) && !(currentFragment instanceof HomepageMusicFragment)) {
                     manageVisibilityOfTopMenu(true);
                     currentFragment = new HomepageTonesFragment();
                     loadFragment(currentFragment);
+                    binding.mainTabLayout.selectTab(binding.mainTabLayout.getTabAt(0));
                 }
             } else if (fragmentId == R.id.tone_streaming) {
                 if (!(currentFragment instanceof ToneStreamingFragment)) {
