@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneClickListener;
@@ -37,6 +38,7 @@ public class HomepageTonesFragment extends Fragment implements OnToneClickListen
         viewModel = new ViewModelProvider(this).get(HomepageTonesViewModel.class);
         initializeLayout();
         initializeObservers();
+        initializeListeners();
         return binding.getRoot();
     }
 
@@ -66,6 +68,13 @@ public class HomepageTonesFragment extends Fragment implements OnToneClickListen
             if (!aBoolean)
                 toneViewAdapter.notifyItemChanged(viewModel.getLastPlayedTonePosition());
             // Notify only on natural end of playback
+        });
+    }
+
+    private void initializeListeners() {
+        binding.tonesToneCreatorBtn.setOnClickListener(v -> {
+            MainActivity mainActivity = (MainActivity) requireActivity();
+            mainActivity.openToneCreator();
         });
     }
 

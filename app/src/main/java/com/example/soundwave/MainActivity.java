@@ -124,6 +124,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void openToneCreator() {
+        binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
+    }
+
+    public void openToneMixer() {
+        binding.mainBottomNavView.setSelectedItemId(R.id.tone_mixer);
+    }
+
     public void openToneCreatorInEditionMode(Tone tone) {
         toneToEditBundle = new Bundle();
         toneToEditBundle.putSerializable("tone", tone);

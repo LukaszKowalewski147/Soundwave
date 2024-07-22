@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.additionalviews.MusicViewAdapter;
 import com.example.soundwave.additionalviews.OnMusicClickListener;
@@ -36,6 +37,7 @@ public class HomepageMusicFragment extends Fragment implements OnMusicClickListe
         viewModel = new ViewModelProvider(this).get(HomepageMusicViewModel.class);
         initializeLayout();
         initializeObservers();
+        initializeListeners();
         return binding.getRoot();
     }
 
@@ -64,6 +66,13 @@ public class HomepageMusicFragment extends Fragment implements OnMusicClickListe
             if (!aBoolean)
                 musicViewAdapter.notifyItemChanged(viewModel.getLastPlayedMusicPosition());
             // Notify only on natural end of playback
+        });
+    }
+
+    private void initializeListeners() {
+        binding.musicTonesMixerBtn.setOnClickListener(v -> {
+            MainActivity mainActivity = (MainActivity) requireActivity();
+            mainActivity.openToneMixer();
         });
     }
 
