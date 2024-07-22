@@ -54,10 +54,9 @@ public class HomepageMusicFragment extends Fragment implements OnMusicClickListe
     private void initializeObservers() {
         viewModel.getAllMusic().observe(getViewLifecycleOwner(), musicList -> {
             if (musicList != null) {
+                musicViewAdapter.setMusicItems(musicList);
                 if (musicList.isEmpty())
                     showEmptyLayout();
-                else
-                    musicViewAdapter.setMusicItems(musicList);
             }
         });
 

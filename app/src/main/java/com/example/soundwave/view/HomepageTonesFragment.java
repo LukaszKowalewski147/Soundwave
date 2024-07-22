@@ -56,10 +56,9 @@ public class HomepageTonesFragment extends Fragment implements OnToneClickListen
     private void initializeObservers() {
         viewModel.getAllTones().observe(getViewLifecycleOwner(), tones -> {
             if (tones != null) {
+                toneViewAdapter.setToneItems(tones);
                 if (tones.isEmpty())
                     showEmptyLayout();
-                else
-                    toneViewAdapter.setToneItems(tones);
             }
         });
 
