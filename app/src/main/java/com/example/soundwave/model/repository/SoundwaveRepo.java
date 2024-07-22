@@ -4,7 +4,9 @@ import android.app.Application;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.soundwave.model.dao.MusicDao;
 import com.example.soundwave.model.dao.ToneDao;
+import com.example.soundwave.model.entity.Music;
 import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.local.SoundwaveDatabase;
 
@@ -19,8 +21,8 @@ public class SoundwaveRepo {
     private final ToneDao toneDao;
     private final LiveData<List<Tone>> allTones;
 
-    //private MusicDao musicDao;
-    //private LiveData<List<Music>> allMusic;
+    private MusicDao musicDao;
+    private LiveData<List<Music>> allMusic;
 
     public SoundwaveRepo(Application application) {
         SoundwaveDatabase database = SoundwaveDatabase.getInstance(application);
@@ -30,8 +32,8 @@ public class SoundwaveRepo {
         toneDao = database.toneDao();
         allTones = toneDao.getAllTones();
 
-        //musicDao = database.musicDao();
-        //allMusic = musicDao.getAllMusic();
+        musicDao = database.musicDao();
+        allMusic = musicDao.getAllMusic();
     }
 
     public void insert(Tone tone) {
@@ -53,16 +55,16 @@ public class SoundwaveRepo {
     public LiveData<List<Tone>> getAllTones() {
         return allTones;
     }
-/*
-    public void insertMusic(Music music) {
+
+    public void insert(Music music) {
         executeDatabaseTask(() -> musicDao.insert(music));
     }
 
-    public void updateMusic(Music music) {
+    public void update(Music music) {
         executeDatabaseTask(() -> musicDao.update(music));
     }
 
-    public void deleteMusic(Music music) {
+    public void delete(Music music) {
         executeDatabaseTask(() -> musicDao.delete(music));
     }
 
@@ -73,7 +75,7 @@ public class SoundwaveRepo {
     public LiveData<List<Music>> getAllMusic() {
         return allMusic;
     }
-*/
+
     // Performs a database operation in the background
     private void executeDatabaseTask(Runnable task) {
         executorService.execute(task);

@@ -16,25 +16,25 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.soundwave.R;
-import com.example.soundwave.databinding.FragmentHomepageBinding;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneClickListener;
 import com.example.soundwave.additionalviews.ToneViewAdapter;
+import com.example.soundwave.databinding.FragmentHomepageTonesBinding;
 import com.example.soundwave.utils.Options;
-import com.example.soundwave.viewmodel.HomepageViewModel;
+import com.example.soundwave.viewmodel.HomepageTonesViewModel;
 
 import java.util.ArrayList;
 
-public class HomepageFragment extends Fragment implements OnToneClickListener {
+public class HomepageTonesFragment extends Fragment implements OnToneClickListener {
 
-    private HomepageViewModel viewModel;
-    private FragmentHomepageBinding binding;
+    private HomepageTonesViewModel viewModel;
+    private FragmentHomepageTonesBinding binding;
     private ToneViewAdapter toneViewAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentHomepageBinding.inflate(inflater, container, false);
-        viewModel = new ViewModelProvider(this).get(HomepageViewModel.class);
+        binding = FragmentHomepageTonesBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(HomepageTonesViewModel.class);
         initializeLayout();
         initializeObservers();
         return binding.getRoot();
@@ -56,7 +56,10 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     private void initializeObservers() {
         viewModel.getAllTones().observe(getViewLifecycleOwner(), tones -> {
             if (tones != null) {
-                toneViewAdapter.setToneItems(tones);
+                if (tones.isEmpty())
+                    showEmptyLayout();
+                else
+                    toneViewAdapter.setToneItems(tones);
             }
         });
 
@@ -67,10 +70,14 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
         });
     }
 
+    private void showEmptyLayout() {
+        binding.tonesEmptyLayout.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onRenameClick(Tone tone) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.alert_dialog_homepage_rename_message);
+        builder.setMessage(R.string.alert_dialog_homepage_rename_tone_message);
 
         final EditText toneNewName = new EditText(getContext());
         toneNewName.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -78,8 +85,8 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
 
         builder.setView(toneNewName);
 
-        builder.setPositiveButton(R.string.alert_dialog_homepage_rename_positive, null);
-        builder.setNegativeButton(R.string.alert_dialog_homepage_rename_negative, null);
+        builder.setPositiveButton(R.string.alert_dialog_homepage_rename_tone_positive, null);
+        builder.setNegativeButton(R.string.alert_dialog_homepage_rename_tone_negative, null);
 
         AlertDialog dialog = builder.create();
 
@@ -88,9 +95,9 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
             if (!newName.isEmpty()) {
                 viewModel.renameTone(tone, newName).observe(getViewLifecycleOwner(), success -> {
                     if (success)
-                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_success, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_tone_success, Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_fail, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), R.string.alert_dialog_homepage_rename_tone_fail, Toast.LENGTH_SHORT).show();
                 });
                 dialog.dismiss();
             } else {
@@ -104,14 +111,14 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     @Override
     public void onDeleteClick(Tone tone) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.alert_dialog_homepage_delete_message);
-        builder.setPositiveButton(R.string.alert_dialog_homepage_delete_positive, (dialog, id) -> viewModel.deleteTone(tone).observe(getViewLifecycleOwner(), success -> {
+        builder.setMessage(R.string.alert_dialog_homepage_delete_tone_message);
+        builder.setPositiveButton(R.string.alert_dialog_homepage_delete_tone_positive, (dialog, id) -> viewModel.deleteTone(tone).observe(getViewLifecycleOwner(), success -> {
             if (success)
-                Toast.makeText(getContext(), R.string.alert_dialog_homepage_delete_success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.alert_dialog_homepage_delete_tone_success, Toast.LENGTH_SHORT).show();
             else
-                Toast.makeText(getContext(), R.string.alert_dialog_homepage_delete_fail, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.alert_dialog_homepage_delete_tone_fail, Toast.LENGTH_SHORT).show();
         }));
-        builder.setNegativeButton(R.string.alert_dialog_homepage_delete_negative, null);
+        builder.setNegativeButton(R.string.alert_dialog_homepage_delete_tone_negative, null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -120,16 +127,16 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     @Override
     public void onDownloadClick(Tone tone) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.alert_dialog_homepage_download_message);
+        builder.setMessage(R.string.alert_dialog_homepage_download_tone_message);
 
-        builder.setPositiveButton(R.string.alert_dialog_homepage_download_positive, (dialog, id) -> {
+        builder.setPositiveButton(R.string.alert_dialog_homepage_download_tone_positive, (dialog, id) -> {
             if (viewModel.downloadTone(tone))
-                Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_success) + " " + Options.filepathToDownload, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_tone_success) + " " + Options.filepathToDownload, Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(getContext(), R.string.alert_dialog_homepage_download_fail, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.alert_dialog_homepage_download_tone_fail, Toast.LENGTH_LONG).show();
         });
 
-        builder.setNegativeButton(R.string.alert_dialog_homepage_download_negative, null);
+        builder.setNegativeButton(R.string.alert_dialog_homepage_download_tone_negative, null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -148,12 +155,12 @@ public class HomepageFragment extends Fragment implements OnToneClickListener {
     }
 
     @Override
-    public boolean isAnyTonePlaying() {
-        return viewModel.isAnyTonePlaying();
+    public boolean isTonePlaying(int position) {
+        return viewModel.isTonePlaying(position);
     }
 
     @Override
-    public boolean isTonePlaying(int position) {
-        return viewModel.isTonePlaying(position);
+    public boolean isAnyTonePlaying() {
+        return viewModel.isAnyTonePlaying();
     }
 }

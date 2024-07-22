@@ -13,10 +13,12 @@ import com.example.soundwave.components.Tone;
 import com.example.soundwave.databinding.ActivityMainBinding;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.WavCreator;
-import com.example.soundwave.view.HomepageFragment;
+import com.example.soundwave.view.HomepageMusicFragment;
+import com.example.soundwave.view.HomepageTonesFragment;
 import com.example.soundwave.view.ToneCreatorFragment;
 import com.example.soundwave.view.ToneMixerFragment;
 import com.example.soundwave.view.ToneStreamingFragment;
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
 
@@ -37,10 +39,37 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        currentFragment = new HomepageFragment();
+        currentFragment = new HomepageTonesFragment();
         loadFragment(currentFragment);
 
         binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);
+
+        binding.mainTabLayout.addTab(binding.mainTabLayout.newTab().setText("Tones"));
+        binding.mainTabLayout.addTab(binding.mainTabLayout.newTab().setText("Music"));
+
+        binding.mainTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment fragment = null;
+                switch (tab.getPosition()) {
+                    case 0:
+                        fragment = new HomepageTonesFragment();
+                        break;
+                    case 1:
+                        fragment = new HomepageMusicFragment();
+                        break;
+                }
+                loadFragment(fragment);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
 
         binding.mainBottomNavView.setOnItemSelectedListener(item -> {
             int fragmentId = item.getItemId();
@@ -70,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
                     loadFragment(currentFragment);
                 }
             } else if (fragmentId == R.id.my_homepage) {
-                if (!(currentFragment instanceof HomepageFragment)) {
+                if (!(currentFragment instanceof HomepageTonesFragment)) {
                     manageVisibilityOfTopMenu(true);
-                    currentFragment = new HomepageFragment();
+                    currentFragment = new HomepageTonesFragment();
                     loadFragment(currentFragment);
                 }
             } else if (fragmentId == R.id.tone_streaming) {
@@ -131,13 +160,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void manageVisibilityOfTopMenu(boolean visible) {
         if (visible) {
-            final float scale = getResources().getDisplayMetrics().density;
-            int pixels = (int) (48 * scale + 0.5f); //48dp
+            //final float scale = getResources().getDisplayMetrics().density;
+            //int pixels = (int) (48 * scale + 0.5f); //48dp
 
-            binding.mainGuidelineTop.setGuidelineBegin(pixels);
+            //binding.mainGuidelineTop.setGuidelineBegin(pixels);
             binding.mainTopMenu.setVisibility(View.VISIBLE);
         } else {
-            binding.mainGuidelineTop.setGuidelineBegin(0);
+            //binding.mainGuidelineTop.setGuidelineBegin(0);
             binding.mainTopMenu.setVisibility(View.GONE);
         }
     }

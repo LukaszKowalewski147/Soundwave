@@ -374,7 +374,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:background="?android:selectableItemBackground"
-        android:contentDescription="@string/desc_play_tone_btn"
+        android:contentDescription="@string/desc_download_tone_btn"
         android:padding="8dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_download"

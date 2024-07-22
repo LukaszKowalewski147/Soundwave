@@ -1,6 +1,7 @@
 package com.example.soundwave.utils;
 
 import com.example.soundwave.Overtone;
+import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
@@ -23,6 +24,19 @@ public class ToneParser {
         tone.setName(name);
 
         return tone;
+    }
+
+    public Music parseMusicFromDb(com.example.soundwave.model.entity.Music dbMusic) {
+        int id = dbMusic.getId();
+        String name = dbMusic.getName();
+        SampleRate sampleRate = parseSampleRate(dbMusic);
+        byte[] samples = dbMusic.getSamples16BitPCM();
+
+        Music music = new Music(sampleRate, samples);
+        music.setId(id);
+        music.setName(name);
+
+        return music;
     }
 
     public com.example.soundwave.model.entity.Tone parseToneToDbEntity(Tone tone) {
@@ -49,9 +63,21 @@ public class ToneParser {
                 toneVolume, envelopeComponent, overtonesComponent, sampleRate);
     }
 
+    public com.example.soundwave.model.entity.Music parseMusicToDbEntity(Music music) {
+        String musicName = music.getName();
+        String sampleRate = UnitsConverter.convertSampleRateToStringVisible(music.getSampleRate());
+        byte[] samples16BitPCM = music.getSamples16BitPCM();
+
+        return new com.example.soundwave.model.entity.Music(musicName, sampleRate, samples16BitPCM);
+    }
+
 
     private SampleRate parseSampleRate(com.example.soundwave.model.entity.Tone dbTone){
         return UnitsConverter.convertStringToSampleRate(dbTone.getSampleRate());
+    }
+
+    private SampleRate parseSampleRate(com.example.soundwave.model.entity.Music dbMusic){
+        return UnitsConverter.convertStringToSampleRate(dbMusic.getSampleRate());
     }
 
     private EnvelopeComponent parseEnvelopeComponent(com.example.soundwave.model.entity.Tone dbTone) {

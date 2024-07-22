@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_music_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/background_shadow_item"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/music_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:src="@drawable/ic_play_note"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/music_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:freezesText="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxWidth="200dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toBottomOf="@id/music_icon"
+        app:layout_constraintStart_toEndOf="@id/music_icon"
+        app:layout_constraintTop_toTopOf="@id/music_icon"
+        tools:text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" />
+
+    <ImageView
+        android:id="@+id/music_rename_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:contentDescription="@null"
+        android:paddingStart="4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="1dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_edit_name"
+        app:layout_constraintBottom_toBottomOf="@id/music_name"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toEndOf="@id/music_name"
+        app:layout_constraintTop_toTopOf="@id/music_name"
+        app:tint="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/music_rename_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:foreground="?attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@id/music_icon"
+        app:layout_constraintEnd_toEndOf="@id/music_rename_icon"
+        app:layout_constraintStart_toStartOf="@id/music_name"
+        app:layout_constraintTop_toTopOf="@id/music_icon" />
+
+    <ImageButton
+        android:id="@+id/music_delete_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/desc_delete_music_btn"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_delete"
+        app:layout_constraintBottom_toBottomOf="@id/music_rename_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/music_rename_icon" />
+
+    <ImageView
+        android:id="@+id/music_details_sample_rate_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_sample_rate"
+        app:layout_constraintBottom_toBottomOf="@id/music_details_sample_rate_header"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/music_details_sample_rate_header" />
+
+    <TextView
+        android:id="@+id/music_details_sample_rate_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ems="5"
+        android:text="@string/sample_rate_header"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/music_details_sample_rate_icon"
+        app:layout_constraintTop_toBottomOf="@id/music_icon" />
+
+    <TextView
+        android:id="@+id/music_details_sample_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/music_details_sample_rate_header"
+        app:layout_constraintTop_toTopOf="@id/music_details_sample_rate_header"
+        tools:text="44.1kHz" />
+
+    <TextView
+        android:id="@+id/music_details_other_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="5"
+        android:text="Other info"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/music_details_sample_rate_header" />
+
+    <TextView
+        android:id="@+id/music_details_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/music_details_sample_rate"
+        app:layout_constraintTop_toTopOf="@id/music_details_other_header"
+        tools:text="comming soon" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/music_more_info_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/background_btn_standard"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/more_info_btn"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/music_details_other_header" />
+
+    <ImageView
+        android:id="@+id/music_details_duration_icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_duration"
+        app:layout_constraintBottom_toBottomOf="@id/music_details_duration"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toStartOf="@id/music_details_duration"
+        app:layout_constraintTop_toTopOf="@id/music_details_duration" />
+
+    <TextView
+        android:id="@+id/music_details_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/music_play_stop_btn"
+        app:layout_constraintEnd_toStartOf="@id/music_play_stop_btn"
+        app:layout_constraintTop_toTopOf="@id/music_play_stop_btn"
+        tools:text="1.250s" />
+
+    <ImageButton
+        android:id="@+id/music_play_stop_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="4dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/desc_play_music_btn"
+        android:padding="6dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_play_tone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/music_download_btn"
+        app:tint="@color/white" />
+
+    <ImageButton
+        android:id="@+id/music_download_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/desc_download_music_btn"
+        android:padding="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_download"
+        app:layout_constraintBottom_toBottomOf="@id/music_more_info_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/music_more_info_btn"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

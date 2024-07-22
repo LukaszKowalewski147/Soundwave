@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class HomepageViewModel extends AndroidViewModel {
+public class HomepageTonesViewModel extends AndroidViewModel {
 
     private final SoundwaveRepo repository;
     private final LiveData<List<Tone>> allTones;
@@ -34,7 +34,7 @@ public class HomepageViewModel extends AndroidViewModel {
     private Handler handler;
     private Runnable runnable;
 
-    public HomepageViewModel(@NonNull Application application) {
+    public HomepageTonesViewModel(@NonNull Application application) {
         super(application);
         repository = new SoundwaveRepo(application);
 

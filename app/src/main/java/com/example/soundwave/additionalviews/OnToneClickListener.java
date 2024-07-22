@@ -10,5 +10,4 @@ public interface OnToneClickListener {
     void stopTonePlaying(boolean anyTone);
     boolean isTonePlaying(int position);
     boolean isAnyTonePlaying();
-
 }

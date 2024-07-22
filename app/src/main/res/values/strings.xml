@@ -98,27 +98,50 @@
     <string name="alert_dialog_tone_mixer_exit_positive">YES</string>
     <string name="alert_dialog_tone_mixer_exit_negative">NO</string>
 
-    <string name="alert_dialog_homepage_delete_message">Do you want to delete tone?</string>
-    <string name="alert_dialog_homepage_delete_positive">YES</string>
-    <string name="alert_dialog_homepage_delete_negative">NO</string>
-    <string name="alert_dialog_homepage_delete_success">Tone deleted</string>
-    <string name="alert_dialog_homepage_delete_fail">Deletion failed</string>
+    <string name="alert_dialog_homepage_delete_tone_message">Do you want to delete tone?</string>
+    <string name="alert_dialog_homepage_delete_tone_positive">YES</string>
+    <string name="alert_dialog_homepage_delete_tone_negative">NO</string>
+    <string name="alert_dialog_homepage_delete_tone_success">Tone deleted</string>
+    <string name="alert_dialog_homepage_delete_tone_fail">Deletion failed</string>
 
-    <string name="alert_dialog_homepage_rename_message">Give your tone a new name…</string>
-    <string name="alert_dialog_homepage_rename_positive">RENAME</string>
-    <string name="alert_dialog_homepage_rename_negative">Cancel</string>
-    <string name="alert_dialog_homepage_rename_success">Tone renamed</string>
-    <string name="alert_dialog_homepage_rename_fail">Renaming failed</string>
+    <string name="alert_dialog_homepage_delete_music_message">Do you want to delete music?</string>
+    <string name="alert_dialog_homepage_delete_music_positive">YES</string>
+    <string name="alert_dialog_homepage_delete_music_negative">NO</string>
+    <string name="alert_dialog_homepage_delete_music_success">Music deleted</string>
+    <string name="alert_dialog_homepage_delete_music_fail">Deletion failed</string>
 
-    <string name="alert_dialog_homepage_download_message">Do you want to download this tone?</string>
-    <string name="alert_dialog_homepage_download_positive">YES</string>
-    <string name="alert_dialog_homepage_download_negative">NO</string>
-    <string name="alert_dialog_homepage_download_success">Tone downloaded to:</string>
-    <string name="alert_dialog_homepage_download_fail">Downloading failed</string>
+    <string name="alert_dialog_homepage_rename_tone_message">Give your tone a new name…</string>
+    <string name="alert_dialog_homepage_rename_tone_positive">RENAME</string>
+    <string name="alert_dialog_homepage_rename_tone_negative">Cancel</string>
+    <string name="alert_dialog_homepage_rename_tone_success">Tone renamed</string>
+    <string name="alert_dialog_homepage_rename_tone_fail">Renaming failed</string>
+
+    <string name="alert_dialog_homepage_rename_music_message">Give your music a new name…</string>
+    <string name="alert_dialog_homepage_rename_music_positive">RENAME</string>
+    <string name="alert_dialog_homepage_rename_music_negative">Cancel</string>
+    <string name="alert_dialog_homepage_rename_music_success">Music renamed</string>
+    <string name="alert_dialog_homepage_rename_music_fail">Renaming failed</string>
+
+    <string name="alert_dialog_homepage_download_tone_message">Do you want to download this tone?</string>
+    <string name="alert_dialog_homepage_download_tone_positive">YES</string>
+    <string name="alert_dialog_homepage_download_tone_negative">NO</string>
+    <string name="alert_dialog_homepage_download_tone_success">Tone downloaded to:</string>
+    <string name="alert_dialog_homepage_download_tone_fail">Downloading failed</string>
+
+    <string name="alert_dialog_homepage_download_music_message">Do you want to download this music?</string>
+    <string name="alert_dialog_homepage_download_music_positive">YES</string>
+    <string name="alert_dialog_homepage_download_music_negative">NO</string>
+    <string name="alert_dialog_homepage_download_music_success">Music downloaded to:</string>
+    <string name="alert_dialog_homepage_download_music_fail">Downloading failed</string>
 
     <!--    Error messages      -->
     <string name="error_msg_filepath_to_download_fail">Filepath to download error</string>
     <string name="error_msg_empty_name">Name cannot be empty</string>
+    <string name="error_msg_empty_tones">No tones found</string>
+
+    <!--    Messages            -->
+    <string name="msg_empty_tones">Create your first tone in Tone Creator!</string>
+    <string name="msg_empty_music">Create your first music in Tones Mixer!</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">
@@ -163,6 +186,11 @@
     <string name="desc_play_pause_tone_btn">Play/pause tone</string>
     <string name="desc_edit_tone_btn">Edit tone</string>
     <string name="desc_delete_tone_btn">Delete tone</string>
+    <string name="desc_download_tone_btn">Download tone</string>
+    <string name="desc_play_music_btn">Play music</string>
+    <string name="desc_edit_music_btn">Edit music</string>
+    <string name="desc_delete_music_btn">Delete music</string>
+    <string name="desc_download_music_btn">Download music</string>
 
     <!--    Old                 -->
     <string name="playback_mode_header">Playback mode</string>
