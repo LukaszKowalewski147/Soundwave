@@ -185,6 +185,8 @@
     <string name="desc_play_tone_btn">Play tone</string>
     <string name="desc_play_pause_tone_btn">Play/pause tone</string>
     <string name="desc_edit_tone_btn">Edit tone</string>
+    <string name="desc_add_tone_to_workbench_btn">Add tone to workbench</string>
+    <string name="desc_workbench">Workbench</string>
     <string name="desc_delete_tone_btn">Delete tone</string>
     <string name="desc_download_tone_btn">Download tone</string>
     <string name="desc_play_music_btn">Play music</string>

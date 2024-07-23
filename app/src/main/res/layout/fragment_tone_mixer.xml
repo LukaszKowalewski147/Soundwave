@@ -21,7 +21,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/background_shadow_layout">
+            android:background="@drawable/background_shadow_layout"
+            tools:ignore="VisualLintBounds">
 
             <LinearLayout
                 android:id="@+id/tone_mixer_timeline"
@@ -71,7 +72,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track1"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage,VisualLintOverlap" />
 
             <View
                 android:id="@+id/sep2"
@@ -108,7 +109,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track2"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage,VisualLintOverlap" />
 
             <View
                 android:id="@+id/sep3"
@@ -145,7 +146,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track3"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage,VisualLintOverlap" />
 
             <View
                 android:id="@+id/sep4"
@@ -182,7 +183,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track4"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage,VisualLintOverlap" />
 
             <View
                 android:id="@+id/sep5"
@@ -219,7 +220,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track5"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage,VisualLintOverlap" />
 
             <View
                 android:layout_width="0dp"
@@ -237,9 +238,9 @@
         android:id="@+id/tone_mixer_time_indicator"
         android:layout_width="1dp"
         android:layout_height="0dp"
+        android:layout_marginStart="@dimen/tone_mixer_track_padding_start"
         android:background="@color/app_yellow_gradient_end"
         android:visibility="gone"
-        android:layout_marginStart="@dimen/tone_mixer_track_padding_start"
         app:layout_constraintBottom_toBottomOf="@id/tone_mixer_music_scroll_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -250,6 +251,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:background="@color/dark_gray"
+        android:contentDescription="@string/desc_workbench"
         android:fillViewport="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -291,6 +293,7 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/background_btn_standard"
+        android:contentDescription="@string/desc_add_tone_to_workbench_btn"
         android:drawableTop="@drawable/ic_add"
         android:foreground="?android:selectableItemBackground"
         android:paddingTop="7dp"
@@ -349,7 +352,8 @@
             app:layout_constraintEnd_toStartOf="@id/tone_mixer_play_stop_music_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header_underline" />
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_control_panel_header_underline"
+            tools:ignore="VisualLintOverlap" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_play_stop_music_btn"
@@ -367,7 +371,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/tone_mixer_generate_music_btn"
-            app:layout_constraintTop_toTopOf="@id/tone_mixer_generate_music_btn" />
+            app:layout_constraintTop_toTopOf="@id/tone_mixer_generate_music_btn"
+            tools:ignore="VisualLintOverlap" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_save_music_btn"
@@ -386,7 +391,8 @@
             app:layout_constraintEnd_toStartOf="@id/tone_mixer_reset_music_btn"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tone_mixer_generate_music_btn" />
+            app:layout_constraintTop_toBottomOf="@id/tone_mixer_generate_music_btn"
+            tools:ignore="VisualLintOverlap" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_reset_music_btn"
@@ -404,7 +410,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@id/tone_mixer_save_music_btn"
-            app:layout_constraintTop_toTopOf="@id/tone_mixer_save_music_btn" />
+            app:layout_constraintTop_toTopOf="@id/tone_mixer_save_music_btn"
+            tools:ignore="VisualLintOverlap" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tone_mixer_remove_track_tone"
@@ -420,8 +427,8 @@
                 android:id="@+id/tone_mixer_remove_track_tone_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:contentDescription="TODO"
                 android:elevation="3dp"
+                android:importantForAccessibility="no"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_delete"
                 app:layout_constraintBottom_toBottomOf="parent"

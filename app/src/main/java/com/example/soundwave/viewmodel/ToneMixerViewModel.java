@@ -25,6 +25,7 @@ import com.example.soundwave.utils.TrackToneData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ToneMixerViewModel extends AndroidViewModel {
 
@@ -133,8 +134,9 @@ public class ToneMixerViewModel extends AndroidViewModel {
             setControlPanelComponentPlayMusic(buttonsStates);
 
             Thread thread = new Thread() {
+                /** @noinspection CallToPrintStackTrace*/
                 public void run() {
-                    int waitingTime = music.getValue().getDurationInMilliseconds();
+                    int waitingTime = Objects.requireNonNull(music.getValue()).getDurationInMilliseconds();
                     try {
                         Thread.sleep(waitingTime);
                     } catch (InterruptedException e) {
@@ -154,7 +156,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
     }
 
     public void saveMusic(String musicName) {
-        Music baseMusic = music.getValue();
+        Music baseMusic = Objects.requireNonNull(music.getValue());
         baseMusic.setName(musicName);
 
         com.example.soundwave.model.entity.Music musicEntity = new ToneParser().parseMusicToDbEntity(baseMusic);
@@ -339,7 +341,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
 
     //  CONTROL PANEL
     private HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> getControlPanelButtonsStates() {
-        return controlPanelComponent.getValue().getButtonsStates();
+        return Objects.requireNonNull(controlPanelComponent.getValue()).getButtonsStates();
     }
 
     private void setControlPanelComponentDefault() {
@@ -422,6 +424,6 @@ public class ToneMixerViewModel extends AndroidViewModel {
     }
 
     public int getMusicDurationInMilliseconds() {
-        return music.getValue().getDurationInMilliseconds();
+        return Objects.requireNonNull(music.getValue()).getDurationInMilliseconds();
     }
 }
