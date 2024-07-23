@@ -1,6 +1,9 @@
 package com.example.soundwave.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -303,7 +307,10 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
             dialog.show();
         });
 
-        binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> viewModel.playStopMusic());
+        binding.toneMixerPlayStopMusicBtn.setOnClickListener(v -> {
+            viewModel.playStopMusic();
+            animateTimeIndicator();
+        });
 
         binding.toneMixerSaveMusicBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -670,6 +677,81 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         viewModel.setCurrentTrackAnimation(trackNumber, colorAnimation);
 
         return colorAnimation;
+    }
+
+    private void animateTimeIndicator() {
+        float indicatorStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
+        int musicDurationInMilliseconds = viewModel.getMusicDurationInMilliseconds();
+        boolean scrollToAnimate = musicDurationInMilliseconds > 1000;
+
+        binding.toneMixerMusicScrollView.scrollTo(0,0);
+        binding.toneMixerTimeIndicator.setX(indicatorStart);
+        binding.toneMixerTimeIndicator.setVisibility(View.VISIBLE);
+
+        ObjectAnimator indicatorAnimator;
+        ObjectAnimator scrollAnimator = getScrollAnimator(musicDurationInMilliseconds);
+
+        if (scrollToAnimate)
+            indicatorAnimator = getLongTimeIndicatorAnimator(indicatorStart, scrollAnimator);
+        else
+            indicatorAnimator = getShortTimeIndicatorAnimator(indicatorStart, musicDurationInMilliseconds);
+
+        indicatorAnimator.start();
+    }
+
+    private ObjectAnimator getScrollAnimator(int musicDurationInMilliseconds) {
+        if (musicDurationInMilliseconds <= 1000)
+            return null;
+
+        double musicDurationInSeconds = UnitsConverter.convertMillisecondsToSeconds(musicDurationInMilliseconds);
+        int scrollStart = binding.toneMixerMusicScrollView.getScrollX();
+        int scrollEnd = (int) Math.ceil(getOneSecondWidthPixels() * (musicDurationInSeconds - 1));
+
+        ObjectAnimator scrollAnimator = ObjectAnimator.ofInt(binding.toneMixerMusicScrollView, "scrollX", scrollStart, scrollEnd);
+        scrollAnimator.setDuration(musicDurationInMilliseconds - 1000);
+        scrollAnimator.setInterpolator(new LinearInterpolator());
+
+        scrollAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                binding.toneMixerTimeIndicator.setVisibility(View.INVISIBLE);
+                super.onAnimationEnd(animation);
+            }
+        });
+        return scrollAnimator;
+    }
+
+    private ObjectAnimator getShortTimeIndicatorAnimator (float indicatorStart, int musicDurationInMilliseconds) {
+        double musicDurationInSeconds = UnitsConverter.convertMillisecondsToSeconds(musicDurationInMilliseconds);
+        float indicatorEnd = (float) (getOneSecondWidthPixels() * musicDurationInSeconds) + indicatorStart;     // <1s of pixels
+
+        ObjectAnimator indicatorAnimator = ObjectAnimator.ofFloat(binding.toneMixerTimeIndicator, "x", indicatorStart, indicatorEnd);
+        indicatorAnimator.setDuration(musicDurationInMilliseconds);     // <1s
+        indicatorAnimator.setInterpolator(new LinearInterpolator());
+        indicatorAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                binding.toneMixerTimeIndicator.setVisibility(View.INVISIBLE);
+                super.onAnimationEnd(animation);
+            }
+        });
+        return indicatorAnimator;
+    }
+
+    private ObjectAnimator getLongTimeIndicatorAnimator (float indicatorStart, ObjectAnimator scrollAnimator) {
+        float indicatorEnd = indicatorStart + getOneSecondWidthPixels();    // 1s of pixels
+
+        ObjectAnimator indicatorAnimator = ObjectAnimator.ofFloat(binding.toneMixerTimeIndicator, "x", indicatorStart, indicatorEnd);
+        indicatorAnimator.setDuration(1000);    // 1s of pixels
+        indicatorAnimator.setInterpolator(new LinearInterpolator());
+        indicatorAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                scrollAnimator.start();
+                super.onAnimationEnd(animation);
+            }
+        });
+        return indicatorAnimator;
     }
 
     private void manageControlPanel(ControlPanelComponent controlPanelComponent) {

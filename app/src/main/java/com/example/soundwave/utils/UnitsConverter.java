@@ -317,6 +317,10 @@ public class UnitsConverter {
         return Scale.values()[index].noteName;
     }
 
+    public static double convertMillisecondsToSeconds(int milliseconds) {
+        return milliseconds / 1000.0d;
+    }
+
     public static int dpToPx(int dp) {
         return Math.round(dp * Options.displayDensity);
     }

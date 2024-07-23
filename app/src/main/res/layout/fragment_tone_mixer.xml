@@ -234,10 +234,12 @@
     </HorizontalScrollView>
 
     <View
+        android:id="@+id/tone_mixer_time_indicator"
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:background="@color/app_yellow_gradient_end"
-        android:visibility="invisible"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/tone_mixer_track_padding_start"
         app:layout_constraintBottom_toBottomOf="@id/tone_mixer_music_scroll_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -418,6 +420,7 @@
                 android:id="@+id/tone_mixer_remove_track_tone_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:contentDescription="TODO"
                 android:elevation="3dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_delete"

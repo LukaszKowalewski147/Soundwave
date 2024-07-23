@@ -420,4 +420,8 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setControlPanelComponentEditorDefault();
         anyChange = false;
     }
+
+    public int getMusicDurationInMilliseconds() {
+        return music.getValue().getDurationInMilliseconds();
+    }
 }
