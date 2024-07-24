@@ -139,7 +139,7 @@ public class HomepageTonesFragment extends Fragment implements OnToneClickListen
 
         builder.setPositiveButton(R.string.alert_dialog_homepage_download_tone_positive, (dialog, id) -> {
             if (viewModel.downloadTone(tone))
-                Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_tone_success) + " " + Options.filepathToDownload, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_tone_success) + " " + Options.filepathToDownloadTones, Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(getContext(), R.string.alert_dialog_homepage_download_tone_fail, Toast.LENGTH_LONG).show();
         });

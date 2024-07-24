@@ -2,6 +2,7 @@ package com.example.soundwave.utils;
 
 import android.os.Environment;
 
+import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 
 import java.io.File;
@@ -11,27 +12,43 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Objects;
 
 public class WavCreator {
 
-    private static final String FILE_FOLDER = "myTones";
+    private static final String FILE_FOLDER_TONES = "myTones";
+    private static final String FILE_FOLDER_MUSIC = "myMusic";
+    private static final String FILE_EXTENSION = ".wav";
+
     private final Tone tone;
+    private final Music music;
     private boolean success;
 
     public WavCreator(Tone tone) {
         this.tone = tone;
         this.success = false;
+        this.music = null;
     }
 
-    public static String getFileFolder() {
-        return FILE_FOLDER;
+    public WavCreator(Music music) {
+        this.music = music;
+        this.success = false;
+        this.tone = null;
+    }
+
+    public static String getFileFolderTones() {
+        return FILE_FOLDER_TONES;
+    }
+
+    public static String getFileFolderMusic() {
+        return FILE_FOLDER_MUSIC;
     }
 
     public boolean isSuccess() {
         return success;
     }
 
-    public void saveSound() {
+    public void download() {
         FileOutputStream out = null;
         if (isExternalStorageAvailable()) {
             File filepathBase = getFilepathBase();
@@ -40,10 +57,11 @@ public class WavCreator {
 
             String fileName = getFilename();
             File wavFile = new File(filepathBase, fileName);
+            byte[] pcmSamples = getPcmSamples();
             try {
                 out = new FileOutputStream(wavFile);
                 writeWavHeader(out);
-                out.write(tone.getPcmSound());
+                out.write(pcmSamples);
                 updateWavHeader(wavFile);
                 success = true;
             } catch (IOException e) {
@@ -60,16 +78,26 @@ public class WavCreator {
     }
 
     private File getFilepathBase() {
-        if (!Options.filepathToDownload.isEmpty()) {
-            return new File(Options.filepathToDownload);
-        }
+        String filepathToDownload = tone != null ? Options.filepathToDownloadTones : Options.filepathToDownloadMusic;
+
+        if (!filepathToDownload.isEmpty())
+            return new File(filepathToDownload);
+
         return null;
     }
 
     private String getFilename() {
-        String fileExtension = ".wav";
-        String sampleRateTxt = UnitsConverter.convertSampleRateToStringFile(tone.getSampleRate()) + "-";
-        return tone.getFundamentalFrequency() + "Hz-" + tone.getDurationInSeconds() + "s-" + sampleRateTxt + System.currentTimeMillis() + fileExtension;
+        String name = tone != null ? Objects.requireNonNull(tone).getName() : Objects.requireNonNull(music).getName();
+
+        return name + FILE_EXTENSION;
+    }
+
+    private int getSampleRate() {
+        return tone != null ? Objects.requireNonNull(tone).getSampleRate().sampleRate : Objects.requireNonNull(music).getSampleRate().sampleRate;
+    }
+
+    private byte[] getPcmSamples() {
+        return tone != null ? Objects.requireNonNull(tone).getPcmSound() :  Objects.requireNonNull(music).getSamples16BitPCM();
     }
 
     private boolean isExternalStorageAvailable() {
@@ -78,7 +106,7 @@ public class WavCreator {
     }
 
     private void writeWavHeader(OutputStream out) throws IOException {
-        final int sampleRate = tone.getSampleRate().sampleRate;
+        final int sampleRate = getSampleRate();
         short channels = 1;
         short bitDepth = 16;
 

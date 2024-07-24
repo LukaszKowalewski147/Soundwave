@@ -135,7 +135,8 @@
     <string name="alert_dialog_homepage_download_music_fail">Downloading failed</string>
 
     <!--    Error messages      -->
-    <string name="error_msg_filepath_to_download_fail">Filepath to download error</string>
+    <string name="error_msg_filepath_to_download_tones_fail">Filepath to download tones error</string>
+    <string name="error_msg_filepath_to_download_music_fail">Filepath to download music error</string>
     <string name="error_msg_empty_name">Name cannot be empty</string>
     <string name="error_msg_empty_tones">No tones found</string>
 

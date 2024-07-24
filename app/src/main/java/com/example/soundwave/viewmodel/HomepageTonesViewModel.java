@@ -108,7 +108,7 @@ public class HomepageTonesViewModel extends AndroidViewModel {
 
     public boolean downloadTone(Tone tone) {
         WavCreator wavCreator = new WavCreator(tone);
-        wavCreator.saveSound();
+        wavCreator.download();
         return wavCreator.isSuccess();
     }
 

@@ -72,11 +72,11 @@ public class ToneParser {
     }
 
 
-    private SampleRate parseSampleRate(com.example.soundwave.model.entity.Tone dbTone){
+    private SampleRate parseSampleRate(com.example.soundwave.model.entity.Tone dbTone) {
         return UnitsConverter.convertStringToSampleRate(dbTone.getSampleRate());
     }
 
-    private SampleRate parseSampleRate(com.example.soundwave.model.entity.Music dbMusic){
+    private SampleRate parseSampleRate(com.example.soundwave.model.entity.Music dbMusic) {
         return UnitsConverter.convertStringToSampleRate(dbMusic.getSampleRate());
     }
 

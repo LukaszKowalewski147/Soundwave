@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         setDisplayDensity();
         setTrackPaddingStart();
-        setFilepathToDownload();
+        setFilePathsToDownload();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -149,13 +149,19 @@ public class MainActivity extends AppCompatActivity {
         binding.mainBottomNavView.setSelectedItemId(fragmentId);
     }
 
-    private void setFilepathToDownload() {
-        File externalFilesDir = getExternalFilesDir(WavCreator.getFileFolder());
-        if (externalFilesDir != null) {
-            Options.filepathToDownload = externalFilesDir.toString();
-        } else {
-            Toast.makeText(this, R.string.error_msg_filepath_to_download_fail, Toast.LENGTH_SHORT).show();
-        }
+    private void setFilePathsToDownload() {
+        File externalFilesDirTones = getExternalFilesDir(WavCreator.getFileFolderTones());
+        File externalFilesDirMusic = getExternalFilesDir(WavCreator.getFileFolderMusic());
+
+        if (externalFilesDirTones != null)
+            Options.filepathToDownloadTones = externalFilesDirTones.toString();
+        else
+            Toast.makeText(this, R.string.error_msg_filepath_to_download_tones_fail, Toast.LENGTH_SHORT).show();
+
+        if (externalFilesDirMusic != null)
+            Options.filepathToDownloadMusic = externalFilesDirMusic.toString();
+        else
+            Toast.makeText(this, R.string.error_msg_filepath_to_download_music_fail, Toast.LENGTH_SHORT).show();
     }
 
     private void setDisplayDensity() {

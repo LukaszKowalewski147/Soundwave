@@ -13,6 +13,7 @@ import com.example.soundwave.components.Music;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.AudioPlayer;
 import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.utils.WavCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,10 +108,9 @@ public class HomepageMusicViewModel extends AndroidViewModel {
     }
 
     public boolean downloadMusic(Music music) {
-        //WavCreator wavCreator = new WavCreator(music);
-        //wavCreator.saveSound();
-        //return wavCreator.isSuccess();
-        return true;
+        WavCreator wavCreator = new WavCreator(music);
+        wavCreator.download();
+        return wavCreator.isSuccess();
     }
 
     public boolean isMusicPlaying(int position) {
