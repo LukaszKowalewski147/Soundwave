@@ -15,13 +15,13 @@ public class Music {
     @ColumnInfo(name = "sample_rate")
     private String sampleRate;
 
-    @ColumnInfo(name = "samples_16bit_pcm")
-    private byte[] samples16BitPCM;
+    @ColumnInfo(name = "samples_16bit_pcm_filepath")
+    private String samples16BitPcmFilepath;
 
-    public Music(String name, String sampleRate, byte[] samples16BitPCM) {
+    public Music(String name, String sampleRate, String samples16BitPcmFilepath) {
         this.name = name;
         this.sampleRate = sampleRate;
-        this.samples16BitPCM = samples16BitPCM;
+        this.samples16BitPcmFilepath = samples16BitPcmFilepath;
     }
 
     public void setId(int id) {
@@ -48,11 +48,11 @@ public class Music {
         return sampleRate;
     }
 
-    public void setSamples16BitPCM(byte[] samples16BitPCM) {
-        this.samples16BitPCM = samples16BitPCM;
+    public void setSamples16BitPcmFilepath(String samples16BitPcmFilepath) {
+        this.samples16BitPcmFilepath = samples16BitPcmFilepath;
     }
 
-    public byte[] getSamples16BitPCM() {
-        return samples16BitPCM;
+    public String getSamples16BitPcmFilepath() {
+        return samples16BitPcmFilepath;
     }
 }

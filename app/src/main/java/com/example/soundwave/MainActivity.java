@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setDisplayDensity();
         setTrackPaddingStart();
         setFilePathsToDownload();
+        setFilepathToSavePcmSamples();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -162,6 +163,15 @@ public class MainActivity extends AppCompatActivity {
             Options.filepathToDownloadMusic = externalFilesDirMusic.toString();
         else
             Toast.makeText(this, R.string.error_msg_filepath_to_download_music_fail, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setFilepathToSavePcmSamples() {
+        File filesDir = getFilesDir();
+
+        if (filesDir != null)
+            Options.filepathToSavePcmSamples = filesDir.toString();
+        else
+            Toast.makeText(this, R.string.error_msg_filepath_to_save_samples_fail, Toast.LENGTH_SHORT).show();
     }
 
     private void setDisplayDensity() {

@@ -137,7 +137,7 @@ public class HomepageMusicFragment extends Fragment implements OnMusicClickListe
 
         builder.setPositiveButton(R.string.alert_dialog_homepage_download_music_positive, (dialog, id) -> {
             if (viewModel.downloadMusic(music))
-                Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_music_success) + " " + Options.filepathToDownloadTones, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.alert_dialog_homepage_download_music_success) + " " + Options.filepathToDownloadMusic, Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(getContext(), R.string.alert_dialog_homepage_download_music_fail, Toast.LENGTH_LONG).show();
         });

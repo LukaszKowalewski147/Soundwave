@@ -137,6 +137,7 @@
     <!--    Error messages      -->
     <string name="error_msg_filepath_to_download_tones_fail">Filepath to download tones error</string>
     <string name="error_msg_filepath_to_download_music_fail">Filepath to download music error</string>
+    <string name="error_msg_filepath_to_save_samples_fail">Filepath to save audio samples error</string>
     <string name="error_msg_empty_name">Name cannot be empty</string>
     <string name="error_msg_empty_tones">No tones found</string>
 

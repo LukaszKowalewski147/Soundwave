@@ -7,6 +7,10 @@ import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class ToneParser {
@@ -30,7 +34,8 @@ public class ToneParser {
         int id = dbMusic.getId();
         String name = dbMusic.getName();
         SampleRate sampleRate = parseSampleRate(dbMusic);
-        byte[] samples = dbMusic.getSamples16BitPCM();
+        String samplesFilepath = dbMusic.getSamples16BitPcmFilepath();
+        byte[] samples = read16BitPcmSamples(samplesFilepath);
 
         Music music = new Music(sampleRate, samples);
         music.setId(id);
@@ -66,11 +71,20 @@ public class ToneParser {
     public com.example.soundwave.model.entity.Music parseMusicToDbEntity(Music music) {
         String musicName = music.getName();
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(music.getSampleRate());
-        byte[] samples16BitPCM = music.getSamples16BitPCM();
+        byte[] samples16BitPcm = music.getSamples16BitPCM();
+        long unixTime = System.currentTimeMillis();
+        String samplesFileName = "m-" + musicName + "-" + unixTime;
+        String samples16BitPcmFilepath = save16BitPcmSamples(samples16BitPcm, samplesFileName);
 
-        return new com.example.soundwave.model.entity.Music(musicName, sampleRate, samples16BitPCM);
+        return new com.example.soundwave.model.entity.Music(musicName, sampleRate, samples16BitPcmFilepath);
     }
 
+    public com.example.soundwave.model.entity.Music parseMusicToDbEntityForDeletion(Music music) {
+        com.example.soundwave.model.entity.Music musicToDelete = new com.example.soundwave.model.entity.Music("name", "samplerate", "samplespath");
+        musicToDelete.setId(music.getId());
+
+        return musicToDelete;
+    }
 
     private SampleRate parseSampleRate(com.example.soundwave.model.entity.Tone dbTone) {
         return UnitsConverter.convertStringToSampleRate(dbTone.getSampleRate());
@@ -133,5 +147,26 @@ public class ToneParser {
             }
         }
         return new OvertonesComponent(overtonesList, preset);
+    }
+
+    private String save16BitPcmSamples(byte[] samples, String filename) {
+        File audioFile = new File(Options.filepathToSavePcmSamples, filename);
+
+        try (FileOutputStream fos = new FileOutputStream(audioFile)) {
+            fos.write(samples);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return audioFile.getAbsolutePath();
+    }
+
+    private byte[] read16BitPcmSamples(String absoluteFilePath) {
+        File audioFile = new File(absoluteFilePath);
+
+        try {
+            return Files.readAllBytes(audioFile.toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

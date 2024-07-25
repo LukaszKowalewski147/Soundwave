@@ -11,12 +11,13 @@ import com.example.soundwave.model.dao.ToneDao;
 import com.example.soundwave.model.entity.Music;
 import com.example.soundwave.model.entity.Tone;
 
-@Database(entities = {Tone.class, Music.class}, version = 5)
+@Database(entities = {Tone.class, Music.class}, version = 7)
 public abstract class SoundwaveDatabase extends RoomDatabase {
 
     private static SoundwaveDatabase instance;
 
     public abstract ToneDao toneDao();
+
     public abstract MusicDao musicDao();
 
     public static synchronized SoundwaveDatabase getInstance(Context context) {

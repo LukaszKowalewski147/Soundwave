@@ -28,4 +28,7 @@ public interface MusicDao {
 
     @Query("SELECT * FROM music_table ORDER BY id DESC")
     LiveData<List<Music>> getAllMusic();
+
+    @Query("SELECT samples_16bit_pcm_filepath FROM music_table WHERE id = :id")
+    String getSamplesFilepath(int id);
 }

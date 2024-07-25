@@ -11,8 +11,10 @@ import com.example.soundwave.model.entity.Tone;
 import com.example.soundwave.model.local.SoundwaveDatabase;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SoundwaveRepo {
 
@@ -21,8 +23,8 @@ public class SoundwaveRepo {
     private final ToneDao toneDao;
     private final LiveData<List<Tone>> allTones;
 
-    private MusicDao musicDao;
-    private LiveData<List<Music>> allMusic;
+    private final MusicDao musicDao;
+    private final LiveData<List<Music>> allMusic;
 
     public SoundwaveRepo(Application application) {
         SoundwaveDatabase database = SoundwaveDatabase.getInstance(application);
@@ -74,6 +76,15 @@ public class SoundwaveRepo {
 
     public LiveData<List<Music>> getAllMusic() {
         return allMusic;
+    }
+
+    public String getSamplesFilepath(int id) {
+        Future<String> future = executorService.submit(() -> musicDao.getSamplesFilepath(id));
+        try {
+            return future.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Performs a database operation in the background

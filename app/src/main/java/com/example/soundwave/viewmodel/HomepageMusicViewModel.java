@@ -15,6 +15,7 @@ import com.example.soundwave.utils.AudioPlayer;
 import com.example.soundwave.utils.ToneParser;
 import com.example.soundwave.utils.WavCreator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -92,17 +93,20 @@ public class HomepageMusicViewModel extends AndroidViewModel {
     public LiveData<Boolean> deleteMusic(Music music) {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
 
-        com.example.soundwave.model.entity.Music musicToDelete = new ToneParser().parseMusicToDbEntity(music);
-        musicToDelete.setId(music.getId());
+        com.example.soundwave.model.entity.Music musicToDelete = new ToneParser().parseMusicToDbEntityForDeletion(music);
+        String samplesFilepath = repository.getSamplesFilepath(music.getId());
 
-        executorService.execute(() -> {
-            try {
-                repository.delete(musicToDelete);
-                result.postValue(true);
-            } catch (Exception e) {
-                result.postValue(false);
-            }
-        });
+        if (deleteMusicSamplesFromStorage(samplesFilepath)) {
+            executorService.execute(() -> {
+                try {
+                    repository.delete(musicToDelete);
+                    result.postValue(true);
+                } catch (Exception e) {
+                    result.postValue(false);
+                }
+            });
+        } else
+            result.postValue(false);
 
         return result;
     }
@@ -154,5 +158,14 @@ public class HomepageMusicViewModel extends AndroidViewModel {
         currentlyPlayingMusicPosition = -1;
 
         return lastPlayedMusicPosition;
+    }
+
+    private boolean deleteMusicSamplesFromStorage(String samplesFilepath) {
+        File file = new File(samplesFilepath);
+
+        if (file.exists())
+            return file.delete();
+        else
+            return false;
     }
 }
