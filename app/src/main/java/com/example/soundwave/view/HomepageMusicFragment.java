@@ -43,6 +43,7 @@ public class HomepageMusicFragment extends Fragment implements OnMusicClickListe
 
     @Override
     public void onDestroyView() {
+        viewModel.stopMusicPlaying();
         binding = null;
         super.onDestroyView();
     }
