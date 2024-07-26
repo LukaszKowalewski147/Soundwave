@@ -4,12 +4,15 @@ import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 
 public class AudioPlayer {
+    private final String TAG = "AudioPlayer";
+
     private AudioTrack audioTrack;
 
     public AudioPlayer() {
@@ -95,11 +98,13 @@ public class AudioPlayer {
     }
 
     private void fadeOutStop() {
+        int fadeOutHoldTime = 50;   // time in ms
         audioTrack.setVolume(0.0f);
+
         try {
-            Thread.sleep(50);
+            Thread.sleep(fadeOutHoldTime);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.w(TAG, "Fade out stop: could not wait " + fadeOutHoldTime + "ms to fade out stop");
         }
     }
 

@@ -54,7 +54,7 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
         holder.musicName.setSelected(true);
         holder.musicName.setText(name);
         holder.musicSampleRate.setText(sampleRate);
-        holder.musicOtherInfo.setText("comming soon");
+        holder.musicOtherInfo.setText("coming soon");
         holder.musicDuration.setText(duration);
 
         holder.musicRenameBtn.setOnClickListener(v -> listener.onRenameClick(music));

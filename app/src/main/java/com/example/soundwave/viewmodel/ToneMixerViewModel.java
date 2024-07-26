@@ -352,14 +352,6 @@ public class ToneMixerViewModel extends AndroidViewModel {
                 ControlPanelComponent.ButtonState.INACTIVE));
     }
 
-    private void setControlPanelComponentEditorDefault() {
-        controlPanelComponent.setValue(new ControlPanelComponent(
-                ControlPanelComponent.ButtonState.INACTIVE,
-                ControlPanelComponent.ButtonState.STANDARD,
-                ControlPanelComponent.ButtonState.INACTIVE,
-                ControlPanelComponent.ButtonState.INACTIVE));
-    }
-
     private void setControlPanelComponentMusicGenerated() {
         controlPanelComponent.setValue(new ControlPanelComponent(
                 ControlPanelComponent.ButtonState.INACTIVE,
@@ -416,11 +408,6 @@ public class ToneMixerViewModel extends AndroidViewModel {
             return;
 
         setControlPanelComponentAnyChange(buttonsStates);
-    }
-
-    public void setNoChange() {
-        setControlPanelComponentEditorDefault();
-        anyChange = false;
     }
 
     public int getMusicDurationInMilliseconds() {

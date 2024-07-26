@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ToneParser {
 
@@ -23,7 +24,7 @@ public class ToneParser {
         FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent(dbTone);
         OvertonesComponent oc = parseOvertonesComponent(dbTone);
 
-        Tone tone = new ToneGenerator(sampleRate, ec.getTotalDurationInSeconds()).generateTone(ec, ffc, oc);
+        Tone tone = new ToneGenerator(sampleRate, Objects.requireNonNull(ec).getTotalDurationInSeconds()).generateTone(ec, ffc, oc);
         tone.setId(id);
         tone.setName(name);
 
@@ -80,7 +81,7 @@ public class ToneParser {
     }
 
     public com.example.soundwave.model.entity.Music parseMusicToDbEntityForDeletion(Music music) {
-        com.example.soundwave.model.entity.Music musicToDelete = new com.example.soundwave.model.entity.Music("name", "samplerate", "samplespath");
+        com.example.soundwave.model.entity.Music musicToDelete = new com.example.soundwave.model.entity.Music("", "", "");
         musicToDelete.setId(music.getId());
 
         return musicToDelete;

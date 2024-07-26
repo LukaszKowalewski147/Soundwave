@@ -96,7 +96,7 @@ public class ToneGenerator {
     }
 
     public Music generateMusic(List<Track> tracks) {
-        Arrays.fill(samples, (double) 0);     // Initialize samples with zeros.
+        Arrays.fill(samples, 0.0d);     // Initialize samples with zeros.
 
         double[] trackSamples;
 
@@ -153,7 +153,7 @@ public class ToneGenerator {
         for (Overtone overtone : overtones) {
 
             // !!! - Overtone output amplitude is calculated with 10^(x/20) where x is amplitude in dB from user input
-            double overtoneAmplitude = Math.pow(10.0d, overtone.getAmplitude()/20.0d);
+            double overtoneAmplitude = Math.pow(10.0d, overtone.getAmplitude() / 20.0d);
             double overtoneFrequency = overtone.getFrequency();
 
             for (int i = 0; i < samplesNumber; ++i)
@@ -263,7 +263,7 @@ public class ToneGenerator {
         int lastCrossingIndex = getLastCrossingIndex();
 
         for (int i = lastCrossingIndex; i < samplesNumber; ++i)
-           samples[i] = 0;
+            samples[i] = 0;
     }
 
     private int getLastCrossingIndex() {

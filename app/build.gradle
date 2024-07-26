@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.soundwave"
-        minSdk 24
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -40,15 +40,17 @@ android {
     }
 
     allprojects {
-        tasks.withType(JavaCompile){
-            options.compilerArgs <<"-Xlint:deprecation"
+        tasks.withType(JavaCompile).tap {
+            configureEach {
+                options.compilerArgs << "-Xlint:deprecation"
+            }
         }
     }
 }
 
 dependencies {
     //  Lifecycle
-    def lifecycle_version = "2.8.3"
+    def lifecycle_version = "2.8.4"
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"

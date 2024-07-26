@@ -1,6 +1,7 @@
 package com.example.soundwave.utils;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
@@ -15,10 +16,11 @@ import java.nio.ByteOrder;
 import java.util.Objects;
 
 public class WavCreator {
+    private final String TAG = "WavCreator";
 
     private static final String FILE_FOLDER_TONES = "myTones";
     private static final String FILE_FOLDER_MUSIC = "myMusic";
-    private static final String FILE_EXTENSION = ".wav";
+    private final String FILE_EXTENSION = ".wav";
 
     private final Tone tone;
     private final Music music;
@@ -65,13 +67,13 @@ public class WavCreator {
                 updateWavHeader(wavFile);
                 success = true;
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Writing wave file failed", e);
             } finally {
                 try {
                     if (out != null)
                         out.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Closing wave file after failing to write it failed", e);
                 }
             }
         }
@@ -97,7 +99,7 @@ public class WavCreator {
     }
 
     private byte[] getPcmSamples() {
-        return tone != null ? Objects.requireNonNull(tone).getPcmSound() :  Objects.requireNonNull(music).getSamples16BitPCM();
+        return tone != null ? Objects.requireNonNull(tone).getPcmSound() : Objects.requireNonNull(music).getSamples16BitPCM();
     }
 
     private boolean isExternalStorageAvailable() {
@@ -125,27 +127,27 @@ public class WavCreator {
                 'R', 'I', 'F', 'F', // ChunkID
                 0, 0, 0, 0, // ChunkSize (must be updated later)
                 'W', 'A', 'V', 'E', // Format
-                // fmt subchunk
-                'f', 'm', 't', ' ', // Subchunk1ID
-                16, 0, 0, 0, // Subchunk1Size
+                // fmt subChunk
+                'f', 'm', 't', ' ', // SubChunk1ID
+                16, 0, 0, 0, // SubChunk1Size
                 1, 0, // AudioFormat
                 littleBytes[0], littleBytes[1], // NumChannels
                 littleBytes[2], littleBytes[3], littleBytes[4], littleBytes[5], // SampleRate
                 littleBytes[6], littleBytes[7], littleBytes[8], littleBytes[9], // ByteRate
                 littleBytes[10], littleBytes[11], // BlockAlign
                 littleBytes[12], littleBytes[13], // BitsPerSample
-                // data subchunk
-                'd', 'a', 't', 'a', // Subchunk2ID
-                0, 0, 0, 0, // Subchunk2Size (must be updated later)
+                // data subChunk
+                'd', 'a', 't', 'a', // SubChunk2ID
+                0, 0, 0, 0, // SubChunk2Size (must be updated later)
         });
     }
 
-    private static void updateWavHeader(File wav) throws IOException {
+    private void updateWavHeader(File wav) throws IOException {
         byte[] sizes = ByteBuffer
                 .allocate(8)
                 .order(ByteOrder.LITTLE_ENDIAN)
                 .putInt((int) (wav.length() - 8)) // ChunkSize
-                .putInt((int) (wav.length() - 44)) // Subchunk2Size
+                .putInt((int) (wav.length() - 44)) // SubChunk2Size
                 .array();
 
         RandomAccessFile accessWave = null;
@@ -156,7 +158,7 @@ public class WavCreator {
             accessWave.seek(4);
             accessWave.write(sizes, 0, 4);
 
-            // Subchunk2Size
+            // SubChunk2Size
             accessWave.seek(40);
             accessWave.write(sizes, 4, 4);
         } finally {
@@ -164,7 +166,7 @@ public class WavCreator {
                 try {
                     accessWave.close();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    Log.e(TAG, "Updating wave file header failed", ex);
                 }
             }
         }

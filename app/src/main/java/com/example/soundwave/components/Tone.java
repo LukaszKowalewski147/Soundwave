@@ -7,6 +7,7 @@ import com.example.soundwave.utils.SampleRate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Tone implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -88,15 +89,15 @@ public class Tone implements Serializable {
     }
 
     public PresetOvertones getOvertonesPreset() {
-        return overtonesComponent.getOvertonesPreset();
+        return Objects.requireNonNull(overtonesComponent).getOvertonesPreset();
     }
 
     public int getFundamentalFrequency() {
-        return fundamentalFrequencyComponent.getFundamentalFrequency();
+        return Objects.requireNonNull(fundamentalFrequencyComponent).getFundamentalFrequency();
     }
 
     public int getMasterVolume() {
-        return fundamentalFrequencyComponent.getMasterVolume();
+        return Objects.requireNonNull(fundamentalFrequencyComponent).getMasterVolume();
     }
 
     public double getDurationInSeconds() {
@@ -108,7 +109,7 @@ public class Tone implements Serializable {
     }
 
     public ArrayList<Overtone> getOvertones() {
-        return overtonesComponent.getOvertones();
+        return Objects.requireNonNull(overtonesComponent).getOvertones();
     }
 
     public int getSamplesNumber() {

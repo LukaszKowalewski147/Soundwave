@@ -1,9 +1,11 @@
 package com.example.soundwave.utils;
 
 import android.os.Handler;
+import android.util.Log;
 import android.widget.EditText;
 
 public class SeekBarUpdater implements Runnable {
+    private final String TAG = "SeekBarUpdater";
 
     private final Handler handler;
     private final EditText toUpdateTxt;
@@ -23,7 +25,7 @@ public class SeekBarUpdater implements Runnable {
             try {
                 Thread.sleep(refreshRate);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Refreshing seekBar: Could not wait " + refreshRate + "ms to next step");
             }
         }
     }

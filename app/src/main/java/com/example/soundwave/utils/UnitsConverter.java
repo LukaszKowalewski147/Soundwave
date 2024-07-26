@@ -156,20 +156,6 @@ public class UnitsConverter {
         return 0;
     }
 
-    public static String convertSampleRateToStringFile(SampleRate sampleRate) {
-        switch (sampleRate) {
-            case RATE_44_1_KHZ:
-                return "44_1kHz";
-            case RATE_48_KHZ:
-                return "48kHz";
-            case RATE_96_KHZ:
-                return "96kHz";
-            case RATE_192_KHZ:
-                return "192kHz";
-        }
-        return "?kHz";
-    }
-
     public static String convertSampleRateToStringVisible(SampleRate sampleRate) {
         switch (sampleRate) {
             case RATE_44_1_KHZ:

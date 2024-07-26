@@ -24,6 +24,6 @@ public class Track {
     }
 
     public double getTrackDurationInSeconds() {
-        return (double) samples.length  / sampleRate.sampleRate;
+        return (double) samples.length / sampleRate.sampleRate;
     }
 }

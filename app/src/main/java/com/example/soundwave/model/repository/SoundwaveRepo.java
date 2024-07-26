@@ -71,7 +71,7 @@ public class SoundwaveRepo {
     }
 
     public void deleteAllMusic() {
-        executeDatabaseTask(() -> musicDao.deleteAllMusic());
+        executeDatabaseTask(musicDao::deleteAllMusic);
     }
 
     public LiveData<List<Music>> getAllMusic() {

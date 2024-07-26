@@ -1,5 +1,6 @@
 package com.example.soundwave;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -40,6 +41,69 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        initializeView();
+        setListeners();
+        setBackButtonBehavior();
+    }
+
+    public void openToneCreator() {
+        binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
+    }
+
+    public void openToneMixer() {
+        binding.mainBottomNavView.setSelectedItemId(R.id.tone_mixer);
+    }
+
+    public void openToneCreatorInEditionMode(Tone tone) {
+        toneToEditBundle = new Bundle();
+        toneToEditBundle.putSerializable("tone", tone);
+
+        binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
+    }
+
+    public void changeFragmentFromToneCreator(int fragmentId) {
+        currentFragment = null;
+        binding.mainBottomNavView.setSelectedItemId(fragmentId);
+    }
+
+    public void changeFragmentFromToneMixer(int fragmentId) {
+        currentFragment = null;
+        binding.mainBottomNavView.setSelectedItemId(fragmentId);
+    }
+
+    private void setDisplayDensity() {
+        Options.displayDensity = getResources().getDisplayMetrics().density;
+    }
+
+    private void setTrackPaddingStart() {
+        Options.trackPaddingStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
+    }
+
+    private void setFilePathsToDownload() {
+        File externalFilesDirTones = getExternalFilesDir(WavCreator.getFileFolderTones());
+        File externalFilesDirMusic = getExternalFilesDir(WavCreator.getFileFolderMusic());
+
+        if (externalFilesDirTones != null)
+            Options.filepathToDownloadTones = externalFilesDirTones.toString();
+        else
+            Toast.makeText(this, R.string.error_msg_filepath_to_download_tones_fail, Toast.LENGTH_SHORT).show();
+
+        if (externalFilesDirMusic != null)
+            Options.filepathToDownloadMusic = externalFilesDirMusic.toString();
+        else
+            Toast.makeText(this, R.string.error_msg_filepath_to_download_music_fail, Toast.LENGTH_SHORT).show();
+    }
+
+    private void setFilepathToSavePcmSamples() {
+        File filesDir = getFilesDir();
+
+        if (filesDir != null)
+            Options.filepathToSavePcmSamples = filesDir.toString();
+        else
+            Toast.makeText(this, R.string.error_msg_filepath_to_save_samples_fail, Toast.LENGTH_SHORT).show();
+    }
+
+    private void initializeView() {
         currentFragment = new HomepageTonesFragment();
         loadFragment(currentFragment);
 
@@ -47,7 +111,9 @@ public class MainActivity extends AppCompatActivity {
 
         binding.mainTabLayout.addTab(binding.mainTabLayout.newTab().setText("Tones"));
         binding.mainTabLayout.addTab(binding.mainTabLayout.newTab().setText("Music"));
+    }
 
+    private void setListeners() {
         binding.mainTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -116,83 +182,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        if (binding.mainBottomNavView.getSelectedItemId() == R.id.my_homepage) {
-            super.onBackPressed();
-        } else {
-            binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);
-        }
-    }
-
-    public void openToneCreator() {
-        binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
-    }
-
-    public void openToneMixer() {
-        binding.mainBottomNavView.setSelectedItemId(R.id.tone_mixer);
-    }
-
-    public void openToneCreatorInEditionMode(Tone tone) {
-        toneToEditBundle = new Bundle();
-        toneToEditBundle.putSerializable("tone", tone);
-
-        binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
-    }
-
-    public void changeFragmentFromToneCreator(int fragmentId) {
-        currentFragment = null;
-        binding.mainBottomNavView.setSelectedItemId(fragmentId);
-    }
-
-    public void changeFragmentFromToneMixer(int fragmentId) {
-        currentFragment = null;
-        binding.mainBottomNavView.setSelectedItemId(fragmentId);
-    }
-
-    private void setFilePathsToDownload() {
-        File externalFilesDirTones = getExternalFilesDir(WavCreator.getFileFolderTones());
-        File externalFilesDirMusic = getExternalFilesDir(WavCreator.getFileFolderMusic());
-
-        if (externalFilesDirTones != null)
-            Options.filepathToDownloadTones = externalFilesDirTones.toString();
-        else
-            Toast.makeText(this, R.string.error_msg_filepath_to_download_tones_fail, Toast.LENGTH_SHORT).show();
-
-        if (externalFilesDirMusic != null)
-            Options.filepathToDownloadMusic = externalFilesDirMusic.toString();
-        else
-            Toast.makeText(this, R.string.error_msg_filepath_to_download_music_fail, Toast.LENGTH_SHORT).show();
-    }
-
-    private void setFilepathToSavePcmSamples() {
-        File filesDir = getFilesDir();
-
-        if (filesDir != null)
-            Options.filepathToSavePcmSamples = filesDir.toString();
-        else
-            Toast.makeText(this, R.string.error_msg_filepath_to_save_samples_fail, Toast.LENGTH_SHORT).show();
-    }
-
-    private void setDisplayDensity() {
-        Options.displayDensity = getResources().getDisplayMetrics().density;
-    }
-
-    private void setTrackPaddingStart() {
-        Options.trackPaddingStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
+    private void setBackButtonBehavior() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (binding.mainBottomNavView.getSelectedItemId() == R.id.my_homepage)
+                    finish();
+                binding.mainBottomNavView.setSelectedItemId(R.id.my_homepage);
+            }
+        });
     }
 
     private void manageVisibilityOfTopMenu(boolean visible) {
-        if (visible) {
-            //final float scale = getResources().getDisplayMetrics().density;
-            //int pixels = (int) (48 * scale + 0.5f); //48dp
-
-            //binding.mainGuidelineTop.setGuidelineBegin(pixels);
-            binding.mainTopMenu.setVisibility(View.VISIBLE);
-        } else {
-            //binding.mainGuidelineTop.setGuidelineBegin(0);
-            binding.mainTopMenu.setVisibility(View.GONE);
-        }
+        int visibility = visible ? View.VISIBLE : View.GONE;
+        binding.mainTopMenu.setVisibility(visibility);
     }
 
     private void loadFragment(Fragment fragment) {
