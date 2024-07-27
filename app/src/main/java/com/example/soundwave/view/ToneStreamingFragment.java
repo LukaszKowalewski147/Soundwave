@@ -2,65 +2,171 @@ package com.example.soundwave.view;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
-import com.example.soundwave.R;
+import com.example.soundwave.databinding.FragmentToneStreamingBinding;
+import com.example.soundwave.utils.Config;
+import com.example.soundwave.utils.Options;
+import com.example.soundwave.utils.Scale;
+import com.example.soundwave.utils.SeekBarUpdater;
+import com.example.soundwave.viewmodel.ToneStreamingViewModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ToneStreamingFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ToneStreamingFragment extends Fragment {
+    private ToneStreamingViewModel viewModel;
+    private FragmentToneStreamingBinding binding;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentToneStreamingBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(ToneStreamingViewModel.class);
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+        initializeDefaultLayout();
+        initializeObservers();
+        initializeUIListeners();
 
-    public ToneStreamingFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DynamicPlaybackFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ToneStreamingFragment newInstance(String param1, String param2) {
-        ToneStreamingFragment fragment = new ToneStreamingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        return binding.getRoot();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onDestroyView() {
+        binding = null;
+        super.onDestroyView();
+    }
+
+    private void initializeDefaultLayout() {
+        //  Play/stop button
+        binding.toneStreamingPlayStopBtn.setTag(false); // TRUE - playing; FALSE - not playing
+
+        //  Note picker
+        Scale[] notes = Scale.values();
+        int notesCount = notes.length;
+        String[] noteNames = new String[notesCount];
+
+        for (int i = 0; i < notesCount; ++i) {
+            noteNames[i] = notes[i].noteName;
         }
+
+        binding.toneStreamingNoteInput.setMinValue(0);
+        binding.toneStreamingNoteInput.setMaxValue(notesCount - 1);
+        binding.toneStreamingNoteInput.setDisplayedValues(noteNames);
+
+        //  Bars
+        binding.toneStreamingFundamentalFrequencyBar.setMax(Config.FREQUENCY_PROGRESS_BAR_MAX.value);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tone_streaming, container, false);
+    private void initializeObservers() {
+        viewModel.getFundamentalFrequencyComponent().observe(getViewLifecycleOwner(), fundamentalFrequencyComponent -> {
+            int fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
+            int fundamentalFrequencyBar = fundamentalFrequencyComponent.getFundamentalFrequencyBar();
+            int noteIndex = fundamentalFrequencyComponent.getNoteIndex();
+
+            if (!binding.toneStreamingFundamentalFrequencyInput.getText().toString().equals(String.valueOf(fundamentalFrequency)))
+                binding.toneStreamingFundamentalFrequencyInput.setText(String.valueOf(fundamentalFrequency));
+
+            binding.toneStreamingNoteInput.setValue(noteIndex);
+            binding.toneStreamingFundamentalFrequencyBar.setProgress(fundamentalFrequencyBar);
+        });
+    }
+
+    private void initializeUIListeners() {
+        binding.toneStreamingNoteInput.setOnValueChangedListener((picker, oldVal, newVal) -> viewModel.updateNoteName(newVal));
+
+        binding.toneStreamingFundamentalFrequencyInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateFundamentalFrequency(s.toString());
+            }
+        });
+
+        binding.toneStreamingFundamentalFrequencyInput.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus)
+                viewModel.validateFundamentalFrequencyInput(binding.toneStreamingFundamentalFrequencyInput.getText().toString());
+        });
+
+        binding.toneStreamingFundamentalFrequencyBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser)
+                    viewModel.updateFundamentalFrequencySeekBarPosition(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        binding.toneStreamingFrequencyDecrementBtn.setOnClickListener(v -> viewModel.decrementOnceFundamentalFrequency());
+
+        binding.toneStreamingFrequencyDecrementBtn.setOnLongClickListener(v -> {
+            Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+            SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneStreamingFundamentalFrequencyInput, Options.Operation.FREQUENCY_DECREMENT);
+            Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+            seekBarUpdaterThread.start();
+            return true;
+        });
+
+        binding.toneStreamingFrequencyDecrementBtn.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                viewModel.validateFundamentalFrequencyInput(binding.toneStreamingFundamentalFrequencyInput.getText().toString());
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+                Options.buttonDecrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+            return false;
+        });
+
+        binding.toneStreamingFrequencyIncrementBtn.setOnClickListener(v -> viewModel.incrementOnceFundamentalFrequency());
+
+        binding.toneStreamingFrequencyIncrementBtn.setOnLongClickListener(v -> {
+            Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.PRESSED;
+            SeekBarUpdater seekBarUpdater = new SeekBarUpdater(new Handler(), binding.toneStreamingFundamentalFrequencyInput, Options.Operation.FREQUENCY_INCREMENT);
+            Thread seekBarUpdaterThread = new Thread(seekBarUpdater);
+            seekBarUpdaterThread.start();
+            return true;
+        });
+
+        binding.toneStreamingFrequencyIncrementBtn.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
+                viewModel.validateFundamentalFrequencyInput(binding.toneStreamingFundamentalFrequencyInput.getText().toString());
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+                Options.buttonIncrementFrequencyState = Options.ButtonLongPressState.RELEASED;
+            return false;
+        });
+
+        binding.toneStreamingPlayStopBtn.setOnClickListener(view -> {
+            Object tag = view.getTag();
+            if (Boolean.TRUE.equals(tag)) {     // TRUE - playing; FALSE - not playing
+                viewModel.stopPlayback();
+                view.setTag(false);
+            } else {
+                viewModel.startPlayback();
+                view.setTag(true);
+            }
+        });
     }
 }

@@ -12,9 +12,22 @@ public class AudioPlayer {
     private final String TAG = "AudioPlayer";
 
     private AudioTrack audioTrack;
+    private Thread playbackThread;
+
+    private final int streamSampleRate;
+    private int streamBufferSize;
+    private double streamFrequency = 440.0;
+    private boolean isPlaying = false;
 
     public AudioPlayer() {
         audioTrack = null;
+        streamSampleRate = 0;
+    }
+
+    public AudioPlayer(int streamSampleRate) {
+        this.streamSampleRate = streamSampleRate;
+        streamBufferSize = AudioTrack.getMinBufferSize(streamSampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+        buildAudioTrackStream();
     }
 
     public boolean loadTone(Tone tone) {
@@ -139,5 +152,75 @@ public class AudioPlayer {
                 .setTransferMode(AudioTrack.MODE_STATIC)
                 .setBufferSizeInBytes(music.getSamples16BitPCM().length)
                 .build();
+    }
+
+    private void buildAudioTrackStream() {
+        audioTrack = new AudioTrack.Builder()
+                .setAudioAttributes(new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build())
+                .setAudioFormat(new AudioFormat.Builder()
+                        .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                        .setSampleRate(streamSampleRate)
+                        .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                        .build())
+                .setBufferSizeInBytes(streamBufferSize)
+                .setTransferMode(AudioTrack.MODE_STREAM)
+                .build();
+    }
+
+    public void startPlaying() {
+        if (isPlaying) return;
+
+        isPlaying = true;
+        playbackThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                generateAndPlaySound();
+            }
+        });
+        playbackThread.start();
+    }
+
+    public void stopPlaying() {
+        if (!isPlaying) return;
+
+        isPlaying = false;
+        try {
+            playbackThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        audioTrack.stop();
+        audioTrack.flush();
+    }
+
+    public synchronized void setStreamFrequency(double streamFrequency) {
+        this.streamFrequency = streamFrequency;
+    }
+
+    private synchronized double getStreamFrequency() {
+        return streamFrequency;
+    }
+
+    private void generateAndPlaySound() {
+        audioTrack.play();
+
+        short[] buffer = new short[streamBufferSize];
+        double angle = 0;
+        while (isPlaying) {
+            double currentFrequency = getStreamFrequency();
+            double increment = 2.0 * Math.PI * currentFrequency / streamSampleRate;
+
+            for (int i = 0; i < buffer.length; i++) {
+                buffer[i] = (short) (Math.sin(angle) * Short.MAX_VALUE);
+                angle += increment;
+                if (angle > 2.0 * Math.PI) {
+                    angle -= 2.0 * Math.PI;
+                }
+            }
+            audioTrack.write(buffer, 0, buffer.length);
+        }
     }
 }
