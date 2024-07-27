@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.example.soundwave.MainActivity;
 import com.example.soundwave.utils.OnFragmentExitListener;
@@ -43,6 +45,7 @@ import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 import java.util.Objects;
 
 public class ToneCreatorFragment extends Fragment implements OnFragmentExitListener {
+    private final String TAG = "ToneCreatorFragment";
 
     private ToneCreatorViewModel viewModel;
     private FragmentToneCreatorBinding binding;
@@ -66,7 +69,12 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         if (bundle != null) {
             editorMode = true;
             editedTone = (Tone) bundle.getSerializable("tone");
-            viewModel.loadEditedTone(editedTone);
+            boolean loadingSuccessful = viewModel.loadEditedTone(editedTone);
+
+            if (!loadingSuccessful) {
+                Log.e(TAG, "Load edited tone: loading unsuccessful");
+                Toast.makeText(requireContext(), R.string.error_loading_tone, Toast.LENGTH_SHORT).show();
+            }
             initializeToneEditorLayout();
         }
 
@@ -473,7 +481,14 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         binding.toneCreatorGenerateToneBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.alert_dialog_tone_creator_generate_message);
-            builder.setPositiveButton(R.string.alert_dialog_tone_creator_generate_positive, (dialog, id) -> viewModel.generateTone(editorMode));
+            builder.setPositiveButton(R.string.alert_dialog_tone_creator_generate_positive, (dialog, id) -> {
+                boolean generationSuccessful = viewModel.generateTone(editorMode);
+
+                if (!generationSuccessful) {
+                    Log.e(TAG, "Generate tone: generation unsuccessful");
+                    Toast.makeText(requireContext(), R.string.error_generating_tone, Toast.LENGTH_SHORT).show();
+                }
+            });
             builder.setNegativeButton(R.string.alert_dialog_tone_creator_generate_negative, null);
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -542,9 +557,14 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     }
 
     private void takeResetAction() {
-        if (editorMode)
-            viewModel.loadEditedTone(editedTone);
-        else {
+        if (editorMode) {
+            boolean loadingSuccessful = viewModel.loadEditedTone(editedTone);
+
+            if (!loadingSuccessful) {
+                Log.e(TAG, "Load edited tone: loading unsuccessful");
+                Toast.makeText(requireContext(), R.string.error_loading_tone, Toast.LENGTH_SHORT).show();
+            }
+        } else {
             binding.toneCreatorOvertonesActivator.setChecked(false);
             viewModel.resetTone();
         }

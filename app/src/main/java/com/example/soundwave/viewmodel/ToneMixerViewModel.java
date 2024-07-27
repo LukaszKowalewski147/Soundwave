@@ -98,11 +98,11 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setAnyChange();
     }
 
-    public void generateMusic(List<List<Tone>> tracksData) {
+    public boolean generateMusic(List<List<Tone>> tracksData) {
         if (areTracksEmpty(tracksData)) {
             setControlPanelComponentDefault();
             anyChange = false;
-            return;
+            return true;
         }
 
         List<Track> tracks = new ArrayList<>();
@@ -117,11 +117,14 @@ public class ToneMixerViewModel extends AndroidViewModel {
         Music newMusic = generator.generateMusic(tracks);
 
         audioPlayer = new AudioPlayer();
-        audioPlayer.loadMusic(newMusic);
+        boolean loadingSuccessful = audioPlayer.loadMusic(newMusic);
 
-        music.setValue(newMusic);
-
-        setControlPanelComponentMusicGenerated();
+        if (loadingSuccessful) {
+            music.setValue(newMusic);
+            setControlPanelComponentMusicGenerated();
+            return true;
+        }
+        return false;
     }
 
     public void playStopMusic() {

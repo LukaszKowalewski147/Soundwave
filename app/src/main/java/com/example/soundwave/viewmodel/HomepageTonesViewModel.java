@@ -120,9 +120,13 @@ public class HomepageTonesViewModel extends AndroidViewModel {
         return currentAudioPlayer != null;
     }
 
-    public void playTone(Tone tone, int position) {
+    public boolean playTone(Tone tone, int position) {
         currentAudioPlayer = new AudioPlayer();
-        currentAudioPlayer.loadTone(tone);
+        boolean loadingSuccessful = currentAudioPlayer.loadTone(tone);
+
+        if (!loadingSuccessful)
+            return false;
+
         currentAudioPlayer.play();
 
         currentlyPlayingTonePosition = position;
@@ -138,6 +142,7 @@ public class HomepageTonesViewModel extends AndroidViewModel {
         };
 
         handler.postDelayed(runnable, tone.getDurationInMilliseconds());
+        return true;
     }
 
     public int stopTonePlaying() {

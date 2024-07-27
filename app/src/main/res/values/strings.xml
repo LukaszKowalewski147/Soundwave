@@ -39,7 +39,6 @@
     <string name="tone_mixer_track_4">TRACK 4</string>
     <string name="tone_mixer_track_5">TRACK 5</string>
 
-
     <!--    Buttons             -->
     <string name="load_sound_btn">Load sound</string>
     <string name="generate_btn">Generate</string>
@@ -140,6 +139,11 @@
     <string name="error_msg_filepath_to_save_samples_fail">Filepath to save audio samples error</string>
     <string name="error_msg_empty_name">Name cannot be empty</string>
     <string name="error_msg_empty_tones">No tones found</string>
+    <string name="error_loading_tone">Tone cannot be loaded</string>
+    <string name="error_generating_tone">Tone cannot be generated</string>
+    <string name="error_generating_music">Music cannot be generated</string>
+    <string name="error_playing_tone">Tone cannot be played</string>
+    <string name="error_playing_music">Music cannot be played</string>
 
     <!--    Messages            -->
     <string name="msg_empty_tones">Create your first tone in Tone Creator!</string>

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.example.soundwave.viewmodel.HomepageTonesViewModel;
 import java.util.ArrayList;
 
 public class HomepageTonesFragment extends Fragment implements OnToneClickListener {
+    private final String TAG = "HomepageTonesFragment";
 
     private HomepageTonesViewModel viewModel;
     private FragmentHomepageTonesBinding binding;
@@ -152,7 +154,12 @@ public class HomepageTonesFragment extends Fragment implements OnToneClickListen
 
     @Override
     public void playTone(Tone tone, int position) {
-        viewModel.playTone(tone, position);
+        boolean playingSuccessful = viewModel.playTone(tone, position);
+
+        if (!playingSuccessful) {
+            Log.e(TAG, "Play tone: playing unsuccessful");
+            Toast.makeText(requireContext(), R.string.error_playing_tone, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -1,11 +1,9 @@
 package com.example.soundwave.utils;
 
-import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
@@ -19,34 +17,34 @@ public class AudioPlayer {
         audioTrack = null;
     }
 
-    public void loadTone(Tone tone) {
+    public boolean loadTone(Tone tone) {
         if (!isReadyToWriteTone(tone)) {
-            // TODO: getErrorMessage
-            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
-            return;
+            Log.e(TAG, "Load tone: audioTrack not ready to write tone");
+            return false;
         }
         audioTrack.flush();
         audioTrack.write(tone.getPcmSound(), 0, tone.getPcmSound().length);
-        /*if (!isReadyToPlay()) {
-            // TODO: getErrorMessage
-            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
-            //return;
-        }*/
+
+        if (!isReadyToPlay()) {
+            Log.e(TAG, "Load tone: audioTrack not ready to play tone");
+            return false;
+        }
+        return true;
     }
 
-    public void loadMusic(Music music) {
+    public boolean loadMusic(Music music) {
         if (!isReadyToWriteMusic(music)) {
-            // TODO: getErrorMessage
-            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
-            return;
+            Log.e(TAG, "Load music: audioTrack not ready to write music");
+            return false;
         }
         audioTrack.flush();
         audioTrack.write(music.getSamples16BitPCM(), 0, music.getSamples16BitPCM().length);
-        /*if (!isReadyToPlay()) {
-            // TODO: getErrorMessage
-            //Toast.makeText(context, "Błąd generatora dźwięku: " + audioTrack.getState(), Toast.LENGTH_SHORT).show();
-            //return;
-        }*/
+
+        if (!isReadyToPlay()) {
+            Log.e(TAG, "Load music: audioTrack not ready to play music");
+            return false;
+        }
+        return true;
     }
 
     public void reload() {
@@ -74,6 +72,7 @@ public class AudioPlayer {
     public boolean isPlaying() {
         if (audioTrack != null)
             return audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING;
+
         return false;
     }
 
@@ -84,12 +83,14 @@ public class AudioPlayer {
     private boolean isReadyToWriteTone(Tone tone) {
         if (audioTrack == null)
             buildAudioTrackTone(tone);
+
         return audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED;
     }
 
     private boolean isReadyToWriteMusic(Music music) {
         if (audioTrack == null)
             buildAudioTrackMusic(music);
+
         return audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED;
     }
 
@@ -138,9 +139,5 @@ public class AudioPlayer {
                 .setTransferMode(AudioTrack.MODE_STATIC)
                 .setBufferSizeInBytes(music.getSamples16BitPCM().length)
                 .build();
-    }
-
-    public void extra(Context context) {
-        Toast.makeText(context, "Playback position: " + audioTrack.getPlaybackHeadPosition(), Toast.LENGTH_SHORT).show();
     }
 }

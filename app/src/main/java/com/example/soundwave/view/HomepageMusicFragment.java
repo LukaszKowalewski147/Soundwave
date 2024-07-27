@@ -3,6 +3,7 @@ package com.example.soundwave.view;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.example.soundwave.viewmodel.HomepageMusicViewModel;
 import java.util.ArrayList;
 
 public class HomepageMusicFragment extends Fragment implements OnMusicClickListener {
+    private final String TAG = "HomepageMusicFragment";
 
     private HomepageMusicViewModel viewModel;
     private FragmentHomepageMusicBinding binding;
@@ -151,7 +153,12 @@ public class HomepageMusicFragment extends Fragment implements OnMusicClickListe
 
     @Override
     public void playMusic(Music music, int position) {
-        viewModel.playMusic(music, position);
+        boolean playingSuccessful = viewModel.playMusic(music, position);
+
+        if (!playingSuccessful) {
+            Log.e(TAG, "Play music: playing unsuccessful");
+            Toast.makeText(requireContext(), R.string.error_playing_music, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

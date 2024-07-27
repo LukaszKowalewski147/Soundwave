@@ -327,7 +327,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         setAnyChange();
     }
 
-    public void generateTone(boolean editorMode) {
+    public boolean generateTone(boolean editorMode) {
         SampleRate sr = Objects.requireNonNull(sampleRate.getValue());
         EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
         FundamentalFrequencyComponent ffc = Objects.requireNonNull(fundamentalFrequencyComponent.getValue());
@@ -340,11 +340,14 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             newTone.setId(Objects.requireNonNull(tone.getValue()).getId());
 
         audioPlayer = new AudioPlayer();
-        audioPlayer.loadTone(newTone);
+        boolean loadingSuccessful = audioPlayer.loadTone(newTone);
 
-        tone.setValue(newTone);
-
-        setControlPanelComponentToneGenerated();
+        if (loadingSuccessful) {
+            tone.setValue(newTone);
+            setControlPanelComponentToneGenerated();
+            return true;
+        }
+        return false;
     }
 
     public void playStopTone() {
@@ -409,9 +412,9 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         return index + "th";
     }
 
-    public void loadEditedTone(Tone editedTone) {
+    public boolean loadEditedTone(Tone editedTone) {
         audioPlayer = new AudioPlayer();
-        audioPlayer.loadTone(editedTone);
+        boolean loadingSuccessful = audioPlayer.loadTone(editedTone);
 
         loadSampleRate(editedTone.getSampleRate());
         loadEnvelopeComponent(editedTone.getEnvelopeComponent());
@@ -423,6 +426,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         setControlPanelComponentEditorDefault();
 
         anyChange = false;
+
+        return loadingSuccessful;
     }
 
     private void loadSampleRate(SampleRate editedSampleRate) {

@@ -125,9 +125,13 @@ public class HomepageMusicViewModel extends AndroidViewModel {
         return currentAudioPlayer != null;
     }
 
-    public void playMusic(Music music, int position) {
+    public boolean playMusic(Music music, int position) {
         currentAudioPlayer = new AudioPlayer();
-        currentAudioPlayer.loadMusic(music);
+        boolean loadingSuccessful = currentAudioPlayer.loadMusic(music);
+
+        if (!loadingSuccessful)
+            return false;
+
         currentAudioPlayer.play();
 
         currentlyPlayingMusicPosition = position;
@@ -143,6 +147,7 @@ public class HomepageMusicViewModel extends AndroidViewModel {
         };
 
         handler.postDelayed(runnable, music.getDurationInMilliseconds());
+        return true;
     }
 
     public int stopMusicPlaying() {

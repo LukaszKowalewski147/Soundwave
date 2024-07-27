@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
@@ -48,6 +50,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ToneMixerFragment extends Fragment implements OnToneSelectedListener, OnFragmentExitListener {
+    private final String TAG = "ToneMixerFragment";
 
     private ToneMixerViewModel viewModel;
     private FragmentToneMixerBinding binding;
@@ -303,7 +306,14 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         binding.toneMixerGenerateMusicBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(R.string.alert_dialog_tone_mixer_generate_message);
-            builder.setPositiveButton(R.string.alert_dialog_tone_mixer_generate_positive, (dialog, id) -> viewModel.generateMusic(getTracksData()));
+            builder.setPositiveButton(R.string.alert_dialog_tone_mixer_generate_positive, (dialog, id) -> {
+                boolean generationSuccessful = viewModel.generateMusic(getTracksData());
+
+                if (!generationSuccessful) {
+                    Log.e(TAG, "Generate music: generation unsuccessful");
+                    Toast.makeText(requireContext(), R.string.error_generating_music, Toast.LENGTH_SHORT).show();
+                }
+            });
             builder.setNegativeButton(R.string.alert_dialog_tone_mixer_generate_negative, null);
             AlertDialog dialog = builder.create();
             dialog.show();
