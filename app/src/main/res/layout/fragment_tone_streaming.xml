@@ -17,6 +17,7 @@
         android:scaleX="0.5"
         android:scaleY="0.5"
         android:src="@drawable/ic_frequency"
+        app:layout_constraintBottom_toTopOf="@id/tone_streaming_play_stop_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:gravity="right"
         android:inputType="numberSigned"
+        android:minWidth="48dp"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -83,7 +86,7 @@
     <ImageButton
         android:id="@+id/tone_streaming_frequency_decrement_btn"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_frequency_decrement_btn"
@@ -94,7 +97,7 @@
     <ImageButton
         android:id="@+id/tone_streaming_frequency_increment_btn"
         android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:background="?android:selectableItemBackground"
@@ -105,9 +108,9 @@
 
     <ImageButton
         android:id="@+id/tone_streaming_play_stop_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="48dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_play_pause_tone_btn"
         android:scaleType="fitCenter"

@@ -1,11 +1,12 @@
 package com.example.soundwave.view;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 
+import com.example.soundwave.R;
 import com.example.soundwave.databinding.FragmentToneStreamingBinding;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.Options;
@@ -160,13 +163,24 @@ public class ToneStreamingFragment extends Fragment {
 
         binding.toneStreamingPlayStopBtn.setOnClickListener(view -> {
             Object tag = view.getTag();
-            if (Boolean.TRUE.equals(tag)) {     // TRUE - playing; FALSE - not playing
+
+            if (Boolean.TRUE.equals(tag)) {     // TRUE - was playing; FALSE - was not playing
                 viewModel.stopPlayback();
-                view.setTag(false);
+                setPlayStopButtonState(false);
             } else {
                 viewModel.startPlayback();
-                view.setTag(true);
+                setPlayStopButtonState(true);
             }
         });
+    }
+
+    private void setPlayStopButtonState(boolean playingState) {
+        ImageButton button = binding.toneStreamingPlayStopBtn;
+
+        int iconId = playingState ? R.drawable.ic_stop_round : R.drawable.ic_play_round;
+        Drawable buttonIcon = ContextCompat.getDrawable(requireContext(), iconId);
+
+        button.setImageDrawable(buttonIcon);
+        button.setTag(playingState);
     }
 }
