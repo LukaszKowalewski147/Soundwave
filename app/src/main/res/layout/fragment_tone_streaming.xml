@@ -19,12 +19,14 @@
         android:src="@drawable/ic_frequency"
         app:layout_constraintBottom_toTopOf="@id/tone_streaming_play_stop_btn"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tone_streaming_frequency_decrement_btn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
+        android:labelFor="@id/tone_streaming_fundamental_frequency_input"
         android:text="@string/frequency_header"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -35,9 +37,10 @@
     <EditText
         android:id="@+id/tone_streaming_fundamental_frequency_input"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginTop="4dp"
-        android:gravity="right"
+        android:gravity="end|center_vertical"
+        android:importantForAutofill="no"
         android:inputType="numberSigned"
         android:minWidth="48dp"
         android:textColor="@color/white"
@@ -85,7 +88,7 @@
 
     <ImageButton
         android:id="@+id/tone_streaming_frequency_decrement_btn"
-        android:layout_width="40dp"
+        android:layout_width="48dp"
         android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:background="?android:selectableItemBackground"
@@ -96,7 +99,7 @@
 
     <ImageButton
         android:id="@+id/tone_streaming_frequency_increment_btn"
-        android:layout_width="40dp"
+        android:layout_width="48dp"
         android:layout_height="60dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"

@@ -7,6 +7,10 @@
     <string name="affix_percent">%</string>
     <string name="affix_milliseconds">ms</string>
 
+    <!--    Units             -->
+    <string name="unit_millisecond">[ms]</string>
+    <string name="unit_percent">[%]</string>
+
     <!--    Layout headers      -->
     <string name="my_tones_header">My tones</string>
     <string name="tone_streaming_header">Tone streaming</string>
@@ -183,10 +187,11 @@
     </string-array>
 
     <!--    Content desc        -->
+    <string name="desc_main_tab_btn">Tones/music tab</string>
     <string name="desc_settings_btn">Settings</string>
     <string name="desc_account_btn">User account</string>
-    <string name="desc_frequency_increment_btn">Increase frequency button</string>
-    <string name="desc_frequency_decrement_btn">Decrease frequency button</string>
+    <string name="desc_frequency_increment_btn">Increase frequency</string>
+    <string name="desc_frequency_decrement_btn">Decrease frequency</string>
     <string name="desc_tone_info_btn">Tone information</string>
     <string name="desc_play_tone_btn">Play tone</string>
     <string name="desc_play_pause_tone_btn">Play/pause tone</string>
@@ -195,6 +200,8 @@
     <string name="desc_workbench">Workbench</string>
     <string name="desc_delete_tone_btn">Delete tone</string>
     <string name="desc_download_tone_btn">Download tone</string>
+    <string name="desc_rename_tone_btn">Rename tone</string>
+    <string name="desc_rename_music_btn">Rename music</string>
     <string name="desc_play_music_btn">Play music</string>
     <string name="desc_edit_music_btn">Edit music</string>
     <string name="desc_delete_music_btn">Delete music</string>

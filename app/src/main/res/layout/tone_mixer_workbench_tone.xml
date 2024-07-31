@@ -7,6 +7,7 @@
     android:background="@drawable/background_workbench_tone"
     android:foreground="?android:selectableItemBackground"
     android:orientation="horizontal"
+    tools:ignore="TextSizeCheck"
     tools:layout_height="@dimen/tone_mixer_workbench_tone_height">
 
     <TextView

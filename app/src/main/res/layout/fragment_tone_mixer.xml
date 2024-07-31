@@ -72,7 +72,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track1"
-                tools:ignore="SpUsage,VisualLintOverlap" />
+                tools:ignore="SpUsage,VisualLintOverlap,TextSizeCheck" />
 
             <View
                 android:id="@+id/sep2"
@@ -109,7 +109,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track2"
-                tools:ignore="SpUsage,VisualLintOverlap" />
+                tools:ignore="SpUsage,VisualLintOverlap,TextSizeCheck" />
 
             <View
                 android:id="@+id/sep3"
@@ -146,7 +146,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track3"
-                tools:ignore="SpUsage,VisualLintOverlap" />
+                tools:ignore="SpUsage,VisualLintOverlap,TextSizeCheck" />
 
             <View
                 android:id="@+id/sep4"
@@ -183,7 +183,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track4"
-                tools:ignore="SpUsage,VisualLintOverlap" />
+                tools:ignore="SpUsage,VisualLintOverlap,TextSizeCheck" />
 
             <View
                 android:id="@+id/sep5"
@@ -220,7 +220,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tone_mixer_track5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tone_mixer_track5"
-                tools:ignore="SpUsage,VisualLintOverlap" />
+                tools:ignore="SpUsage,VisualLintOverlap,TextSizeCheck" />
 
             <View
                 android:layout_width="0dp"
@@ -286,20 +286,16 @@
 
     </HorizontalScrollView>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <ImageButton
         android:id="@+id/tone_mixer_add_tone_btn"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/background_btn_standard"
         android:contentDescription="@string/desc_add_tone_to_workbench_btn"
-        android:drawableTop="@drawable/ic_add"
-        android:foreground="?android:selectableItemBackground"
-        android:paddingTop="7dp"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="11sp"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/btn_increment"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@id/tone_mixer_workbench_scroll_view"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -338,7 +334,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_generate_music_btn"
             android:layout_width="120dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:background="@drawable/background_btn_standard"
             android:drawableStart="@drawable/ic_generate"
             android:foreground="?android:selectableItemBackground"
@@ -358,7 +354,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_play_stop_music_btn"
             android:layout_width="120dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:background="@drawable/background_btn_standard"
             android:drawableStart="@drawable/ic_play_note"
             android:foreground="?android:selectableItemBackground"
@@ -377,7 +373,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_save_music_btn"
             android:layout_width="120dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:background="@drawable/background_btn_standard"
             android:drawableStart="@drawable/ic_save"
             android:foreground="?android:selectableItemBackground"
@@ -397,7 +393,7 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tone_mixer_reset_music_btn"
             android:layout_width="120dp"
-            android:layout_height="38dp"
+            android:layout_height="48dp"
             android:background="@drawable/background_btn_standard"
             android:drawableStart="@drawable/ic_reset"
             android:foreground="?android:selectableItemBackground"
