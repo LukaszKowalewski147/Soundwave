@@ -15,8 +15,8 @@
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:text="@string/msg_stream_frequency_to_pick"
-        android:textSize="15sp"
         android:textColor="@color/white80transparent"
+        android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@id/tone_streaming_fundamental_frequency_input" />
 
     <ImageView
@@ -127,8 +127,8 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:text="@string/msg_stream_to_play"
-        android:textSize="15sp"
         android:textColor="@color/white80transparent"
+        android:textSize="15sp"
         app:layout_constraintBottom_toTopOf="@id/tone_streaming_play_stop_btn" />
 
     <ImageButton
