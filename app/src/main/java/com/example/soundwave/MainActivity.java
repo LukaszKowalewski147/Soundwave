@@ -2,6 +2,7 @@ package com.example.soundwave;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -154,26 +155,26 @@ public class MainActivity extends AppCompatActivity {
 
             if (fragmentId == R.id.tone_creator) {
                 if (!(currentFragment instanceof ToneCreatorFragment)) {
-                    manageVisibilityOfTopMenu(false);
+                    manageVisibilityOfTopMenu(false, false);
                     currentFragment = new ToneCreatorFragment();
                     loadFragment(currentFragment);
                 }
             } else if (fragmentId == R.id.tone_mixer) {
                 if (!(currentFragment instanceof ToneMixerFragment)) {
-                    manageVisibilityOfTopMenu(false);
+                    manageVisibilityOfTopMenu(false, false);
                     currentFragment = new ToneMixerFragment();
                     loadFragment(currentFragment);
                 }
             } else if (fragmentId == R.id.my_homepage) {
                 if (!(currentFragment instanceof HomepageTonesFragment) && !(currentFragment instanceof HomepageMusicFragment)) {
-                    manageVisibilityOfTopMenu(true);
+                    manageVisibilityOfTopMenu(true, true);
                     currentFragment = new HomepageTonesFragment();
                     loadFragment(currentFragment);
                     binding.mainTabLayout.selectTab(binding.mainTabLayout.getTabAt(0));
                 }
             } else if (fragmentId == R.id.tone_streaming) {
                 if (!(currentFragment instanceof ToneStreamingFragment)) {
-                    manageVisibilityOfTopMenu(false);
+                    manageVisibilityOfTopMenu(true, false);
                     currentFragment = new ToneStreamingFragment();
                     loadFragment(currentFragment);
                 }
@@ -193,9 +194,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void manageVisibilityOfTopMenu(boolean visible) {
+    private void manageVisibilityOfTopMenu(boolean visible, boolean isHomepage) {
+        ConstraintLayout topMenu = binding.mainTopMenu;
         int visibility = visible ? View.VISIBLE : View.GONE;
-        binding.mainTopMenu.setVisibility(visibility);
+
+        if (topMenu.getVisibility() != visibility)
+            topMenu.setVisibility(visibility);
+
+        TabLayout tabLayout = binding.mainTabLayout;
+        visibility = isHomepage ? View.VISIBLE : View.GONE;
+
+        if (tabLayout.getVisibility() != visibility)
+            tabLayout.setVisibility(visibility);
     }
 
     private void loadFragment(Fragment fragment) {
