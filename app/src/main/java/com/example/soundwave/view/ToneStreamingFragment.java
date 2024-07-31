@@ -182,5 +182,8 @@ public class ToneStreamingFragment extends Fragment {
 
         button.setImageDrawable(buttonIcon);
         button.setTag(playingState);
+
+        String buttonInfo = playingState ? getString(R.string.msg_stream_to_stop) : getString(R.string.msg_stream_to_play);
+        binding.toneStreamingPlayStopInfo.setText(buttonInfo);
     }
 }

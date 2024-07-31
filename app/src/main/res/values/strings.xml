@@ -152,6 +152,9 @@
     <!--    Messages            -->
     <string name="msg_empty_tones">Create your first tone in Tone Creator!</string>
     <string name="msg_empty_music">Create your first music in Tones Mixer!</string>
+    <string name="msg_stream_frequency_to_pick">Pick sound frequency to stream</string>
+    <string name="msg_stream_to_play">Tap the start button below to stream sound</string>
+    <string name="msg_stream_to_stop">Tap the stop button below to stop streaming</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">

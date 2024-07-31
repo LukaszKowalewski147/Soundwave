@@ -18,6 +18,7 @@
     <color name="delete_bin">#D9FF1F1F</color>
     <color name="white20transparent">#33FFFFFF</color>
     <color name="white50transparent">#80FFFFFF</color>
+    <color name="white80transparent">#CCFFFFFF</color>
     <color name="black20transparent">#33000000</color>
     <color name="black50transparent">#80000000</color>
     <color name="green25transparent">#4026FF00</color>
