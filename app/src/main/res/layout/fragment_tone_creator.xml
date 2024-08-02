@@ -59,7 +59,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
+                android:paddingBottom="256dp"
                 tools:ignore="RtlSymmetry">
+
+                <Spinner
+                    android:id="@+id/tone_creator_sample_rates_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/tone_creator_sample_rate_icon"
@@ -86,11 +94,12 @@
                     app:layout_constraintTop_toTopOf="@id/tone_creator_sample_rates_spinner" />
 
                 <Spinner
-                    android:id="@+id/tone_creator_sample_rates_spinner"
+                    android:id="@+id/tone_creator_envelope_preset_spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
+                    android:layout_marginTop="32dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/tone_creator_sample_rates_spinner" />
 
                 <ImageView
                     android:id="@+id/tone_creator_envelope_icon"
@@ -116,20 +125,13 @@
                     app:layout_constraintStart_toEndOf="@id/tone_creator_envelope_icon"
                     app:layout_constraintTop_toTopOf="@id/tone_creator_envelope_preset_spinner" />
 
-                <Spinner
-                    android:id="@+id/tone_creator_envelope_preset_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="32dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_sample_rates_spinner" />
-
                 <HorizontalScrollView
                     android:id="@+id/tone_creator_envelope_parameters"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:fadingEdgeLength="16dp"
                     android:requiresFadingEdge="horizontal"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_preset_spinner">
@@ -350,18 +352,84 @@
 
                 </HorizontalScrollView>
 
+                <TextView
+                    android:id="@+id/tone_creator_duration_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="1dp"
+                    android:text="@string/millisecond_unit"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_duration_input"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_duration_input" />
+
+                <EditText
+                    android:id="@+id/tone_creator_duration_input"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center_vertical|end"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:minWidth="48dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/tone_creator_duration_unit"
+                    app:layout_constraintStart_toStartOf="@id/tone_creator_envelope_preset_spinner"
+                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_parameters"
+                    tools:text="1200" />
+
+                <ImageView
+                    android:id="@+id/tone_creator_duration_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="@null"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    android:src="@drawable/ic_duration"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_duration_input"
+                    app:layout_constraintEnd_toEndOf="@id/tone_creator_frequency_decrement_btn"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_duration_input" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:labelFor="@id/tone_creator_fundamental_frequency_input"
+                    android:text="@string/duration_header"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_duration_icon"
+                    app:layout_constraintStart_toEndOf="@id/tone_creator_duration_icon"
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_duration_icon" />
+
+                <NumberPicker
+                    android:id="@+id/tone_creator_note_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="4dp"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tone_creator_duration_input" />
+
                 <ImageView
                     android:id="@+id/tone_creator_frequency_icon"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="32dp"
                     android:contentDescription="@null"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     android:src="@drawable/ic_frequency"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_note_input"
                     app:layout_constraintEnd_toEndOf="@id/tone_creator_frequency_decrement_btn"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_envelope_parameters" />
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_note_input" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -371,9 +439,9 @@
                     android:text="@string/frequency_header"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_frequency_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_note_input"
                     app:layout_constraintStart_toEndOf="@id/tone_creator_frequency_icon"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_frequency_icon" />
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_note_input" />
 
                 <EditText
                     android:id="@+id/tone_creator_fundamental_frequency_input"
@@ -387,10 +455,10 @@
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_frequency_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_note_input"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_frequency_icon"
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_note_input"
                     tools:text="500" />
 
                 <TextView
@@ -403,16 +471,6 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/tone_creator_fundamental_frequency_input"
                     app:layout_constraintStart_toEndOf="@id/tone_creator_fundamental_frequency_input"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_fundamental_frequency_input" />
-
-                <NumberPicker
-                    android:id="@+id/tone_creator_note_input"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="4dp"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_fundamental_frequency_input"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tone_creator_fundamental_frequency_input" />
 
                 <SeekBar
@@ -450,31 +508,44 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tone_creator_fundamental_frequency_input" />
 
+                <SeekBar
+                    android:id="@+id/tone_creator_master_volume_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
+                    android:progress="100"
+                    android:progressTint="@color/app_yellow_gradient_start"
+                    android:thumb="@drawable/custom_seekbar_thumb"
+                    app:layout_constraintEnd_toEndOf="@id/tone_creator_fundamental_frequency_bar"
+                    app:layout_constraintStart_toEndOf="@id/tone_creator_volume_header"
+                    app:layout_constraintTop_toBottomOf="@id/tone_creator_fundamental_frequency_bar" />
+
                 <ImageView
                     android:id="@+id/tone_creator_volume_icon"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:contentDescription="@null"
                     android:scaleX="0.7"
                     android:scaleY="0.7"
                     android:src="@drawable/ic_volume_high"
-                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_master_volume_bar"
                     app:layout_constraintEnd_toEndOf="@id/tone_creator_frequency_decrement_btn"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tone_creator_frequency_decrement_btn" />
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_master_volume_bar" />
 
-                <SeekBar
-                    android:id="@+id/tone_creator_master_volume_bar"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:progress="100"
-                    android:progressTint="@color/app_yellow_gradient_start"
-                    android:thumb="@drawable/custom_seekbar_thumb"
-                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_volume_icon"
-                    app:layout_constraintEnd_toEndOf="@id/tone_creator_fundamental_frequency_bar"
-                    app:layout_constraintStart_toStartOf="@id/tone_creator_fundamental_frequency_bar"
-                    app:layout_constraintTop_toTopOf="@id/tone_creator_volume_icon" />
+                <TextView
+                    android:id="@+id/tone_creator_volume_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:labelFor="@id/tone_creator_fundamental_frequency_input"
+                    android:text="@string/tone_volume_header"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@id/tone_creator_master_volume_bar"
+                    app:layout_constraintStart_toEndOf="@id/tone_creator_volume_icon"
+                    app:layout_constraintTop_toTopOf="@id/tone_creator_master_volume_bar" />
 
                 <TextView
                     android:id="@+id/tone_creator_master_volume_input"
@@ -488,16 +559,16 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@id/tone_creator_master_volume_bar"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tone_creator_fundamental_frequency_bar"
+                    app:layout_constraintStart_toEndOf="@id/tone_creator_master_volume_bar"
                     app:layout_constraintTop_toTopOf="@id/tone_creator_master_volume_bar"
                     tools:text="100" />
 
                 <CheckBox
                     android:id="@+id/tone_creator_overtones_activator"
-                    android:layout_width="wrap_content"
+                    android:layout_width="256dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="32dp"
                     android:buttonTint="@color/app_yellow"
                     android:paddingStart="19dp"
                     android:text="@string/overtones_header"
