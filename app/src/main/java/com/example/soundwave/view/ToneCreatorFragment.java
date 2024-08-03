@@ -23,16 +23,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.soundwave.MainActivity;
 import com.example.soundwave.utils.OnFragmentExitListener;
+import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
+import com.example.soundwave.databinding.ToneCreatorCustomEnvelopeLayoutBinding;
 import com.example.soundwave.Overtone;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
@@ -49,7 +52,11 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
     private ToneCreatorViewModel viewModel;
     private FragmentToneCreatorBinding binding;
+    private ToneCreatorCustomEnvelopeLayoutBinding customEnvelopeBinding;
     private OvertoneCreatorBinding[] overtoneBindings;
+
+    private boolean isCustomEnvelopeViewInflated = false;
+    private View customEnvelopeView;
 
     private Tone editedTone;
     private boolean editorMode = false;
@@ -154,22 +161,26 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         viewModel.getSampleRate().observe(getViewLifecycleOwner(), sampleRate -> binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate)));
 
         viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), envelopeComponent -> {
-            int attackDuration = envelopeComponent.getAttackDuration();
-            int decayDuration = envelopeComponent.getDecayDuration();
-            int sustainLevel = envelopeComponent.getSustainLevel();
-            int sustainDuration = envelopeComponent.getSustainDuration();
-            int releaseDuration = envelopeComponent.getReleaseDuration();
+            if (envelopeComponent.getEnvelopePreset() == PresetEnvelope.CUSTOM) {
+                inflateCustomEnvelopeLayout();
 
-            if (!binding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDuration)))
-                binding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
-            if (!binding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDuration)))
-                binding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
-            if (!binding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevel)))
-                binding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
-            if (!binding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDuration)))
-                binding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
-            if (!binding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDuration)))
-                binding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
+                int attackDuration = envelopeComponent.getAttackDuration();
+                int decayDuration = envelopeComponent.getDecayDuration();
+                int sustainLevel = envelopeComponent.getSustainLevel();
+                int sustainDuration = envelopeComponent.getSustainDuration();
+                int releaseDuration = envelopeComponent.getReleaseDuration();
+
+                if (!customEnvelopeBinding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDuration)))
+                    customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDuration)))
+                    customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevel)))
+                    customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDuration)))
+                    customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDuration)))
+                    customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
+            }
         });
 
         viewModel.getFundamentalFrequencyComponent().observe(getViewLifecycleOwner(), fundamentalFrequencyComponent -> {
@@ -226,104 +237,21 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
             }
         });
+
         binding.toneCreatorEnvelopePresetSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 viewModel.updateEnvelopePreset(position);
+
+                if (Options.envelopePreset == PresetEnvelope.CUSTOM)
+                    inflateCustomEnvelopeLayout();
+                else
+                    hideCustomEnvelopeLayout();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
-        binding.toneCreatorEnvelopeAttack.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.ATTACK_DURATION, s.toString());
-                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
-            }
-        });
-
-        binding.toneCreatorEnvelopeDecay.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.DECAY_DURATION, s.toString());
-                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
-            }
-        });
-
-        binding.toneCreatorEnvelopeSustainLevel.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.SUSTAIN_LEVEL, s.toString());
-                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
-            }
-        });
-
-        binding.toneCreatorEnvelopeSustainDuration.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.SUSTAIN_DURATION, s.toString());
-                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
-            }
-        });
-
-        binding.toneCreatorEnvelopeRelease.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.RELEASE_DURATION, s.toString());
-                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
 
@@ -537,9 +465,13 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     }
 
     private void initializeToneEditorLayout() {
-        binding.toneCreatorToneName.setText(editedTone.getName());
-        binding.toneCreatorToneName.setVisibility(View.VISIBLE);
-        binding.toneCreatorToneName.setSelected(true);
+        TextView toneName = binding.toneCreatorToneName;
+
+        toneName.setText(editedTone.getName());
+        toneName.setVisibility(View.VISIBLE);
+        toneName.setSelected(true);
+
+        binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
 
         if (Objects.requireNonNull(viewModel.getTone().getValue()).getOvertonesPreset() != PresetOvertones.NONE) {
             binding.toneCreatorOvertonesActivator.setChecked(true);
@@ -554,6 +486,137 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         }
 
         viewModel.setNoChange();
+    }
+
+    private void inflateCustomEnvelopeLayout() {
+        if (!isCustomEnvelopeViewInflated) {
+            customEnvelopeView = binding.toneCreatorCustomEnvelopeLayout.inflate();
+            isCustomEnvelopeViewInflated = true;
+
+            customEnvelopeBinding = ToneCreatorCustomEnvelopeLayoutBinding.bind(customEnvelopeView);
+
+            EnvelopeComponent ec = Objects.requireNonNull(viewModel.getEnvelopeComponent().getValue());
+
+            int attackDuration = ec.getAttackDuration();
+            int decayDuration = ec.getDecayDuration();
+            int sustainLevel = ec.getSustainLevel();
+            int sustainDuration = ec.getSustainDuration();
+            int releaseDuration = ec.getReleaseDuration();
+
+            customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
+            customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
+            customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
+            customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
+            customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
+
+            setCustomEnvelopeListeners();
+        }
+
+        showCustomEnvelopeLayout();
+    }
+
+    private void showCustomEnvelopeLayout() {
+        if (customEnvelopeView.getVisibility() != View.VISIBLE)
+            customEnvelopeView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideCustomEnvelopeLayout() {
+        if (isCustomEnvelopeViewInflated) {
+            if (customEnvelopeView.getVisibility() != View.GONE)
+                customEnvelopeView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setCustomEnvelopeListeners() {
+        customEnvelopeBinding.toneCreatorEnvelopeAttack.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.ATTACK_DURATION, s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
+            }
+        });
+
+        customEnvelopeBinding.toneCreatorEnvelopeDecay.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.DECAY_DURATION, s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
+            }
+        });
+
+        customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.SUSTAIN_LEVEL, s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
+            }
+        });
+
+        customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.SUSTAIN_DURATION, s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
+            }
+        });
+
+        customEnvelopeBinding.toneCreatorEnvelopeRelease.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateEnvelopeParameter(EnvelopeComponent.EnvelopeParameters.RELEASE_DURATION, s.toString());
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
+            }
+        });
     }
 
     private void takeResetAction() {
