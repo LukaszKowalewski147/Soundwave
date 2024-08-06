@@ -92,6 +92,7 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     public void onDestroyView() {
         Options.lastOvertonePreset = PresetOvertones.FLAT;
         binding = null;
+        customEnvelopeBinding = null;
         overtoneBindings = null;
         super.onDestroyView();
     }
