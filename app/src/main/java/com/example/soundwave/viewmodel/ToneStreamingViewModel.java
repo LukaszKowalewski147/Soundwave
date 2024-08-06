@@ -29,6 +29,15 @@ public class ToneStreamingViewModel extends AndroidViewModel {
         initializeDefaultValues();
     }
 
+    @Override
+    protected void onCleared() {
+        if (audioPlayer != null) {
+            audioPlayer.stop();
+            audioPlayer = null;
+        }
+        super.onCleared();
+    }
+
     public LiveData<FundamentalFrequencyComponent> getFundamentalFrequencyComponent() {
         return fundamentalFrequencyComponent;
     }
