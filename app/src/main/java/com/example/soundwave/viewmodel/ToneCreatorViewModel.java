@@ -38,6 +38,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     private final MutableLiveData<SampleRate> sampleRate = new MutableLiveData<>();
     private final MutableLiveData<EnvelopeComponent> envelopeComponent = new MutableLiveData<>();
+    private final MutableLiveData<Integer> toneDuration = new MutableLiveData<>();
     private final MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
     private final MutableLiveData<ControlPanelComponent> controlPanelComponent = new MutableLiveData<>();
     private final MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
@@ -70,6 +71,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public LiveData<EnvelopeComponent> getEnvelopeComponent() {
         return envelopeComponent;
+    }
+
+    public LiveData<Integer> getToneDuration() {
+        return toneDuration;
     }
 
     public LiveData<FundamentalFrequencyComponent> getFundamentalFrequencyComponent() {
@@ -199,6 +204,25 @@ public class ToneCreatorViewModel extends AndroidViewModel {
                         currentAttackDuration, currentDecayDuration, currentSustainLevel, currentSustainDuration, value));
         }
         setEnvelopePreset(PresetEnvelope.CUSTOM);
+    }
+
+    public void updateToneDuration(String input) {
+        input = input.trim();
+        if (input.isEmpty())            // letting the user delete all digits and type from scratch
+            return;
+
+        int userDuration;
+
+        try {
+            userDuration = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            Log.w(TAG, "Tone duration: user input (" + input + ") - not integer");
+            setToneDuration(Config.TONE_DURATION_DEFAULT.value);
+            return;
+        }
+        int duration = Math.max(Config.TONE_DURATION_MIN.value, Math.min(userDuration, Config.TONE_DURATION_MAX.value));    // clamp between min and max
+
+        setToneDuration(duration);
     }
 
     public void updateFundamentalFrequency(String input) {
@@ -418,6 +442,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
         loadSampleRate(editedTone.getSampleRate());
         loadEnvelopeComponent(editedTone.getEnvelopeComponent());
+        setToneDuration(editedTone.getDurationInMilliseconds());
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 editedTone.getFundamentalFrequency(), editedTone.getMasterVolume()));
         loadOvertonesComponent(editedTone.getOvertonesComponent());
@@ -482,6 +507,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
         updateSampleRate(0);
         setEnvelopePreset(PresetEnvelope.FLAT);
+        setToneDuration(Config.TONE_DURATION_DEFAULT.value);
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
         setDefaultOvertones();
@@ -531,6 +557,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
         envelopeComponent.setValue(new EnvelopeComponent(preset, preset.values[0],
                 preset.values[1], preset.values[2], preset.values[3], preset.values[4]));
+    }
+
+    private void setToneDuration(int duration) {
+        toneDuration.setValue(duration);
+        setAnyChange();
     }
 
     private void setFrequencyComplex(int frequency, int volume) {

@@ -184,6 +184,11 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             }
         });
 
+        viewModel.getToneDuration().observe(getViewLifecycleOwner(), duration -> {
+            if (!binding.toneCreatorDurationInput.getText().toString().equals(String.valueOf(duration)))
+                binding.toneCreatorDurationInput.setText(String.valueOf(duration));
+        });
+
         viewModel.getFundamentalFrequencyComponent().observe(getViewLifecycleOwner(), fundamentalFrequencyComponent -> {
             int fundamentalFrequency = fundamentalFrequencyComponent.getFundamentalFrequency();
             int fundamentalFrequencyBar = fundamentalFrequencyComponent.getFundamentalFrequencyBar();
@@ -253,6 +258,23 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        binding.toneCreatorDurationInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                viewModel.updateToneDuration(s.toString());
             }
         });
 

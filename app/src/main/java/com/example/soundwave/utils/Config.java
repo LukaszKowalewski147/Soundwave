@@ -6,6 +6,9 @@ public enum Config {
     FREQUENCY_DEFAULT(500),                 // in Hz
     FREQUENCY_PROGRESS_BAR_MAX(850),        // progress bar position
     MASTER_VOLUME_DEFAULT(100),             // in %
+    TONE_DURATION_MIN(1),                   // in ms
+    TONE_DURATION_MAX(30000),               // in ms
+    TONE_DURATION_DEFAULT(1000),            // in ms
     PLAYBACK_REFRESH_RATE(20),              // in ms [20 ms = 50FPS]
     SEEKBAR_CHANGE_REFRESH_RATE(40),        // in ms [40 ms = 25FPS]
     ENVELOPE_PARAMETER_MIN_DURATION(0),
