@@ -51,7 +51,7 @@ public class ToneGenerator {
         }
 
         if (oc.getOvertones() != null)
-            addOvertonesData(sampleRateInHz, oc.getOvertones());
+            addOvertonesData(sampleRateInHz, oc.getActiveOvertones());
 
         compressToMasterVolume(ffc.getMasterVolume());
         applyEnvelope(ec);

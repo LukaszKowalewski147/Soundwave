@@ -21,6 +21,16 @@ public class OvertonesComponent implements Serializable {
         return overtones;
     }
 
+    public ArrayList<Overtone> getActiveOvertones() {
+        ArrayList<Overtone> activeOvertones = new ArrayList<>();
+
+        for (Overtone overtone : overtones) {
+            if (overtone.isActive())
+                activeOvertones.add(overtone);
+        }
+        return activeOvertones;
+    }
+
     public PresetOvertones getOvertonesPreset() {
         return overtonesPreset;
     }
