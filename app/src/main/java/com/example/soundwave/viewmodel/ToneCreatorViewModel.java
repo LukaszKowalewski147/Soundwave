@@ -356,8 +356,9 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
         FundamentalFrequencyComponent ffc = Objects.requireNonNull(fundamentalFrequencyComponent.getValue());
         OvertonesComponent oc = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
+        double duration = UnitsConverter.convertMsToSeconds(Objects.requireNonNull(toneDuration.getValue()));
 
-        ToneGenerator toneGenerator = new ToneGenerator(sr, ec.getTotalDurationInSeconds());
+        ToneGenerator toneGenerator = new ToneGenerator(sr, duration);
         Tone newTone = toneGenerator.generateTone(ec, ffc, oc);
 
         if (editorMode)

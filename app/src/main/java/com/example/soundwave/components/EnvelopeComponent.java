@@ -16,8 +16,8 @@ public class EnvelopeComponent implements Serializable {
     private final int sustainLevel;
     private final int sustainDuration;
     private final int releaseDuration;
-    private final int totalDurationInMilliseconds;
-    private final double totalDurationInSeconds;
+    private final int envelopeDurationInMs;
+    private final double envelopeDurationInS;
 
     public enum EnvelopeParameters {
         ATTACK_DURATION,
@@ -42,8 +42,8 @@ public class EnvelopeComponent implements Serializable {
         this.sustainLevel = sustainLevel;
         this.sustainDuration = sustainDuration;
         this.releaseDuration = releaseDuration;
-        this.totalDurationInMilliseconds = calculateTotalDurationInMilliseconds();
-        this.totalDurationInSeconds = calculateTotalDurationInSeconds();
+        this.envelopeDurationInMs = calculateTotalDurationInMilliseconds();
+        this.envelopeDurationInS = calculateTotalDurationInSeconds();
     }
 
     public PresetEnvelope getEnvelopePreset() {
@@ -70,12 +70,12 @@ public class EnvelopeComponent implements Serializable {
         return releaseDuration;
     }
 
-    public int getTotalDurationInMilliseconds() {
-        return totalDurationInMilliseconds;
+    public int getEnvelopeDurationInMs() {
+        return envelopeDurationInMs;
     }
 
-    public double getTotalDurationInSeconds() {
-        return totalDurationInSeconds;
+    public double getEnvelopeDurationInS() {
+        return envelopeDurationInS;
     }
 
     private int calculateTotalDurationInMilliseconds() {
@@ -83,7 +83,7 @@ public class EnvelopeComponent implements Serializable {
     }
 
     private double calculateTotalDurationInSeconds() {
-        return UnitsConverter.convertMillisecondsToSeconds(totalDurationInMilliseconds);
+        return UnitsConverter.convertMsToSeconds(envelopeDurationInMs);
     }
 
     @NonNull

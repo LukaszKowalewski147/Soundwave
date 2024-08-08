@@ -19,18 +19,19 @@ public class ToneGenerator {
     private int samplesNumber;
     private double[] samples;
     private byte[] outputSound;
-    private final double durationInSeconds; //  Only for silence tone generation
+    private final int durationInMs;
 
-    public ToneGenerator(SampleRate sampleRate, double totalDurationInSeconds) {
+    public ToneGenerator(SampleRate sampleRate, double durationInSeconds) {
         this.sampleRate = sampleRate;
 
-        this.samplesNumber = (int) Math.ceil(totalDurationInSeconds * sampleRate.sampleRate);
+        this.samplesNumber = (int) Math.ceil(durationInSeconds * sampleRate.sampleRate);
         this.samples = new double[samplesNumber];
         this.outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
 
-        this.durationInSeconds = totalDurationInSeconds;
+        this.durationInMs = UnitsConverter.convertSecondsToMs(durationInSeconds);
     }
 
+    // Constructor to generate track and music
     public ToneGenerator(SampleRate sampleRate, int samplesNumber) {
         this.sampleRate = sampleRate;
 
@@ -38,7 +39,7 @@ public class ToneGenerator {
         this.samples = new double[samplesNumber];
         this.outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
 
-        this.durationInSeconds = 0;
+        this.durationInMs = 0;
     }
 
     public Tone generateTone(EnvelopeComponent ec, FundamentalFrequencyComponent ffc, OvertonesComponent oc) {
@@ -58,18 +59,15 @@ public class ToneGenerator {
         fadeOutFlatZero();
         convertTo16BitPCM();
 
-        return new Tone(sampleRate, ec, ffc, oc, samples, outputSound);
+        return new Tone(sampleRate, ec, ffc, oc, durationInMs, samples, outputSound);
     }
 
     public Tone generateSilence() {
-        int silenceDurationInMs = (int) Math.round(durationInSeconds * 1000);
-        EnvelopeComponent ec = new EnvelopeComponent(PresetEnvelope.CUSTOM, silenceDurationInMs, 0, 0, 0, 0);
-
         Arrays.fill(samples, 0.0d);
 
         convertTo16BitPCM();
 
-        return new Tone(sampleRate, ec, samples);
+        return new Tone(sampleRate, durationInMs, samples);
     }
 
     public Track generateTrack(List<Tone> tones) {
@@ -180,17 +178,20 @@ public class ToneGenerator {
 
     private void applyEnvelope(EnvelopeComponent ec) {
         double sustainLevel = ec.getSustainLevel() / 100.0d;
-        double totalTimeInMilliseconds = ec.getTotalDurationInMilliseconds();
+        double envelopeDurationInMs = ec.getEnvelopeDurationInMs();
 
-        int attackInMilliseconds = ec.getAttackDuration();
-        int decayInMilliseconds = ec.getDecayDuration();
-        int sustainInMilliseconds = ec.getSustainDuration();
-        int releaseInMilliseconds = ec.getReleaseDuration();
+        int attackInMs = ec.getAttackDuration();
+        int decayInMs = ec.getDecayDuration();
+        int sustainInMs = ec.getSustainDuration();
+        int releaseInMs = ec.getReleaseDuration();
 
-        double attackTimePercent = attackInMilliseconds * 100 / totalTimeInMilliseconds;
-        double decayTimePercent = decayInMilliseconds * 100 / totalTimeInMilliseconds;
-        double sustainTimePercent = sustainInMilliseconds * 100 / totalTimeInMilliseconds;
-        double releaseTimePercent = releaseInMilliseconds * 100 / totalTimeInMilliseconds;
+        double envelopeToToneRatio = envelopeDurationInMs / durationInMs;   // ratio between envelope and tone duration
+        double timePercentMultiplier =  100 / envelopeDurationInMs * envelopeToToneRatio;   // phase percent of envelope times ratio
+
+        double attackTimePercent = attackInMs * timePercentMultiplier;
+        double decayTimePercent = decayInMs * timePercentMultiplier;
+        double sustainTimePercent = sustainInMs * timePercentMultiplier;
+        double releaseTimePercent = releaseInMs * timePercentMultiplier;
 
         int attackSamples = (int) Math.round(samplesNumber * attackTimePercent / 100);
         int decaySamples = (int) Math.round(samplesNumber * decayTimePercent / 100);
@@ -208,6 +209,9 @@ public class ToneGenerator {
             double attackFactor = 0.0d;
 
             for (int i = startSample; i < endSample; ++i) {
+                if (i == samplesNumber)
+                    return;
+
                 samples[i] *= attackFactor;
                 attackFactor = i * step;
             }
@@ -220,6 +224,9 @@ public class ToneGenerator {
             EnvelopeCalculator calculator = new EnvelopeCalculator(EnvelopeComponent.EnvelopePhase.DECAY, decaySamples, sustainLevel);
             int sampleIndex = 0;
             for (int i = startSample; i < endSample; ++i) {
+                if (i == samplesNumber)
+                    return;
+
                 samples[i] *= calculator.getMultiplier(sampleIndex);
                 ++sampleIndex;
             }
@@ -231,6 +238,9 @@ public class ToneGenerator {
             endSample = startSample + sustainSamples;
 
             for (int i = startSample; i < endSample; ++i) {
+                if (i == samplesNumber)
+                    return;
+
                 samples[i] *= sustainLevel;
             }
         }
@@ -238,13 +248,23 @@ public class ToneGenerator {
         //  Release phase
         if (releaseSamples > 0) {
             startSample = attackSamples + decaySamples + sustainSamples;
+            endSample = startSample + releaseSamples;
             EnvelopeCalculator calculator = new EnvelopeCalculator(EnvelopeComponent.EnvelopePhase.RELEASE, releaseSamples, sustainLevel);
             int sampleIndex = 0;
 
-            for (int i = startSample; i < samplesNumber; ++i) {
+            for (int i = startSample; i < endSample; ++i) {
+                if (i == samplesNumber)
+                    return;
+
                 samples[i] *= calculator.getMultiplier(sampleIndex);
                 ++sampleIndex;
             }
+        }
+
+        // if envelope is shorter than tone - set the rest of the samples to zero
+        startSample = attackSamples + decaySamples + sustainSamples + releaseSamples;
+        for (int i = startSample; i < samplesNumber; ++i) {
+            samples[i] = 0;
         }
     }
 

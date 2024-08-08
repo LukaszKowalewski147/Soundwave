@@ -24,7 +24,7 @@ public class ToneParser {
         FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent(dbTone);
         OvertonesComponent oc = parseOvertonesComponent(dbTone);
 
-        Tone tone = new ToneGenerator(sampleRate, Objects.requireNonNull(ec).getTotalDurationInSeconds()).generateTone(ec, ffc, oc);
+        Tone tone = new ToneGenerator(sampleRate, Objects.requireNonNull(ec).getEnvelopeDurationInS()).generateTone(ec, ffc, oc);
         tone.setId(id);
         tone.setName(name);
 

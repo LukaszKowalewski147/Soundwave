@@ -715,7 +715,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         if (musicDurationInMilliseconds <= 1000)
             return null;
 
-        double musicDurationInSeconds = UnitsConverter.convertMillisecondsToSeconds(musicDurationInMilliseconds);
+        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMilliseconds);
         int scrollStart = binding.toneMixerMusicScrollView.getScrollX();
         int scrollEnd = (int) Math.ceil(getOneSecondWidthPixels() * (musicDurationInSeconds - 1));
 
@@ -734,7 +734,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private ObjectAnimator getShortTimeIndicatorAnimator(float indicatorStart, int musicDurationInMilliseconds) {
-        double musicDurationInSeconds = UnitsConverter.convertMillisecondsToSeconds(musicDurationInMilliseconds);
+        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMilliseconds);
         float indicatorEnd = (float) (getOneSecondWidthPixels() * musicDurationInSeconds) + indicatorStart;     // <1s of pixels
 
         ObjectAnimator indicatorAnimator = ObjectAnimator.ofFloat(binding.toneMixerTimeIndicator, "x", indicatorStart, indicatorEnd);

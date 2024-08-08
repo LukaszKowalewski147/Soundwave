@@ -4,6 +4,7 @@ import com.example.soundwave.Overtone;
 import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
+import com.example.soundwave.utils.UnitsConverter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,27 +19,31 @@ public class Tone implements Serializable {
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
     private final OvertonesComponent overtonesComponent;
+    private final int durationInMs;
     private final double[] samples;
     private final byte[] pcmSound;
 
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
-                OvertonesComponent oc, double[] samples, byte[] pcmSound) {
+                OvertonesComponent oc, int durationInMs, double[] samples, byte[] pcmSound) {
         this.id = -1;
         this.name = "";
         this.sampleRate = sampleRate;
         this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
         this.overtonesComponent = oc;
+        this.durationInMs = durationInMs;
         this.samples = samples;
         this.pcmSound = pcmSound;
     }
 
-    public Tone(SampleRate sampleRate, EnvelopeComponent ec, double[] samples) {
+    // Constructor to generate silence tone
+    public Tone(SampleRate sampleRate, int durationInMs, double[] samples) {
         this.id = -1;
         this.sampleRate = sampleRate;
-        this.envelopeComponent = ec;
+        this.durationInMs = durationInMs;
         this.samples = samples;
         this.name = null;
+        this.envelopeComponent = null;
         this.fundamentalFrequencyComponent = null;
         this.overtonesComponent = null;
         this.pcmSound = null;
@@ -85,7 +90,7 @@ public class Tone implements Serializable {
     }
 
     public PresetEnvelope getEnvelopePreset() {
-        return envelopeComponent.getEnvelopePreset();
+        return Objects.requireNonNull(envelopeComponent).getEnvelopePreset();
     }
 
     public PresetOvertones getOvertonesPreset() {
@@ -101,11 +106,11 @@ public class Tone implements Serializable {
     }
 
     public double getDurationInSeconds() {
-        return envelopeComponent.getTotalDurationInSeconds();
+        return UnitsConverter.convertMsToSeconds(durationInMs);
     }
 
     public int getDurationInMilliseconds() {
-        return envelopeComponent.getTotalDurationInMilliseconds();
+        return durationInMs;
     }
 
     public ArrayList<Overtone> getOvertones() {
