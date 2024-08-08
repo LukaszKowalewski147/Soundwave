@@ -146,7 +146,7 @@ public class HomepageMusicViewModel extends AndroidViewModel {
             }
         };
 
-        handler.postDelayed(runnable, music.getDurationInMilliseconds());
+        handler.postDelayed(runnable, music.getDurationInMs());
         return true;
     }
 

@@ -38,11 +38,11 @@ public class AudioPlayer {
         audioTrack.flush();
         audioTrack.write(tone.getPcmSound(), 0, tone.getPcmSound().length);
 
-        if (!isReadyToPlay()) {
-            Log.e(TAG, "Load tone: audioTrack not ready to play tone");
-            return false;
-        }
-        return true;
+        if (isReadyToPlay())
+            return true;
+
+        Log.e(TAG, "Load tone: audioTrack not ready to play tone");
+        return false;
     }
 
     public boolean loadMusic(Music music) {
@@ -53,11 +53,11 @@ public class AudioPlayer {
         audioTrack.flush();
         audioTrack.write(music.getSamples16BitPCM(), 0, music.getSamples16BitPCM().length);
 
-        if (!isReadyToPlay()) {
-            Log.e(TAG, "Load music: audioTrack not ready to play music");
-            return false;
-        }
-        return true;
+        if (isReadyToPlay())
+            return true;
+
+        Log.e(TAG, "Load music: audioTrack not ready to play music");
+        return false;
     }
 
     public void reload() {
@@ -174,12 +174,7 @@ public class AudioPlayer {
         if (isPlaying) return;
 
         isPlaying = true;
-        playbackThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                generateAndPlaySound();
-            }
-        });
+        playbackThread = new Thread(this::generateAndPlaySound);
         playbackThread.start();
     }
 

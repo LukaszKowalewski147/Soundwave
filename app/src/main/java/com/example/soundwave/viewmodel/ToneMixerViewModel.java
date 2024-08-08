@@ -139,7 +139,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
             Thread thread = new Thread() {
                 /** @noinspection CallToPrintStackTrace*/
                 public void run() {
-                    int waitingTime = Objects.requireNonNull(music.getValue()).getDurationInMilliseconds();
+                    int waitingTime = Objects.requireNonNull(music.getValue()).getDurationInMs();
                     try {
                         Thread.sleep(waitingTime);
                     } catch (InterruptedException e) {
@@ -413,7 +413,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setControlPanelComponentAnyChange(buttonsStates);
     }
 
-    public int getMusicDurationInMilliseconds() {
-        return Objects.requireNonNull(music.getValue()).getDurationInMilliseconds();
+    public int getMusicDurationInMs() {
+        return Objects.requireNonNull(music.getValue()).getDurationInMs();
     }
 }

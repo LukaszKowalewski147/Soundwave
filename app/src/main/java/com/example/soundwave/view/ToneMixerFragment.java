@@ -693,34 +693,34 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
     private void animateTimeIndicator() {
         float indicatorStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
-        int musicDurationInMilliseconds = viewModel.getMusicDurationInMilliseconds();
-        boolean scrollToAnimate = musicDurationInMilliseconds > 1000;
+        int musicDurationInMs = viewModel.getMusicDurationInMs();
+        boolean scrollToAnimate = musicDurationInMs > 1000;
 
         binding.toneMixerMusicScrollView.scrollTo(0, 0);
         binding.toneMixerTimeIndicator.setX(indicatorStart);
         binding.toneMixerTimeIndicator.setVisibility(View.VISIBLE);
 
         ObjectAnimator indicatorAnimator;
-        ObjectAnimator scrollAnimator = getScrollAnimator(musicDurationInMilliseconds);
+        ObjectAnimator scrollAnimator = getScrollAnimator(musicDurationInMs);
 
         if (scrollToAnimate)
             indicatorAnimator = getLongTimeIndicatorAnimator(indicatorStart, scrollAnimator);
         else
-            indicatorAnimator = getShortTimeIndicatorAnimator(indicatorStart, musicDurationInMilliseconds);
+            indicatorAnimator = getShortTimeIndicatorAnimator(indicatorStart, musicDurationInMs);
 
         indicatorAnimator.start();
     }
 
-    private ObjectAnimator getScrollAnimator(int musicDurationInMilliseconds) {
-        if (musicDurationInMilliseconds <= 1000)
+    private ObjectAnimator getScrollAnimator(int musicDurationInMs) {
+        if (musicDurationInMs <= 1000)
             return null;
 
-        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMilliseconds);
+        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMs);
         int scrollStart = binding.toneMixerMusicScrollView.getScrollX();
         int scrollEnd = (int) Math.ceil(getOneSecondWidthPixels() * (musicDurationInSeconds - 1));
 
         ObjectAnimator scrollAnimator = ObjectAnimator.ofInt(binding.toneMixerMusicScrollView, "scrollX", scrollStart, scrollEnd);
-        scrollAnimator.setDuration(musicDurationInMilliseconds - 1000);
+        scrollAnimator.setDuration(musicDurationInMs - 1000);
         scrollAnimator.setInterpolator(new LinearInterpolator());
 
         scrollAnimator.addListener(new AnimatorListenerAdapter() {
@@ -733,12 +733,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return scrollAnimator;
     }
 
-    private ObjectAnimator getShortTimeIndicatorAnimator(float indicatorStart, int musicDurationInMilliseconds) {
-        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMilliseconds);
+    private ObjectAnimator getShortTimeIndicatorAnimator(float indicatorStart, int musicDurationInMs) {
+        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMs);
         float indicatorEnd = (float) (getOneSecondWidthPixels() * musicDurationInSeconds) + indicatorStart;     // <1s of pixels
 
         ObjectAnimator indicatorAnimator = ObjectAnimator.ofFloat(binding.toneMixerTimeIndicator, "x", indicatorStart, indicatorEnd);
-        indicatorAnimator.setDuration(musicDurationInMilliseconds);     // <1s
+        indicatorAnimator.setDuration(musicDurationInMs);     // <1s
         indicatorAnimator.setInterpolator(new LinearInterpolator());
         indicatorAnimator.addListener(new AnimatorListenerAdapter() {
             @Override

@@ -186,7 +186,7 @@ public class ToneGenerator {
         int releaseInMs = ec.getReleaseDuration();
 
         double envelopeToToneRatio = envelopeDurationInMs / durationInMs;   // ratio between envelope and tone duration
-        double timePercentMultiplier =  100 / envelopeDurationInMs * envelopeToToneRatio;   // phase percent of envelope times ratio
+        double timePercentMultiplier = 100 / envelopeDurationInMs * envelopeToToneRatio;   // phase percent of envelope times ratio
 
         double attackTimePercent = attackInMs * timePercentMultiplier;
         double decayTimePercent = decayInMs * timePercentMultiplier;

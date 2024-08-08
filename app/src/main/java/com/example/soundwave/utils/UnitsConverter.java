@@ -310,8 +310,4 @@ public class UnitsConverter {
     public static int convertSecondsToMs(double seconds) {
         return (int) Math.round(seconds * 1000);
     }
-
-    public static int dpToPx(int dp) {
-        return Math.round(dp * Options.displayDensity);
-    }
 }

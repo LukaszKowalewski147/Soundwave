@@ -352,14 +352,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public boolean generateTone(boolean editorMode) {
-        SampleRate sr = Objects.requireNonNull(sampleRate.getValue());
-        EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
-        FundamentalFrequencyComponent ffc = Objects.requireNonNull(fundamentalFrequencyComponent.getValue());
-        OvertonesComponent oc = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
-        double duration = UnitsConverter.convertMsToSeconds(Objects.requireNonNull(toneDuration.getValue()));
-
-        ToneGenerator toneGenerator = new ToneGenerator(sr, duration);
-        Tone newTone = toneGenerator.generateTone(ec, ffc, oc);
+        Tone newTone = getNewTone();
 
         if (editorMode)
             newTone.setId(Objects.requireNonNull(tone.getValue()).getId());
@@ -373,6 +366,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             return true;
         }
         return false;
+    }
+
+    private Tone getNewTone() {
+        SampleRate sr = Objects.requireNonNull(sampleRate.getValue());
+        EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
+        FundamentalFrequencyComponent ffc = Objects.requireNonNull(fundamentalFrequencyComponent.getValue());
+        OvertonesComponent oc = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
+        double duration = UnitsConverter.convertMsToSeconds(Objects.requireNonNull(toneDuration.getValue()));
+
+        ToneGenerator toneGenerator = new ToneGenerator(sr, duration);
+
+        return toneGenerator.generateTone(ec, ffc, oc);
     }
 
     public void playStopTone() {

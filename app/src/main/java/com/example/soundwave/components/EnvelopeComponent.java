@@ -42,7 +42,7 @@ public class EnvelopeComponent implements Serializable {
         this.sustainLevel = sustainLevel;
         this.sustainDuration = sustainDuration;
         this.releaseDuration = releaseDuration;
-        this.envelopeDurationInMs = calculateTotalDurationInMilliseconds();
+        this.envelopeDurationInMs = calculateTotalDurationInMs();
         this.envelopeDurationInS = calculateTotalDurationInSeconds();
     }
 
@@ -78,7 +78,7 @@ public class EnvelopeComponent implements Serializable {
         return envelopeDurationInS;
     }
 
-    private int calculateTotalDurationInMilliseconds() {
+    private int calculateTotalDurationInMs() {
         return attackDuration + decayDuration + sustainDuration + releaseDuration;
     }
 
