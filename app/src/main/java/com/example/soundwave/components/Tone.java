@@ -109,7 +109,7 @@ public class Tone implements Serializable {
         return UnitsConverter.convertMsToSeconds(durationInMs);
     }
 
-    public int getDurationInMilliseconds() {
+    public int getDurationInMs() {
         return durationInMs;
     }
 

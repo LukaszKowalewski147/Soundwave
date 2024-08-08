@@ -12,19 +12,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ToneParser {
 
     public Tone parseToneFromDb(com.example.soundwave.model.entity.Tone dbTone) {
         int id = dbTone.getId();
         String name = dbTone.getName();
+        double durationInSeconds = UnitsConverter.convertMsToSeconds(dbTone.getDuration());
         SampleRate sampleRate = parseSampleRate(dbTone);
         EnvelopeComponent ec = parseEnvelopeComponent(dbTone);
         FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent(dbTone);
         OvertonesComponent oc = parseOvertonesComponent(dbTone);
 
-        Tone tone = new ToneGenerator(sampleRate, Objects.requireNonNull(ec).getEnvelopeDurationInS()).generateTone(ec, ffc, oc);
+        Tone tone = new ToneGenerator(sampleRate, durationInSeconds).generateTone(ec, ffc, oc);
         tone.setId(id);
         tone.setName(name);
 
@@ -49,6 +49,7 @@ public class ToneParser {
         String toneName = tone.getName();
         int toneFrequency = tone.getFundamentalFrequency();
         int toneVolume = tone.getMasterVolume();
+        int toneDuration = tone.getDurationInMs();
         String envelopeComponent = tone.getEnvelopeComponent().toString();
         String overtonesPreset = tone.getOvertonesPreset().toString();
 
@@ -66,7 +67,7 @@ public class ToneParser {
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
 
         return new com.example.soundwave.model.entity.Tone(toneName, toneFrequency,
-                toneVolume, envelopeComponent, overtonesComponent, sampleRate);
+                toneVolume, toneDuration, envelopeComponent, overtonesComponent, sampleRate);
     }
 
     public com.example.soundwave.model.entity.Music parseMusicToDbEntity(Music music) {

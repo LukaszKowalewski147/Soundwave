@@ -385,7 +385,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             setControlPanelComponentPlayTone(buttonsStates);
 
             Thread thread = new Thread(() -> {
-                int waitingTime = Objects.requireNonNull(tone.getValue()).getDurationInMilliseconds();
+                int waitingTime = Objects.requireNonNull(tone.getValue()).getDurationInMs();
                 try {
                     Thread.sleep(waitingTime);
                 } catch (InterruptedException e) {
@@ -443,7 +443,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
         loadSampleRate(editedTone.getSampleRate());
         loadEnvelopeComponent(editedTone.getEnvelopeComponent());
-        setToneDuration(editedTone.getDurationInMilliseconds());
+        setToneDuration(editedTone.getDurationInMs());
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 editedTone.getFundamentalFrequency(), editedTone.getMasterVolume()));
         loadOvertonesComponent(editedTone.getOvertonesComponent());

@@ -141,7 +141,7 @@ public class HomepageTonesViewModel extends AndroidViewModel {
             }
         };
 
-        handler.postDelayed(runnable, tone.getDurationInMilliseconds());
+        handler.postDelayed(runnable, tone.getDurationInMs());
         return true;
     }
 

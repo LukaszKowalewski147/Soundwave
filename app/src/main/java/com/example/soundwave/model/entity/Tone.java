@@ -17,6 +17,8 @@ public class Tone {
 
     private int volume;
 
+    private int duration;
+
     @ColumnInfo(name = "envelope_component")
     private String envelopeComponent;
 
@@ -26,11 +28,12 @@ public class Tone {
     @ColumnInfo(name = "sample_rate")
     private String sampleRate;
 
-    public Tone(String name, int fundamentalFrequency, int volume, String envelopeComponent, String overtonesComponent, String sampleRate) {
+    public Tone(String name, int fundamentalFrequency, int volume, int duration, String envelopeComponent, String overtonesComponent, String sampleRate) {
         this.name = name;
         this.fundamentalFrequency = fundamentalFrequency;
-        this.envelopeComponent = envelopeComponent;
         this.volume = volume;
+        this.duration = duration;
+        this.envelopeComponent = envelopeComponent;
         this.overtonesComponent = overtonesComponent;
         this.sampleRate = sampleRate;
     }
@@ -65,6 +68,14 @@ public class Tone {
 
     public void setVolume(int volume) {
         this.volume = volume;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public String getEnvelopeComponent() {

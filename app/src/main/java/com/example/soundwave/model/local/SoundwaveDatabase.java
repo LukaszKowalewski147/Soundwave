@@ -11,7 +11,7 @@ import com.example.soundwave.model.dao.ToneDao;
 import com.example.soundwave.model.entity.Music;
 import com.example.soundwave.model.entity.Tone;
 
-@Database(entities = {Tone.class, Music.class}, version = 7)
+@Database(entities = {Tone.class, Music.class}, version = 8)
 public abstract class SoundwaveDatabase extends RoomDatabase {
 
     private static SoundwaveDatabase instance;
