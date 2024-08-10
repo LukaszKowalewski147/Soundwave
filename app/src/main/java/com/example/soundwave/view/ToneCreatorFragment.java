@@ -162,6 +162,12 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         viewModel.getSampleRate().observe(getViewLifecycleOwner(), sampleRate -> binding.toneCreatorSampleRatesSpinner.setSelection(UnitsConverter.convertSampleRateToPosition(sampleRate)));
 
         viewModel.getEnvelopeComponent().observe(getViewLifecycleOwner(), envelopeComponent -> {
+            int selectedPresetPosition = binding.toneCreatorEnvelopePresetSpinner.getSelectedItemPosition();
+            int actualPresetPosition = viewModel.getEnvelopePresetPosition();
+
+            if (selectedPresetPosition != actualPresetPosition)
+                binding.toneCreatorEnvelopePresetSpinner.setSelection(actualPresetPosition);
+
             if (envelopeComponent.getEnvelopePreset() == PresetEnvelope.CUSTOM) {
                 inflateCustomEnvelopeLayout();
 
