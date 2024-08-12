@@ -656,10 +656,8 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
                 Log.e(TAG, "Load edited tone: loading unsuccessful");
                 Toast.makeText(requireContext(), R.string.error_loading_tone, Toast.LENGTH_SHORT).show();
             }
-        } else {
-            binding.toneCreatorOvertonesActivator.setChecked(false);
-            viewModel.resetTone();
-        }
+        } else
+            ((MainActivity) requireActivity()).resetToneCreator();
     }
 
     private void manageControlPanel(ControlPanelComponent controlPanelComponent) {

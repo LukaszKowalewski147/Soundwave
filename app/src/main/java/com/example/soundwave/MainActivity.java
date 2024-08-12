@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         binding.mainBottomNavView.setSelectedItemId(fragmentId);
     }
 
+    public void resetToneCreator() {
+        loadFragment(new ToneCreatorFragment());
+    }
+
     private void setDisplayDensity() {
         Options.displayDensity = getResources().getDisplayMetrics().density;
     }

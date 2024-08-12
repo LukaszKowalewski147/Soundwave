@@ -424,12 +424,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         anyChange = false;
     }
 
-    public void resetTone() {
-        initializeDefaultValues();
-        tone.setValue(null);
-        anyChange = false;
-    }
-
     public String getIndexWithSuffix(int index) {
         switch (index) {
             case 1:
