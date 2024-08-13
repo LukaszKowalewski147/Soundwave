@@ -17,9 +17,9 @@
         android:scaleX="0.7"
         android:scaleY="0.7"
         android:src="@drawable/ic_play_note"
+        app:layout_constraintBottom_toBottomOf="@id/tone_delete_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tone_delete_btn"
-        app:layout_constraintBottom_toBottomOf="@id/tone_delete_btn"
         app:tint="@color/white"
         tools:ignore="ContentDescription" />
 
@@ -41,8 +41,8 @@
         app:layout_constraintBottom_toBottomOf="@id/tone_icon"
         app:layout_constraintStart_toEndOf="@id/tone_icon"
         app:layout_constraintTop_toTopOf="@id/tone_icon"
-        tools:text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-        tools:ignore="VisualLintOverlap" />
+        tools:ignore="VisualLintOverlap"
+        tools:text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" />
 
     <ImageView
         android:id="@+id/tone_rename_icon"
@@ -67,8 +67,8 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:background="@android:color/transparent"
-        android:foreground="?attr/selectableItemBackground"
         android:contentDescription="@string/desc_rename_tone_btn"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="@id/tone_icon"
         app:layout_constraintEnd_toEndOf="@id/tone_rename_icon"
         app:layout_constraintStart_toStartOf="@id/tone_name"
@@ -286,28 +286,6 @@
         app:layout_constraintTop_toTopOf="@id/tone_details_sample_rate_header"
         tools:text="44.1kHz" />
 
-    <TextView
-        android:id="@+id/tone_details_other_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="5"
-        android:text="Other info"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tone_details_sample_rate_header"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/tone_details_other"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/tone_details_frequency"
-        app:layout_constraintTop_toTopOf="@id/tone_details_other_header"
-        tools:text="coming soon" />
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/tone_more_info_btn"
         android:layout_width="wrap_content"
@@ -319,7 +297,7 @@
         android:textAllCaps="false"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tone_details_other_header" />
+        app:layout_constraintTop_toBottomOf="@id/tone_details_sample_rate_header" />
 
     <ImageView
         android:id="@+id/tone_details_duration_icon"

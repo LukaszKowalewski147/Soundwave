@@ -24,8 +24,6 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
     TextView toneOvertonesNumber;
     TextView toneSampleRateHeader;
     TextView toneSampleRate;
-    TextView toneOtherInfoHeader;
-    TextView toneOtherInfo;
     TextView toneDuration;
     ImageButton toneDeleteBtn;
     ImageButton tonePlayStopBtn;
@@ -48,8 +46,6 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
         toneOvertonesNumber = itemView.findViewById(R.id.tone_details_overtones_number);
         toneSampleRateHeader = itemView.findViewById(R.id.tone_details_sample_rate_header);
         toneSampleRate = itemView.findViewById(R.id.tone_details_sample_rate);
-        toneOtherInfoHeader = itemView.findViewById(R.id.tone_details_other_header);
-        toneOtherInfo = itemView.findViewById(R.id.tone_details_other);
         toneDuration = itemView.findViewById(R.id.tone_details_duration);
         toneDeleteBtn = itemView.findViewById(R.id.tone_delete_btn);
         tonePlayStopBtn = itemView.findViewById(R.id.tone_play_stop_btn);

@@ -69,7 +69,6 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneVolume.setText(volumeDisplay);
         holder.toneOvertonesNumber.setText(overtonesNumber);
         holder.toneSampleRate.setText(sampleRate);
-        holder.toneOtherInfo.setText("coming soon");
         holder.toneDuration.setText(duration);
 
         holder.toneRenameBtn.setOnClickListener(v -> listener.onRenameClick(tone));
@@ -171,7 +170,5 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         holder.toneOvertonesNumber.setVisibility(visibility);
         holder.toneSampleRateHeader.setVisibility(visibility);
         holder.toneSampleRate.setVisibility(visibility);
-        holder.toneOtherInfoHeader.setVisibility(visibility);
-        holder.toneOtherInfo.setVisibility(visibility);
     }
 }
