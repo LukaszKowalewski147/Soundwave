@@ -31,19 +31,19 @@
         android:ellipsize="marquee"
         android:focusable="true"
         android:freezesText="true"
+        android:importantForAccessibility="no"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxWidth="200dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textColor="@color/white"
-        android:importantForAccessibility="no"
         android:textSize="21sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="@id/music_icon"
         app:layout_constraintStart_toEndOf="@id/music_icon"
         app:layout_constraintTop_toTopOf="@id/music_icon"
-        tools:text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-        tools:ignore="VisualLintOverlap" />
+        tools:ignore="VisualLintOverlap"
+        tools:text="MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM" />
 
     <ImageView
         android:id="@+id/music_rename_icon"
@@ -120,41 +120,6 @@
         app:layout_constraintTop_toTopOf="@id/music_details_sample_rate_header"
         tools:text="44.1kHz" />
 
-    <TextView
-        android:id="@+id/music_details_other_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="5"
-        android:text="Other info"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/music_details_sample_rate_header"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/music_details_other"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/music_details_sample_rate"
-        app:layout_constraintTop_toTopOf="@id/music_details_other_header"
-        tools:text="coming soon" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/music_more_info_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/background_btn_standard"
-        android:foreground="?attr/selectableItemBackground"
-        android:text="@string/more_info_btn"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/music_details_other_header" />
-
     <ImageView
         android:id="@+id/music_details_duration_icon"
         android:layout_width="0dp"
@@ -197,14 +162,14 @@
         android:id="@+id/music_download_btn"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginTop="12dp"
         android:background="?android:selectableItemBackground"
         android:contentDescription="@string/desc_download_music_btn"
         android:padding="8dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_download"
-        app:layout_constraintBottom_toBottomOf="@id/music_more_info_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/music_more_info_btn"
+        app:layout_constraintTop_toBottomOf="@id/music_details_sample_rate_header"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -15,23 +14,19 @@ import com.example.soundwave.R;
 import com.example.soundwave.components.Music;
 import com.example.soundwave.utils.UnitsConverter;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
 
     private final Context context;
     private List<Music> musicList;
     private final OnMusicClickListener listener;
-    private final Map<Integer, Boolean> expandedPositions;
 
     public MusicViewAdapter(Context context, List<Music> musicList, OnMusicClickListener listener) {
         this.context = context;
         this.musicList = musicList;
         this.listener = listener;
-        this.expandedPositions = new HashMap<>();
     }
 
     @NonNull
@@ -42,9 +37,6 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MusicViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        boolean isExpanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
-        setMoreInfoVisibility(holder, isExpanded);
-
         Music music = musicList.get(position);
 
         String name = music.getName();
@@ -54,7 +46,6 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
         holder.musicName.setSelected(true);
         holder.musicName.setText(name);
         holder.musicSampleRate.setText(sampleRate);
-        holder.musicOtherInfo.setText("coming soon");
         holder.musicDuration.setText(duration);
 
         holder.musicRenameBtn.setOnClickListener(v -> listener.onRenameClick(music));
@@ -85,12 +76,6 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
         });
 
         holder.musicDownloadBtn.setOnClickListener(v -> listener.onDownloadClick(music));
-
-        holder.musicMoreInfoBtn.setOnClickListener(v -> {
-            boolean expanded = Boolean.TRUE.equals(expandedPositions.getOrDefault(position, false));
-            expandedPositions.put(position, !expanded);
-            notifyItemChanged(position);
-        });
     }
 
     @Override
@@ -130,19 +115,5 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
         holder.parentLayout.setBackgroundResource(R.drawable.background_shadow_item);
         holder.musicPlayStopBtn.setImageResource(R.drawable.ic_play_tone);
         holder.musicPlayStopBtn.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-    }
-
-    private void setMoreInfoVisibility(MusicViewHolder holder, boolean visible) {
-        String buttonText = context.getString(R.string.more_info_btn);
-        int visibility = View.GONE;
-
-        if (visible) {
-            buttonText = context.getString(R.string.less_info_btn);
-            visibility = View.VISIBLE;
-        }
-
-        holder.musicMoreInfoBtn.setText(buttonText);
-        holder.musicOtherInfoHeader.setVisibility(visibility);
-        holder.musicOtherInfo.setVisibility(visibility);
     }
 }
