@@ -362,14 +362,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     private void takeResetAction() {
-        binding.toneMixerTrack1.removeAllViews();
-        binding.toneMixerTrack2.removeAllViews();
-        binding.toneMixerTrack3.removeAllViews();
-        binding.toneMixerTrack4.removeAllViews();
-        binding.toneMixerTrack5.removeAllViews();
-        binding.toneMixerWorkbench.removeAllViews();
-
-        viewModel.resetToneMixer();
+        MainActivity mainActivity = (MainActivity) requireActivity();
+        mainActivity.resetToneMixer();
     }
 
     private void setToneStateToIrremovable() {

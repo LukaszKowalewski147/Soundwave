@@ -82,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(currentFragment);
     }
 
+    public void resetToneMixer() {
+        currentFragment = new ToneMixerFragment();
+        loadFragment(currentFragment);
+    }
+
     private void setToneToEditBundle(Tone tone) {
         toneToEditBundle = new Bundle();
         toneToEditBundle.putSerializable("tone", tone);

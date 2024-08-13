@@ -169,12 +169,6 @@ public class ToneMixerViewModel extends AndroidViewModel {
         anyChange = false;
     }
 
-    public void resetToneMixer() {
-        initializeDefaultValues();
-        music.setValue(null);
-        anyChange = false;
-    }
-
     public Tone generateSilenceTone(double durationInSeconds) {
         return new ToneGenerator(SampleRate.RATE_192_KHZ, durationInSeconds).generateSilence();
     }
