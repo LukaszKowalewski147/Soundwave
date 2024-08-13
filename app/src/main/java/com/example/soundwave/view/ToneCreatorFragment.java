@@ -70,7 +70,11 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
         initializeDefaultLayout();
         initializeObservers();
-        initializeUIListeners();
+
+        viewModel.getIsDataLoading().observe(getViewLifecycleOwner(), isDataLoading -> {
+            if (!isDataLoading)
+                initializeUIListeners();
+        });
 
         Bundle bundle = getArguments();
         if (bundle != null) {

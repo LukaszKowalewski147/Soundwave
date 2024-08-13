@@ -42,7 +42,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private final MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
     private final MutableLiveData<ControlPanelComponent> controlPanelComponent = new MutableLiveData<>();
     private final MutableLiveData<Overtone[]> overtones = new MutableLiveData<>();
-    private final MutableLiveData<Tone> tone = new MutableLiveData<>();
+    private final MutableLiveData<Tone> tone = new MutableLiveData<>(null);
+    private final MutableLiveData<Boolean> isDataLoading = new MutableLiveData<>(true);
 
     private AudioPlayer audioPlayer;
     private boolean overtonesActivator;
@@ -52,7 +53,6 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         super(application);
         repository = new SoundwaveRepo(application);
         initializeDefaultValues();
-        anyChange = false;
     }
 
     @Override
@@ -91,6 +91,10 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
     public LiveData<Tone> getTone() {
         return tone;
+    }
+
+    public LiveData<Boolean> getIsDataLoading() {
+        return isDataLoading;
     }
 
     public boolean getAnyChange() {
@@ -501,18 +505,18 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void initializeDefaultValues() {
-        audioPlayer = null;
-        if (controlPanelComponent.getValue() == null)
-            setControlPanelComponentDefault();
-
         updateSampleRate(0);
         setEnvelopePreset(PresetEnvelope.FLAT);
         setToneDuration(Config.TONE_DURATION_DEFAULT.value);
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
         setDefaultOvertones();
-
         setControlPanelComponentDefault();
+
+        audioPlayer = null;
+        anyChange = false;
+
+        isDataLoading.setValue(false);
     }
 
     private void setDefaultOvertones() {
@@ -580,6 +584,9 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     private void setAnyChange() {
+        if (Boolean.TRUE.equals(isDataLoading.getValue()))
+            return;
+
         anyChange = true;
         HashMap<ControlPanelComponent.Button, ControlPanelComponent.ButtonState> buttonsStates = getControlPanelButtonsStates();
         ControlPanelComponent.ButtonState generateBtnState = buttonsStates.get(ControlPanelComponent.Button.GENERATE);
