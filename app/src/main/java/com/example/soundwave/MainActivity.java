@@ -72,12 +72,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resetToneCreator() {
-        loadFragment(new ToneCreatorFragment());
+        currentFragment = new ToneCreatorFragment();
+        loadFragment(currentFragment);
     }
 
     public void resetToneCreator(Tone tone) {
         setToneToEditBundle(tone);
-        loadFragment(new ToneCreatorFragment());
+        currentFragment = new ToneCreatorFragment();
+        loadFragment(currentFragment);
     }
 
     private void setToneToEditBundle(Tone tone) {
@@ -156,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Making sure of safety exit of ToneCreatorFragment by onFragmentExit() if changes are not saved
             if ((currentFragment instanceof ToneCreatorFragment) && (fragmentId != R.id.tone_creator)) {
-                if (!((ToneCreatorFragment) currentFragment).onFragmentExit(this, fragmentId))
+                if (!((ToneCreatorFragment) currentFragment).onFragmentExit(fragmentId))
                     return false;
             }
 
             // Making sure of safety exit of ToneMixerFragment by onFragmentExit() if changes are not saved
             if ((currentFragment instanceof ToneMixerFragment) && (fragmentId != R.id.tone_mixer)) {
-                if (!((ToneMixerFragment) currentFragment).onFragmentExit(this, fragmentId))
+                if (!((ToneMixerFragment) currentFragment).onFragmentExit(fragmentId))
                     return false;
             }
 
