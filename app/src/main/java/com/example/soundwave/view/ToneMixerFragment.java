@@ -863,20 +863,18 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
     }
 
     @Override
-    public boolean onFragmentExit(int fragmentId) {
+    public boolean onFragmentExit(MainActivity mainActivity, int fragmentId) {
         if (!viewModel.getAnyChange())
             return true;
-        checkIfExit(fragmentId);
+        checkIfExit(mainActivity, fragmentId);
         return false;
     }
 
-    private void checkIfExit(int fragmentId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+    private void checkIfExit(MainActivity mainActivity, int fragmentId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+
         builder.setMessage(R.string.alert_dialog_tone_mixer_exit_message);
-        builder.setPositiveButton(R.string.alert_dialog_tone_mixer_exit_positive, (dialog, which) -> {
-            MainActivity mainActivity = (MainActivity) requireActivity();
-            mainActivity.changeFragmentFromToneMixer(fragmentId);
-        });
+        builder.setPositiveButton(R.string.alert_dialog_tone_mixer_exit_positive, (dialog, which) -> mainActivity.changeFragmentFromToneMixer(fragmentId));
         builder.setNegativeButton(R.string.alert_dialog_tone_mixer_exit_negative, null);
 
         AlertDialog dialog = builder.create();

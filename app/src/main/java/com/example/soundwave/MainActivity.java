@@ -56,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openToneCreatorInEditionMode(Tone tone) {
-        toneToEditBundle = new Bundle();
-        toneToEditBundle.putSerializable("tone", tone);
+        setToneToEditBundle(tone);
 
         binding.mainBottomNavView.setSelectedItemId(R.id.tone_creator);
     }
@@ -74,6 +73,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void resetToneCreator() {
         loadFragment(new ToneCreatorFragment());
+    }
+
+    public void resetToneCreator(Tone tone) {
+        setToneToEditBundle(tone);
+        loadFragment(new ToneCreatorFragment());
+    }
+
+    private void setToneToEditBundle(Tone tone) {
+        toneToEditBundle = new Bundle();
+        toneToEditBundle.putSerializable("tone", tone);
     }
 
     private void setDisplayDensity() {
@@ -147,13 +156,13 @@ public class MainActivity extends AppCompatActivity {
 
             // Making sure of safety exit of ToneCreatorFragment by onFragmentExit() if changes are not saved
             if ((currentFragment instanceof ToneCreatorFragment) && (fragmentId != R.id.tone_creator)) {
-                if (!((ToneCreatorFragment) currentFragment).onFragmentExit(fragmentId))
+                if (!((ToneCreatorFragment) currentFragment).onFragmentExit(this, fragmentId))
                     return false;
             }
 
             // Making sure of safety exit of ToneMixerFragment by onFragmentExit() if changes are not saved
             if ((currentFragment instanceof ToneMixerFragment) && (fragmentId != R.id.tone_mixer)) {
-                if (!((ToneMixerFragment) currentFragment).onFragmentExit(fragmentId))
+                if (!((ToneMixerFragment) currentFragment).onFragmentExit(this, fragmentId))
                     return false;
             }
 

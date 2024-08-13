@@ -649,15 +649,12 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     }
 
     private void takeResetAction() {
-        if (editorMode) {
-            boolean loadingSuccessful = viewModel.loadEditedTone(editedTone);
+        MainActivity mainActivity = (MainActivity) requireActivity();
 
-            if (!loadingSuccessful) {
-                Log.e(TAG, "Load edited tone: loading unsuccessful");
-                Toast.makeText(requireContext(), R.string.error_loading_tone, Toast.LENGTH_SHORT).show();
-            }
-        } else
-            ((MainActivity) requireActivity()).resetToneCreator();
+        if (editorMode)
+            mainActivity.resetToneCreator(editedTone);
+        else
+            mainActivity.resetToneCreator();
     }
 
     private void manageControlPanel(ControlPanelComponent controlPanelComponent) {
@@ -786,20 +783,18 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
     }
 
     @Override
-    public boolean onFragmentExit(int fragmentId) {
+    public boolean onFragmentExit(MainActivity mainActivity, int fragmentId) {
         if (!viewModel.getAnyChange())
             return true;
-        checkIfExit(fragmentId);
+        checkIfExit(mainActivity, fragmentId);
         return false;
     }
 
-    private void checkIfExit(int fragmentId) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+    private void checkIfExit(MainActivity mainActivity, int fragmentId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+
         builder.setMessage(R.string.alert_dialog_tone_creator_exit_message);
-        builder.setPositiveButton(R.string.alert_dialog_tone_creator_exit_positive, (dialog, which) -> {
-            MainActivity mainActivity = (MainActivity) requireActivity();
-            mainActivity.changeFragmentFromToneCreator(fragmentId);
-        });
+        builder.setPositiveButton(R.string.alert_dialog_tone_creator_exit_positive, (dialog, which) -> mainActivity.changeFragmentFromToneCreator(fragmentId));
         builder.setNegativeButton(R.string.alert_dialog_tone_creator_exit_negative, null);
 
         AlertDialog dialog = builder.create();
