@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -201,6 +202,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        binding.mainSettingsBtn.setOnClickListener(view -> startSettingsActivity());
     }
 
     private void setBackButtonBehavior() {
@@ -239,5 +242,10 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentTransaction.replace(R.id.main_fragment_container, fragment);
         fragmentTransaction.commit();
+    }
+
+    private void startSettingsActivity() {
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
     }
 }
