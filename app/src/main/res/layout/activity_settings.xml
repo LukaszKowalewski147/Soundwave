@@ -168,7 +168,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/settings_storage_delete_tones_btn"
+                    android:id="@+id/settings_storage_delete_database_tones_btn"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="16dp"
@@ -249,7 +249,7 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/settings_storage_delete_music_btn"
+                    android:id="@+id/settings_storage_delete_database_music_btn"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="16dp"

@@ -63,8 +63,8 @@
     <string name="more_info_btn">More…</string>
     <string name="less_info_btn">Less…</string>
     <string name="add_tone_btn">Add tone</string>
-    <string name="delete_all_tones_btn">Delete all tones</string>
-    <string name="delete_all_music_btn">Delete all music</string>
+    <string name="delete_all_tones_btn">Delete all in app tones</string>
+    <string name="delete_all_music_btn">Delete all in app music</string>
 
     <!--    Units               -->
     <string name="percent_unit">%</string>
@@ -146,6 +146,18 @@
     <string name="alert_dialog_homepage_download_music_negative">NO</string>
     <string name="alert_dialog_homepage_download_music_success">Music downloaded to:</string>
     <string name="alert_dialog_homepage_download_music_fail">Downloading failed</string>
+
+    <string name="alert_dialog_settings_delete_database_tones_message">Do you want to delete all in app tones?</string>
+    <string name="alert_dialog_settings_delete_database_tones_positive">YES</string>
+    <string name="alert_dialog_settings_delete_database_tones_negative">NO</string>
+    <string name="alert_dialog_settings_delete_database_tones_success">Tones deleted</string>
+    <string name="alert_dialog_settings_delete_database_tones_fail">Deletion failed</string>
+
+    <string name="alert_dialog_settings_delete_database_music_message">Do you want to delete all in app music?</string>
+    <string name="alert_dialog_settings_delete_database_music_positive">YES</string>
+    <string name="alert_dialog_settings_delete_database_music_negative">NO</string>
+    <string name="alert_dialog_settings_delete_database_music_success">Music deleted</string>
+    <string name="alert_dialog_settings_delete_database_music_fail">Deletion failed</string>
 
     <!--    Error messages      -->
     <string name="error_msg_filepath_to_download_tones_fail">Filepath to download tones error</string>

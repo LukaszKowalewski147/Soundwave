@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.soundwave.R;
 import com.example.soundwave.databinding.ActivitySettingsBinding;
@@ -29,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         setupActionBar();
         setupView();
+        setListeners();
     }
 
     @Override
@@ -71,5 +74,41 @@ public class SettingsActivity extends AppCompatActivity {
         binding.settingsStorageMusicFilepath.setText(musicDir);
         binding.settingsStorageTonesDownloadedSize.setText(tonesDirSizeText);
         binding.settingsStorageMusicDownloadedSize.setText(musicDirSizeText);
+    }
+
+    private void setListeners() {
+        binding.settingsStorageDeleteDatabaseTonesBtn.setOnClickListener(view -> deleteDatabaseTonesDialog());
+
+        binding.settingsStorageDeleteDatabaseMusicBtn.setOnClickListener(view -> deleteDatabaseMusicDialog());
+    }
+
+    private void deleteDatabaseTonesDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.alert_dialog_settings_delete_database_tones_message);
+        builder.setPositiveButton(R.string.alert_dialog_settings_delete_database_tones_positive, (dialog, id) -> viewModel.deleteAllDatabaseTones().observe(this, success -> {
+            if (success)
+                Toast.makeText(this, R.string.alert_dialog_settings_delete_database_tones_success, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, R.string.alert_dialog_settings_delete_database_tones_fail, Toast.LENGTH_SHORT).show();
+        }));
+        builder.setNegativeButton(R.string.alert_dialog_settings_delete_database_tones_negative, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void deleteDatabaseMusicDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.alert_dialog_settings_delete_database_music_message);
+        builder.setPositiveButton(R.string.alert_dialog_settings_delete_database_music_positive, (dialog, id) -> viewModel.deleteAllDatabaseMusic().observe(this, success -> {
+            if (success)
+                Toast.makeText(this, R.string.alert_dialog_settings_delete_database_music_success, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, R.string.alert_dialog_settings_delete_database_music_fail, Toast.LENGTH_SHORT).show();
+        }));
+        builder.setNegativeButton(R.string.alert_dialog_settings_delete_database_music_negative, null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

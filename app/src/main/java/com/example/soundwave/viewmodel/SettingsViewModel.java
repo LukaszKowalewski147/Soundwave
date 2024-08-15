@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.soundwave.components.Music;
@@ -15,12 +16,16 @@ import com.example.soundwave.utils.ToneParser;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SettingsViewModel extends AndroidViewModel {
 
     private final SoundwaveRepo repository;
     private final LiveData<List<Tone>> allTones;
     private final LiveData<List<Music>> allMusic;
+
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public SettingsViewModel(@NonNull Application application) {
         super(application);
@@ -42,6 +47,34 @@ public class SettingsViewModel extends AndroidViewModel {
             }
             return music;
         });
+    }
+
+    public LiveData<Boolean> deleteAllDatabaseTones() {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+
+        executorService.execute(() -> {
+            try {
+                repository.deleteAllTones();
+                result.postValue(true);
+            } catch (Exception e) {
+                result.postValue(false);
+            }
+        });
+        return result;
+    }
+
+    public LiveData<Boolean> deleteAllDatabaseMusic() {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+
+        executorService.execute(() -> {
+            try {
+                repository.deleteAllMusic();
+                result.postValue(true);
+            } catch (Exception e) {
+                result.postValue(false);
+            }
+        });
+        return result;
     }
 
     public float getDirectorySizeInMB(String directoryPath) {
