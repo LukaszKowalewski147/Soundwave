@@ -31,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.Tone;

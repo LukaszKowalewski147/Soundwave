@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneClickListener;

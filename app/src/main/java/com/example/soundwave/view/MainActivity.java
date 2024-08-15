@@ -1,4 +1,4 @@
-package com.example.soundwave;
+package com.example.soundwave.view;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,15 +12,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.soundwave.R;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.databinding.ActivityMainBinding;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.WavCreator;
-import com.example.soundwave.view.HomepageMusicFragment;
-import com.example.soundwave.view.HomepageTonesFragment;
-import com.example.soundwave.view.ToneCreatorFragment;
-import com.example.soundwave.view.ToneMixerFragment;
-import com.example.soundwave.view.ToneStreamingFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;

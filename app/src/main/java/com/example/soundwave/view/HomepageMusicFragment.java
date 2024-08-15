@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.soundwave.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.additionalviews.MusicViewAdapter;
 import com.example.soundwave.additionalviews.OnMusicClickListener;

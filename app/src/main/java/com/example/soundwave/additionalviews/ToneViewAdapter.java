@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.soundwave.MainActivity;
+import com.example.soundwave.view.MainActivity;
 import com.example.soundwave.R;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.utils.UnitsConverter;
