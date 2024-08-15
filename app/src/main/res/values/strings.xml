@@ -10,6 +10,7 @@
     <!--    Units             -->
     <string name="unit_millisecond">[ms]</string>
     <string name="unit_percent">[%]</string>
+    <string name="unit_megabyte">MB</string>
 
     <!--    Layout headers      -->
     <string name="my_tones_header">My tones</string>
@@ -23,10 +24,13 @@
     <string name="settings_header">Settings</string>
 
     <!--    Settings            -->
-    <string name="settings_storage_header">Storage</string>
-    <string name="settings_storage_tones_size">Tones size</string>
-    <string name="settings_storage_music_size">Music size</string>
     <string name="settings_account_header">Account</string>
+    <string name="settings_storage_header">Storage</string>
+    <string name="settings_storage_tones_header">Tones</string>
+    <string name="settings_storage_music_header">Music</string>
+    <string name="settings_storage_download_directory">Download directory</string>
+    <string name="settings_storage_downloaded_size">Disk usage</string>
+    <string name="settings_storage_database_size">In app size</string>
 
     <!--    Element headers     -->
     <string name="overtones_header">Overtones</string>
