@@ -22,6 +22,12 @@
     <string name="sound_details_header">Sound details</string>
     <string name="settings_header">Settings</string>
 
+    <!--    Settings            -->
+    <string name="settings_storage_header">Storage</string>
+    <string name="settings_storage_tones_size">Tones size</string>
+    <string name="settings_storage_music_size">Music size</string>
+    <string name="settings_account_header">Account</string>
+
     <!--    Element headers     -->
     <string name="overtones_header">Overtones</string>
     <string name="sample_rate_header">Sample rate</string>
@@ -54,7 +60,8 @@
     <string name="more_info_btn">More…</string>
     <string name="less_info_btn">Less…</string>
     <string name="add_tone_btn">Add tone</string>
-    <string name="remove_tone_btn">Remove tone</string>
+    <string name="delete_all_tones_btn">Delete all tones</string>
+    <string name="delete_all_music_btn">Delete all music</string>
 
     <!--    Units               -->
     <string name="percent_unit">%</string>
