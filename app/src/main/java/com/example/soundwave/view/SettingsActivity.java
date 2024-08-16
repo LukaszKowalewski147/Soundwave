@@ -31,6 +31,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         setupActionBar();
         setupView();
+
+        setObservers();
         setListeners();
     }
 
@@ -74,6 +76,34 @@ public class SettingsActivity extends AppCompatActivity {
         binding.settingsStorageMusicFilepath.setText(musicDir);
         binding.settingsStorageTonesDownloadedSize.setText(tonesDirSizeText);
         binding.settingsStorageMusicDownloadedSize.setText(musicDirSizeText);
+    }
+
+    private void setDbTonesView() {
+        int dbTonesNumber = viewModel.getNumberOfDbTones();
+
+        if (dbTonesNumber == 0) {
+            binding.settingsStorageDeleteDatabaseTonesBtn.setEnabled(false);
+            binding.settingsStorageDeleteDatabaseTonesBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        }
+
+        binding.settingsStorageTonesDatabaseNumber.setText(String.valueOf(dbTonesNumber));
+    }
+
+    private void setDbMusicView() {
+        int dbMusicNumber = viewModel.getNumberOfDbMusic();
+
+        if (dbMusicNumber == 0) {
+            binding.settingsStorageDeleteDatabaseMusicBtn.setEnabled(false);
+            binding.settingsStorageDeleteDatabaseMusicBtn.setBackgroundResource(R.drawable.background_btn_inactive);
+        }
+
+        binding.settingsStorageMusicDatabaseNumber.setText(String.valueOf(dbMusicNumber));
+    }
+
+    private void setObservers() {
+        viewModel.getAllTones().observe(this, tones -> setDbTonesView());
+
+        viewModel.getAllMusic().observe(this, music -> setDbMusicView());
     }
 
     private void setListeners() {

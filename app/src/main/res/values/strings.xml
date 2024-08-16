@@ -30,6 +30,8 @@
     <string name="settings_storage_music_header">Music</string>
     <string name="settings_storage_download_directory">Download directory</string>
     <string name="settings_storage_downloaded_size">Disk usage</string>
+    <string name="settings_storage_tones_database_number">In app tones</string>
+    <string name="settings_storage_music_database_number">In app music</string>
 
     <!--    Element headers     -->
     <string name="overtones_header">Overtones</string>

@@ -49,6 +49,32 @@ public class SettingsViewModel extends AndroidViewModel {
         });
     }
 
+    public LiveData<List<Tone>> getAllTones() {
+        return allTones;
+    }
+
+    public LiveData<List<Music>> getAllMusic() {
+        return allMusic;
+    }
+
+    public int getNumberOfDbTones() {
+        List<Tone> tones = allTones.getValue();
+
+        if (tones != null)
+            return tones.size();
+
+        return 0;
+    }
+
+    public int getNumberOfDbMusic() {
+        List<Music> music = allMusic.getValue();
+
+        if (music != null)
+            return music.size();
+
+        return 0;
+    }
+
     public LiveData<Boolean> deleteAllDatabaseTones() {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
 
