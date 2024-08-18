@@ -1,6 +1,6 @@
 package com.example.soundwave.utils;
 
-import com.example.soundwave.Overtone;
+import com.example.soundwave.components.Overtone;
 import com.example.soundwave.components.Music;
 import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.EnvelopeComponent;

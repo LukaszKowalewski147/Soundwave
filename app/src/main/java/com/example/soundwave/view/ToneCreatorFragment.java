@@ -35,7 +35,7 @@ import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
 import com.example.soundwave.databinding.ToneCreatorCustomEnvelopeLayoutBinding;
-import com.example.soundwave.Overtone;
+import com.example.soundwave.components.Overtone;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.R;
 import com.example.soundwave.utils.Options;

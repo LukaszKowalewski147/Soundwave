@@ -1,4 +1,4 @@
-package com.example.soundwave;
+package com.example.soundwave.components;
 
 import androidx.annotation.NonNull;
 

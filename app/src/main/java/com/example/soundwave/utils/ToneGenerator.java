@@ -5,7 +5,7 @@ import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
-import com.example.soundwave.Overtone;
+import com.example.soundwave.components.Overtone;
 import com.example.soundwave.components.Track;
 
 import java.util.ArrayList;

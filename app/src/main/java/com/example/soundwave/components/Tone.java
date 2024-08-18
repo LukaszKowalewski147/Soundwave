@@ -1,6 +1,5 @@
 package com.example.soundwave.components;
 
-import com.example.soundwave.Overtone;
 import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
