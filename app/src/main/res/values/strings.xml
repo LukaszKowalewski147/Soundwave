@@ -22,6 +22,7 @@
     <string name="create_sound_header">Create sound</string>
     <string name="sound_details_header">Sound details</string>
     <string name="settings_header">Settings</string>
+    <string name="account_header">Account</string>
 
     <!--    Settings            -->
     <string name="settings_account_header">Account</string>

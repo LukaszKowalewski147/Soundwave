@@ -200,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         binding.mainSettingsBtn.setOnClickListener(view -> startSettingsActivity());
+
+        binding.mainAccountBtn.setOnClickListener(view -> startAccountActivity());
     }
 
     private void setBackButtonBehavior() {
@@ -242,6 +244,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void startSettingsActivity() {
         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    private void startAccountActivity() {
+        Intent intent = new Intent(MainActivity.this, AccountActivity.class);
         startActivity(intent);
     }
 }

@@ -24,6 +24,15 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".view.AccountActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".view.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"

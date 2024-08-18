@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -107,9 +108,16 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+        binding.settingsAccountBtn.setOnClickListener(view -> startAccountActivity());
+
         binding.settingsStorageDeleteDatabaseTonesBtn.setOnClickListener(view -> deleteDatabaseTonesDialog());
 
         binding.settingsStorageDeleteDatabaseMusicBtn.setOnClickListener(view -> deleteDatabaseMusicDialog());
+    }
+
+    private void startAccountActivity() {
+        Intent intent = new Intent(SettingsActivity.this, AccountActivity.class);
+        startActivity(intent);
     }
 
     private void deleteDatabaseTonesDialog() {
