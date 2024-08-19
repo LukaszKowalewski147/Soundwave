@@ -23,6 +23,7 @@ public class AccountActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(AccountViewModel.class);
         setContentView(binding.getRoot());
 
+        setupActionBar();
     }
 
     @Override
@@ -39,5 +40,15 @@ public class AccountActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupActionBar() {
+        setSupportActionBar(binding.accountToolbar);
+
+        // Enable back arrow button
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 }
