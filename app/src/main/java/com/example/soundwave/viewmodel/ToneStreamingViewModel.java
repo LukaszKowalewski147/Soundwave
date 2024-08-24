@@ -9,10 +9,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.soundwave.components.FundamentalFrequencyComponent;
-import com.example.soundwave.utils.AudioPlayer;
 import com.example.soundwave.utils.Config;
-import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.UnitsConverter;
+import com.example.soundwave.utils.audioplayer.AudioStreamPlayer;
 
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ public class ToneStreamingViewModel extends AndroidViewModel {
 
     private final MutableLiveData<FundamentalFrequencyComponent> fundamentalFrequencyComponent = new MutableLiveData<>();
 
-    private AudioPlayer audioPlayer;
+    private AudioStreamPlayer audioPlayer;
 
     public ToneStreamingViewModel(@NonNull Application application) {
         super(application);
@@ -43,11 +42,11 @@ public class ToneStreamingViewModel extends AndroidViewModel {
     }
 
     public void startPlayback() {
-        audioPlayer.startPlaying();
+        audioPlayer.play();
     }
 
     public void stopPlayback() {
-        audioPlayer.stopPlaying();
+        audioPlayer.stop();
     }
 
     public void updateNoteName(int noteIndex) {
@@ -131,7 +130,7 @@ public class ToneStreamingViewModel extends AndroidViewModel {
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 Config.FREQUENCY_DEFAULT.value, Config.MASTER_VOLUME_DEFAULT.value));
 
-        audioPlayer = new AudioPlayer(SampleRate.RATE_44_1_KHZ.sampleRate);
+        audioPlayer = new AudioStreamPlayer();
         setStreamFrequency();
     }
 }

@@ -10,17 +10,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.soundwave.components.ControlPanelComponent;
-import com.example.soundwave.components.Music;
-import com.example.soundwave.components.Tone;
-import com.example.soundwave.components.Track;
+import com.example.soundwave.components.sound.Music;
+import com.example.soundwave.components.sound.Silence;
+import com.example.soundwave.components.sound.Tone;
+import com.example.soundwave.components.sound.Track;
+import com.example.soundwave.components.sound.Trackable;
 import com.example.soundwave.model.repository.SoundwaveRepo;
-import com.example.soundwave.utils.AudioPlayer;
+import com.example.soundwave.utils.DatabaseParser;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.SampleRate;
-import com.example.soundwave.utils.ToneGenerator;
-import com.example.soundwave.utils.ToneParser;
 import com.example.soundwave.utils.TrackData;
 import com.example.soundwave.utils.TrackToneData;
+import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
+import com.example.soundwave.utils.soundgenerator.MusicGenerator;
+import com.example.soundwave.utils.soundgenerator.SilenceGenerator;
+import com.example.soundwave.utils.soundgenerator.TrackGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +44,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
     private ValueAnimator track4animator;
     private ValueAnimator track5animator;
 
-    private AudioPlayer audioPlayer;
+    private AudioStaticPlayer audioPlayer;
     private boolean anyChange;
 
     public ToneMixerViewModel(@NonNull Application application) {
@@ -50,7 +54,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
         allTones = Transformations.map(repository.getAllTones(), input -> {
             List<Tone> tones = new ArrayList<>();
             for (com.example.soundwave.model.entity.Tone dbTone : input) {
-                tones.add(new ToneParser().parseToneFromDb(dbTone));
+                tones.add(new DatabaseParser().parseToneFromDb(dbTone));
             }
             return tones;
         });
@@ -98,7 +102,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setAnyChange();
     }
 
-    public boolean generateMusic(List<List<Tone>> tracksData) {
+    public boolean generateMusic(List<List<Trackable>> tracksData) {
         if (areTracksEmpty(tracksData)) {
             setControlPanelComponentDefault();
             anyChange = false;
@@ -108,16 +112,16 @@ public class ToneMixerViewModel extends AndroidViewModel {
         List<Track> tracks = new ArrayList<>();
         SampleRate sampleRate = getLowestSampleRate(tracksData);
 
-        for (List<Tone> trackTones : tracksData) {
+        for (List<Trackable> trackTones : tracksData) {
             if (!trackTones.isEmpty())
                 tracks.add(generateTrack(sampleRate, trackTones));
         }
 
-        ToneGenerator generator = new ToneGenerator(sampleRate, getMusicSamplesNumber(tracks));
+        MusicGenerator generator = new MusicGenerator(sampleRate, getMusicSamplesNumber(tracks));
         Music newMusic = generator.generateMusic(tracks);
 
-        audioPlayer = new AudioPlayer();
-        boolean loadingSuccessful = audioPlayer.loadMusic(newMusic);
+        audioPlayer = new AudioStaticPlayer();
+        boolean loadingSuccessful = audioPlayer.loadSound(newMusic);
 
         if (loadingSuccessful) {
             music.setValue(newMusic);
@@ -139,7 +143,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
             Thread thread = new Thread() {
                 /** @noinspection CallToPrintStackTrace*/
                 public void run() {
-                    int waitingTime = Objects.requireNonNull(music.getValue()).getDurationInMs();
+                    int waitingTime = Objects.requireNonNull(music.getValue()).getDurationMilliseconds();
                     try {
                         Thread.sleep(waitingTime);
                     } catch (InterruptedException e) {
@@ -162,36 +166,38 @@ public class ToneMixerViewModel extends AndroidViewModel {
         Music baseMusic = Objects.requireNonNull(music.getValue());
         baseMusic.setName(musicName);
 
-        com.example.soundwave.model.entity.Music musicEntity = new ToneParser().parseMusicToDbEntity(baseMusic);
+        com.example.soundwave.model.entity.Music musicEntity =
+                new DatabaseParser().parseMusicToDbEntity(baseMusic);
+
         repository.insert(musicEntity);
 
         setControlPanelComponentSaved();
         anyChange = false;
     }
 
-    public Tone generateSilenceTone(double durationInSeconds) {
-        return new ToneGenerator(SampleRate.RATE_192_KHZ, durationInSeconds).generateSilence();
+    public Silence generateSilenceTone(double durationInSeconds) {
+        return new SilenceGenerator(SampleRate.RATE_192_KHZ, durationInSeconds).generateSilence();
     }
 
-    private boolean areTracksEmpty(List<List<Tone>> tracksData) {
-        for (List<Tone> trackTones : tracksData) {
+    private boolean areTracksEmpty(List<List<Trackable>> tracksData) {
+        for (List<Trackable> trackTones : tracksData) {
             if (!trackTones.isEmpty())
                 return false;
         }
         return true;
     }
 
-    private Track generateTrack(SampleRate sampleRate, List<Tone> tones) {
-        ToneGenerator generator = new ToneGenerator(sampleRate, getTrackSamplesNumber(tones));
+    private Track generateTrack(SampleRate sampleRate, List<Trackable> tones) {
+        TrackGenerator generator = new TrackGenerator(sampleRate, getTrackSamplesNumber(tones));
         return generator.generateTrack(tones);
     }
 
-    private SampleRate getLowestSampleRate(List<List<Tone>> tracksData) {
+    private SampleRate getLowestSampleRate(List<List<Trackable>> tracksData) {
         SampleRate lowestSampleRate = SampleRate.RATE_192_KHZ;
 
-        for (List<Tone> trackTones : tracksData) {
-            for (Tone tone : trackTones) {
-                if (tone.getSampleRate() == null)
+        for (List<Trackable> trackTones : tracksData) {
+            for (Trackable tone : trackTones) {
+                if (tone instanceof Silence)
                     continue;
 
                 SampleRate currentSampleRate = tone.getSampleRate();
@@ -206,10 +212,10 @@ public class ToneMixerViewModel extends AndroidViewModel {
         return lowestSampleRate;
     }
 
-    private int getTrackSamplesNumber(List<Tone> tones) {
+    private int getTrackSamplesNumber(List<Trackable> tones) {
         int trackSamplesNumber = 0;
 
-        for (Tone tone : tones)
+        for (Trackable tone : tones)
             trackSamplesNumber += tone.getSamplesNumber();
 
         return trackSamplesNumber;
@@ -407,7 +413,7 @@ public class ToneMixerViewModel extends AndroidViewModel {
         setControlPanelComponentAnyChange(buttonsStates);
     }
 
-    public int getMusicDurationInMs() {
-        return Objects.requireNonNull(music.getValue()).getDurationInMs();
+    public int getMusicDurationMilliseconds() {
+        return Objects.requireNonNull(music.getValue()).getDurationMilliseconds();
     }
 }

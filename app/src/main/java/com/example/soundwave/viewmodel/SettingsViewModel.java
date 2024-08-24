@@ -8,10 +8,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.soundwave.components.Music;
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Music;
+import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
-import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.utils.DatabaseParser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class SettingsViewModel extends AndroidViewModel {
         allTones = Transformations.map(repository.getAllTones(), input -> {
             List<Tone> tones = new ArrayList<>();
             for (com.example.soundwave.model.entity.Tone dbTone : input) {
-                tones.add(new ToneParser().parseToneFromDb(dbTone));
+                tones.add(new DatabaseParser().parseToneFromDb(dbTone));
             }
             return tones;
         });
@@ -43,7 +43,7 @@ public class SettingsViewModel extends AndroidViewModel {
         allMusic = Transformations.map(repository.getAllMusic(), input -> {
             List<Music> music = new ArrayList<>();
             for (com.example.soundwave.model.entity.Music dbMusic : input) {
-                music.add(new ToneParser().parseMusicFromDb(dbMusic));
+                music.add(new DatabaseParser().parseMusicFromDb(dbMusic));
             }
             return music;
         });

@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.soundwave.view.MainActivity;
 import com.example.soundwave.R;
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.utils.UnitsConverter;
+import com.example.soundwave.view.MainActivity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +58,7 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
         String volumeDisplay = volume + context.getString(R.string.affix_percent);
         String overtonesNumber = String.valueOf(tone.getOvertonesComponent().getActiveOvertonesNumber());
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
-        String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
+        String duration = String.format(Locale.US, "%.3fs", tone.getDurationSeconds());
 
         holder.toneName.setSelected(true);
         holder.toneName.setText(tone.getName());

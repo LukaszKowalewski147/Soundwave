@@ -11,13 +11,13 @@ public class EnvelopeComponent implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final PresetEnvelope envelopePreset;
-    private final int attackDuration;
-    private final int decayDuration;
-    private final int sustainLevel;
-    private final int sustainDuration;
-    private final int releaseDuration;
-    private final int envelopeDurationInMs;
-    private final double envelopeDurationInS;
+    private final int attackDurationMilliseconds;
+    private final int decayDurationMilliseconds;
+    private final int sustainLevelPercent;
+    private final int sustainDurationMilliseconds;
+    private final int releaseDurationMilliseconds;
+    private final int envelopeDurationMilliseconds;
+    private final double envelopeDurationSeconds;
 
     public enum EnvelopeParameters {
         ATTACK_DURATION,
@@ -34,62 +34,65 @@ public class EnvelopeComponent implements Serializable {
         RELEASE
     }
 
-    public EnvelopeComponent(PresetEnvelope envelopePreset, int attackDuration, int decayDuration,
-                             int sustainLevel, int sustainDuration, int releaseDuration) {
+    public EnvelopeComponent(PresetEnvelope envelopePreset, int attackDurationMilliseconds,
+                             int decayDurationMilliseconds, int sustainLevelPercent,
+                             int sustainDurationMilliseconds, int releaseDurationMilliseconds) {
         this.envelopePreset = envelopePreset;
-        this.attackDuration = attackDuration;
-        this.decayDuration = decayDuration;
-        this.sustainLevel = sustainLevel;
-        this.sustainDuration = sustainDuration;
-        this.releaseDuration = releaseDuration;
-        this.envelopeDurationInMs = calculateTotalDurationInMs();
-        this.envelopeDurationInS = calculateTotalDurationInSeconds();
+        this.attackDurationMilliseconds = attackDurationMilliseconds;
+        this.decayDurationMilliseconds = decayDurationMilliseconds;
+        this.sustainLevelPercent = sustainLevelPercent;
+        this.sustainDurationMilliseconds = sustainDurationMilliseconds;
+        this.releaseDurationMilliseconds = releaseDurationMilliseconds;
+        this.envelopeDurationMilliseconds = calculateTotalDurationMilliseconds();
+        this.envelopeDurationSeconds = calculateTotalDurationSeconds();
     }
 
     public PresetEnvelope getEnvelopePreset() {
         return envelopePreset;
     }
 
-    public int getAttackDuration() {
-        return attackDuration;
+    public int getAttackDurationMilliseconds() {
+        return attackDurationMilliseconds;
     }
 
-    public int getDecayDuration() {
-        return decayDuration;
+    public int getDecayDurationMilliseconds() {
+        return decayDurationMilliseconds;
     }
 
-    public int getSustainLevel() {
-        return sustainLevel;
+    public int getSustainLevelPercent() {
+        return sustainLevelPercent;
     }
 
-    public int getSustainDuration() {
-        return sustainDuration;
+    public int getSustainDurationMilliseconds() {
+        return sustainDurationMilliseconds;
     }
 
-    public int getReleaseDuration() {
-        return releaseDuration;
+    public int getReleaseDurationMilliseconds() {
+        return releaseDurationMilliseconds;
     }
 
-    public int getEnvelopeDurationInMs() {
-        return envelopeDurationInMs;
+    public int getEnvelopeDurationMilliseconds() {
+        return envelopeDurationMilliseconds;
     }
 
-    public double getEnvelopeDurationInS() {
-        return envelopeDurationInS;
+    public double getEnvelopeDurationSeconds() {
+        return envelopeDurationSeconds;
     }
 
-    private int calculateTotalDurationInMs() {
-        return attackDuration + decayDuration + sustainDuration + releaseDuration;
+    private int calculateTotalDurationMilliseconds() {
+        return attackDurationMilliseconds + decayDurationMilliseconds +
+                sustainDurationMilliseconds + releaseDurationMilliseconds;
     }
 
-    private double calculateTotalDurationInSeconds() {
-        return UnitsConverter.convertMsToSeconds(envelopeDurationInMs);
+    private double calculateTotalDurationSeconds() {
+        return UnitsConverter.convertMillisecondsToSeconds(envelopeDurationMilliseconds);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return envelopePreset + "," + attackDuration + "," + decayDuration + "," +
-                sustainLevel + "," + sustainDuration + "," + releaseDuration;
+        return envelopePreset + "," + attackDurationMilliseconds + "," +
+                decayDurationMilliseconds + "," + sustainLevelPercent + "," +
+                sustainDurationMilliseconds + "," + releaseDurationMilliseconds;
     }
 }

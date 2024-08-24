@@ -1,4 +1,4 @@
-package com.example.soundwave.components;
+package com.example.soundwave.components.sound;
 
 import com.example.soundwave.utils.SampleRate;
 
@@ -21,9 +21,5 @@ public class Track {
 
     public int getNumberOfSamples() {
         return samples.length;
-    }
-
-    public double getTrackDurationInSeconds() {
-        return (double) samples.length / sampleRate.sampleRate;
     }
 }

@@ -4,27 +4,26 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.soundwave.utils.AudioPlayer;
-import com.example.soundwave.utils.ToneParser;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
-import com.example.soundwave.components.Overtone;
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Overtone;
+import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.Config;
+import com.example.soundwave.utils.DatabaseParser;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.UnitsConverter;
-import com.example.soundwave.utils.ToneGenerator;
+import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
+import com.example.soundwave.utils.soundgenerator.ToneGenerator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +44,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private final MutableLiveData<Tone> tone = new MutableLiveData<>(null);
     private final MutableLiveData<Boolean> isDataLoading = new MutableLiveData<>(true);
 
-    private AudioPlayer audioPlayer;
+    private AudioStaticPlayer audioPlayer;
     private boolean overtonesActivator;
     private boolean anyChange;
 
@@ -164,15 +163,15 @@ public class ToneCreatorViewModel extends AndroidViewModel {
 
         switch (parameter) {
             case ATTACK_DURATION:
-                return value != ec.getAttackDuration();
+                return value != ec.getAttackDurationMilliseconds();
             case DECAY_DURATION:
-                return value != ec.getDecayDuration();
+                return value != ec.getDecayDurationMilliseconds();
             case SUSTAIN_LEVEL:
-                return value != ec.getSustainLevel();
+                return value != ec.getSustainLevelPercent();
             case SUSTAIN_DURATION:
-                return value != ec.getSustainDuration();
+                return value != ec.getSustainDurationMilliseconds();
             case RELEASE_DURATION:
-                return value != ec.getReleaseDuration();
+                return value != ec.getReleaseDurationMilliseconds();
         }
         return true;
     }
@@ -180,32 +179,32 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     private void setEnvelopeParameter(EnvelopeComponent.EnvelopeParameters parameter, int value) {
         EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
 
-        int currentAttackDuration = ec.getAttackDuration();
-        int currentDecayDuration = ec.getDecayDuration();
-        int currentSustainLevel = ec.getSustainLevel();
-        int currentSustainDuration = ec.getSustainDuration();
-        int currentReleaseDuration = ec.getReleaseDuration();
+        int currentAttackDurationMilliseconds = ec.getAttackDurationMilliseconds();
+        int currentDecayDurationMilliseconds = ec.getDecayDurationMilliseconds();
+        int currentSustainLevelPercent = ec.getSustainLevelPercent();
+        int currentSustainDurationMilliseconds = ec.getSustainDurationMilliseconds();
+        int currentReleaseDurationMilliseconds = ec.getReleaseDurationMilliseconds();
 
         switch (parameter) {
             case ATTACK_DURATION:
                 envelopeComponent.setValue(new EnvelopeComponent(PresetEnvelope.CUSTOM,
-                        value, currentDecayDuration, currentSustainLevel, currentSustainDuration, currentReleaseDuration));
+                        value, currentDecayDurationMilliseconds, currentSustainLevelPercent, currentSustainDurationMilliseconds, currentReleaseDurationMilliseconds));
                 break;
             case DECAY_DURATION:
                 envelopeComponent.setValue(new EnvelopeComponent(PresetEnvelope.CUSTOM,
-                        currentAttackDuration, value, currentSustainLevel, currentSustainDuration, currentReleaseDuration));
+                        currentAttackDurationMilliseconds, value, currentSustainLevelPercent, currentSustainDurationMilliseconds, currentReleaseDurationMilliseconds));
                 break;
             case SUSTAIN_LEVEL:
                 envelopeComponent.setValue(new EnvelopeComponent(PresetEnvelope.CUSTOM,
-                        currentAttackDuration, currentDecayDuration, value, currentSustainDuration, currentReleaseDuration));
+                        currentAttackDurationMilliseconds, currentDecayDurationMilliseconds, value, currentSustainDurationMilliseconds, currentReleaseDurationMilliseconds));
                 break;
             case SUSTAIN_DURATION:
                 envelopeComponent.setValue(new EnvelopeComponent(PresetEnvelope.CUSTOM,
-                        currentAttackDuration, currentDecayDuration, currentSustainLevel, value, currentReleaseDuration));
+                        currentAttackDurationMilliseconds, currentDecayDurationMilliseconds, currentSustainLevelPercent, value, currentReleaseDurationMilliseconds));
                 break;
             case RELEASE_DURATION:
                 envelopeComponent.setValue(new EnvelopeComponent(PresetEnvelope.CUSTOM,
-                        currentAttackDuration, currentDecayDuration, currentSustainLevel, currentSustainDuration, value));
+                        currentAttackDurationMilliseconds, currentDecayDurationMilliseconds, currentSustainLevelPercent, currentSustainDurationMilliseconds, value));
         }
         setEnvelopePreset(PresetEnvelope.CUSTOM);
     }
@@ -361,8 +360,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         if (editorMode)
             newTone.setId(Objects.requireNonNull(tone.getValue()).getId());
 
-        audioPlayer = new AudioPlayer();
-        boolean loadingSuccessful = audioPlayer.loadTone(newTone);
+        audioPlayer = new AudioStaticPlayer();
+        boolean loadingSuccessful = audioPlayer.loadSound(newTone);
 
         if (loadingSuccessful) {
             tone.setValue(newTone);
@@ -377,11 +376,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
         FundamentalFrequencyComponent ffc = Objects.requireNonNull(fundamentalFrequencyComponent.getValue());
         OvertonesComponent oc = new OvertonesComponent(getAllOvertones(), Options.overtonePreset);
-        double duration = UnitsConverter.convertMsToSeconds(Objects.requireNonNull(toneDuration.getValue()));
+        double durationSeconds = UnitsConverter.convertMillisecondsToSeconds(Objects.requireNonNull(toneDuration.getValue()));
 
-        ToneGenerator toneGenerator = new ToneGenerator(sr, duration);
+        ToneGenerator generator = new ToneGenerator(sr, durationSeconds);
 
-        return toneGenerator.generateTone(ec, ffc, oc);
+        return generator.generateTone(ec, ffc, oc);
     }
 
     public void playStopTone() {
@@ -394,7 +393,7 @@ public class ToneCreatorViewModel extends AndroidViewModel {
             setControlPanelComponentPlayTone(buttonsStates);
 
             Thread thread = new Thread(() -> {
-                int waitingTime = Objects.requireNonNull(tone.getValue()).getDurationInMs();
+                int waitingTime = Objects.requireNonNull(tone.getValue()).getDurationMilliseconds();
                 try {
                     Thread.sleep(waitingTime);
                 } catch (InterruptedException e) {
@@ -416,7 +415,8 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         Tone baseTone = Objects.requireNonNull(tone.getValue());
         baseTone.setName(toneName);
 
-        com.example.soundwave.model.entity.Tone toneEntity = new ToneParser().parseToneToDbEntity(baseTone);
+        com.example.soundwave.model.entity.Tone toneEntity =
+                new DatabaseParser().parseToneToDbEntity(baseTone);
 
         if (editorMode) {
             toneEntity.setId(baseTone.getId());
@@ -441,12 +441,12 @@ public class ToneCreatorViewModel extends AndroidViewModel {
     }
 
     public boolean loadEditedTone(Tone editedTone) {
-        audioPlayer = new AudioPlayer();
-        boolean loadingSuccessful = audioPlayer.loadTone(editedTone);
+        audioPlayer = new AudioStaticPlayer();
+        boolean loadingSuccessful = audioPlayer.loadSound(editedTone);
 
         loadSampleRate(editedTone.getSampleRate());
         loadEnvelopeComponent(editedTone.getEnvelopeComponent());
-        setToneDuration(editedTone.getDurationInMs());
+        setToneDuration(editedTone.getDurationMilliseconds());
         fundamentalFrequencyComponent.setValue(new FundamentalFrequencyComponent(
                 editedTone.getFundamentalFrequency(), editedTone.getMasterVolume()));
         loadOvertonesComponent(editedTone.getOvertonesComponent());
@@ -470,11 +470,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         Options.envelopePreset = editedPreset;
 
         if (editedPreset == PresetEnvelope.CUSTOM) {
-            PresetEnvelope.CUSTOM.values[0] = editedEC.getAttackDuration();
-            PresetEnvelope.CUSTOM.values[1] = editedEC.getDecayDuration();
-            PresetEnvelope.CUSTOM.values[2] = editedEC.getSustainLevel();
-            PresetEnvelope.CUSTOM.values[3] = editedEC.getSustainDuration();
-            PresetEnvelope.CUSTOM.values[4] = editedEC.getReleaseDuration();
+            PresetEnvelope.CUSTOM.values[0] = editedEC.getAttackDurationMilliseconds();
+            PresetEnvelope.CUSTOM.values[1] = editedEC.getDecayDurationMilliseconds();
+            PresetEnvelope.CUSTOM.values[2] = editedEC.getSustainLevelPercent();
+            PresetEnvelope.CUSTOM.values[3] = editedEC.getSustainDurationMilliseconds();
+            PresetEnvelope.CUSTOM.values[4] = editedEC.getReleaseDurationMilliseconds();
         }
 
         envelopeComponent.setValue(new EnvelopeComponent(editedPreset,
@@ -551,11 +551,11 @@ public class ToneCreatorViewModel extends AndroidViewModel {
         if (preset == PresetEnvelope.CUSTOM) {
             EnvelopeComponent ec = Objects.requireNonNull(envelopeComponent.getValue());
 
-            PresetEnvelope.CUSTOM.values[0] = ec.getAttackDuration();
-            PresetEnvelope.CUSTOM.values[1] = ec.getDecayDuration();
-            PresetEnvelope.CUSTOM.values[2] = ec.getSustainLevel();
-            PresetEnvelope.CUSTOM.values[3] = ec.getSustainDuration();
-            PresetEnvelope.CUSTOM.values[4] = ec.getReleaseDuration();
+            PresetEnvelope.CUSTOM.values[0] = ec.getAttackDurationMilliseconds();
+            PresetEnvelope.CUSTOM.values[1] = ec.getDecayDurationMilliseconds();
+            PresetEnvelope.CUSTOM.values[2] = ec.getSustainLevelPercent();
+            PresetEnvelope.CUSTOM.values[3] = ec.getSustainDurationMilliseconds();
+            PresetEnvelope.CUSTOM.values[4] = ec.getReleaseDurationMilliseconds();
             return;
         }
 

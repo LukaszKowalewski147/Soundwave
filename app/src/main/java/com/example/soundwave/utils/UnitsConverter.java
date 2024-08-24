@@ -303,11 +303,11 @@ public class UnitsConverter {
         return Scale.values()[index].noteName;
     }
 
-    public static double convertMsToSeconds(int milliseconds) {
+    public static double convertMillisecondsToSeconds(int milliseconds) {
         return milliseconds / 1000.0d;
     }
 
-    public static int convertSecondsToMs(double seconds) {
+    public static int convertSecondsToMilliseconds(double seconds) {
         return (int) Math.round(seconds * 1000);
     }
 }

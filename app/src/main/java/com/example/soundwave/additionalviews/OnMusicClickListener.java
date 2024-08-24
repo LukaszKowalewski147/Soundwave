@@ -1,6 +1,6 @@
 package com.example.soundwave.additionalviews;
 
-import com.example.soundwave.components.Music;
+import com.example.soundwave.components.sound.Music;
 
 public interface OnMusicClickListener {
     void onRenameClick(Music music);

@@ -4,27 +4,27 @@ import com.example.soundwave.utils.SampleRate;
 
 public abstract class Sound {
     final SampleRate sampleRate;
-    final int durationInMilliseconds;
+    final int durationMilliseconds;
 
-    Sound(SampleRate sampleRate, int durationInMilliseconds) {
+    Sound(SampleRate sampleRate, int durationMilliseconds) {
         this.sampleRate = sampleRate;
-        this.durationInMilliseconds = durationInMilliseconds;
+        this.durationMilliseconds = durationMilliseconds;
     }
 
     Sound(SampleRate sampleRate, double pcmDataLength) {
         this.sampleRate = sampleRate;
-        this.durationInMilliseconds = calculateDurationInMilliseconds(pcmDataLength);
+        this.durationMilliseconds = calculateDurationMilliseconds(pcmDataLength);
     }
 
     public SampleRate getSampleRate() {
         return sampleRate;
     }
 
-    public int getDurationInMilliseconds() {
-        return durationInMilliseconds;
+    public int getDurationMilliseconds() {
+        return durationMilliseconds;
     }
 
-    private int calculateDurationInMilliseconds(double pcmDataLength) {
+    private int calculateDurationMilliseconds(double pcmDataLength) {
         double durationInSeconds = pcmDataLength / sampleRate.sampleRate / 2;
         return (int) Math.ceil(durationInSeconds * 1000);
     }

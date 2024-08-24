@@ -1,11 +1,5 @@
 package com.example.soundwave.additionalviews;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +7,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.soundwave.R;
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneMixerViewModel;
 
@@ -67,7 +67,7 @@ public class SelectToneToMixDialogFragment extends DialogFragment {
         String frequencyDisplay = frequency + getString(R.string.affix_Hz) + " (" + scale + ")";
         String volume = tone.getMasterVolume() + getString(R.string.affix_percent);
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
-        String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
+        String duration = String.format(Locale.US, "%.3fs", tone.getDurationSeconds());
 
         toneName.setSelected(true);
         toneName.setText(name);

@@ -9,11 +9,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
-import com.example.soundwave.utils.AudioPlayer;
-import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.utils.DatabaseParser;
 import com.example.soundwave.utils.WavCreator;
+import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +27,9 @@ public class HomepageTonesViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isTonePlaying = new MutableLiveData<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private AudioPlayer currentAudioPlayer;         // null if no tone is playing
-    private int currentlyPlayingTonePosition;       //   -1 if no tone is playing
-    private int lastPlayedTonePosition;             //   -1 if no tone is playing
+    private AudioStaticPlayer currentAudioPlayer;       // null if no tone is playing
+    private int currentlyPlayingTonePosition;           //   -1 if no tone is playing
+    private int lastPlayedTonePosition;                 //   -1 if no tone is playing
 
     private Handler handler;
     private Runnable runnable;
@@ -41,7 +41,7 @@ public class HomepageTonesViewModel extends AndroidViewModel {
         allTones = Transformations.map(repository.getAllTones(), input -> {
             List<Tone> tones = new ArrayList<>();
             for (com.example.soundwave.model.entity.Tone dbTone : input) {
-                tones.add(new ToneParser().parseToneFromDb(dbTone));
+                tones.add(new DatabaseParser().parseToneFromDb(dbTone));
             }
             return tones;
         });
@@ -73,7 +73,9 @@ public class HomepageTonesViewModel extends AndroidViewModel {
 
         tone.setName(toneNewName);
 
-        com.example.soundwave.model.entity.Tone toneToUpdate = new ToneParser().parseToneToDbEntity(tone);
+        com.example.soundwave.model.entity.Tone toneToUpdate =
+                new DatabaseParser().parseToneToDbEntity(tone);
+
         toneToUpdate.setId(tone.getId());
 
         executorService.execute(() -> {
@@ -91,7 +93,9 @@ public class HomepageTonesViewModel extends AndroidViewModel {
     public LiveData<Boolean> deleteTone(Tone tone) {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
 
-        com.example.soundwave.model.entity.Tone toneToDelete = new ToneParser().parseToneToDbEntity(tone);
+        com.example.soundwave.model.entity.Tone toneToDelete =
+                new DatabaseParser().parseToneToDbEntity(tone);
+
         toneToDelete.setId(tone.getId());
 
         executorService.execute(() -> {
@@ -121,8 +125,8 @@ public class HomepageTonesViewModel extends AndroidViewModel {
     }
 
     public boolean playTone(Tone tone, int position) {
-        currentAudioPlayer = new AudioPlayer();
-        boolean loadingSuccessful = currentAudioPlayer.loadTone(tone);
+        currentAudioPlayer = new AudioStaticPlayer();
+        boolean loadingSuccessful = currentAudioPlayer.loadSound(tone);
 
         if (!loadingSuccessful)
             return false;
@@ -141,7 +145,7 @@ public class HomepageTonesViewModel extends AndroidViewModel {
             }
         };
 
-        handler.postDelayed(runnable, tone.getDurationInMs());
+        handler.postDelayed(runnable, tone.getDurationMilliseconds());
         return true;
     }
 

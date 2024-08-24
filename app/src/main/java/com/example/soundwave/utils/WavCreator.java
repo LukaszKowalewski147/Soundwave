@@ -3,8 +3,8 @@ package com.example.soundwave.utils;
 import android.os.Environment;
 import android.util.Log;
 
-import com.example.soundwave.components.Music;
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Music;
+import com.example.soundwave.components.sound.Tone;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,7 +59,7 @@ public class WavCreator {
 
             String fileName = getFilename();
             File wavFile = new File(filepathBase, fileName);
-            byte[] pcmSamples = getPcmSamples();
+            byte[] pcmSamples = getPcmData();
             try {
                 out = new FileOutputStream(wavFile);
                 writeWavHeader(out);
@@ -98,8 +98,8 @@ public class WavCreator {
         return tone != null ? Objects.requireNonNull(tone).getSampleRate().sampleRate : Objects.requireNonNull(music).getSampleRate().sampleRate;
     }
 
-    private byte[] getPcmSamples() {
-        return tone != null ? Objects.requireNonNull(tone).getPcmSound() : Objects.requireNonNull(music).getSamples16BitPCM();
+    private byte[] getPcmData() {
+        return tone != null ? Objects.requireNonNull(tone).getPcmData() : Objects.requireNonNull(music).getPcmData();
     }
 
     private boolean isExternalStorageAvailable() {

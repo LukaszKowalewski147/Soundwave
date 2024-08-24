@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.soundwave.R;
-import com.example.soundwave.components.Music;
+import com.example.soundwave.components.sound.Music;
 import com.example.soundwave.utils.UnitsConverter;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
 
         String name = music.getName();
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(music.getSampleRate());
-        String duration = String.format(Locale.US, "%.3fs", music.getDurationInSeconds());
+        String duration = String.format(Locale.US, "%.3fs", music.getDurationSeconds());
 
         holder.musicName.setSelected(true);
         holder.musicName.setText(name);

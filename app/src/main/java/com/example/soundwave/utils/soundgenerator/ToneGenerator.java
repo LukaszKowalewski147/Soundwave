@@ -1,45 +1,23 @@
-package com.example.soundwave.utils;
+package com.example.soundwave.utils.soundgenerator;
 
-import com.example.soundwave.components.Music;
-import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
-import com.example.soundwave.components.Overtone;
-import com.example.soundwave.components.Track;
+import com.example.soundwave.components.sound.Overtone;
+import com.example.soundwave.components.sound.Tone;
+import com.example.soundwave.utils.EnvelopeCalculator;
+import com.example.soundwave.utils.SampleRate;
+import com.example.soundwave.utils.UnitsConverter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-public class ToneGenerator {
+public class ToneGenerator extends SoundGenerator {
 
-    private final SampleRate sampleRate;
+    private final int durationMilliseconds;
 
-    private int samplesNumber;
-    private double[] samples;
-    private byte[] outputSound;
-    private final int durationInMs;
-
-    public ToneGenerator(SampleRate sampleRate, double durationInSeconds) {
-        this.sampleRate = sampleRate;
-
-        this.samplesNumber = (int) Math.ceil(durationInSeconds * sampleRate.sampleRate);
-        this.samples = new double[samplesNumber];
-        this.outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
-
-        this.durationInMs = UnitsConverter.convertSecondsToMs(durationInSeconds);
-    }
-
-    // Constructor to generate track and music
-    public ToneGenerator(SampleRate sampleRate, int samplesNumber) {
-        this.sampleRate = sampleRate;
-
-        this.samplesNumber = samplesNumber;
-        this.samples = new double[samplesNumber];
-        this.outputSound = new byte[2 * samplesNumber];      // 2 bytes of data for 16bit sample
-
-        this.durationInMs = 0;
+    public ToneGenerator(SampleRate sampleRate, double durationSeconds) {
+        super(sampleRate, durationSeconds);
+        this.durationMilliseconds = UnitsConverter.convertSecondsToMilliseconds(durationSeconds);
     }
 
     public Tone generateTone(EnvelopeComponent ec, FundamentalFrequencyComponent ffc, OvertonesComponent oc) {
@@ -59,92 +37,7 @@ public class ToneGenerator {
         fadeOutFlatZero();
         convertTo16BitPCM();
 
-        return new Tone(sampleRate, ec, ffc, oc, durationInMs, samples, outputSound);
-    }
-
-    public Tone generateSilence() {
-        Arrays.fill(samples, 0.0d);
-
-        convertTo16BitPCM();
-
-        return new Tone(sampleRate, durationInMs, samples);
-    }
-
-    public Track generateTrack(List<Tone> tones) {
-        tones = prepareTonesForTrackGeneration(tones);
-        reassignSamplesNumber(tones);
-
-        int lastSampleIndex = 0;
-        int toneIndex = 0;
-        int toneSampleIndex = 0;
-
-        Tone tone = tones.get(toneIndex);
-        double[] toneSamples = tone.getSamples();
-
-        for (int i = lastSampleIndex; i < samples.length; ++i) {
-            samples[i] = toneSamples[toneSampleIndex++];
-            if (toneSampleIndex == toneSamples.length && ++toneIndex < tones.size()) {
-                toneSampleIndex = 0;
-                tone = tones.get(toneIndex);
-                toneSamples = tone.getSamples();
-            }
-        }
-
-        return new Track(sampleRate, samples);
-    }
-
-    public Music generateMusic(List<Track> tracks) {
-        Arrays.fill(samples, 0.0d);     // Initialize samples with zeros.
-
-        double[] trackSamples;
-
-        for (Track track : tracks) {
-            trackSamples = track.getSamples();
-
-            for (int i = 0; i < samples.length; ++i) {
-                if (i < trackSamples.length)
-                    samples[i] += trackSamples[i];
-                else
-                    break;
-            }
-        }
-
-        compressToMasterVolume(95);     //compressing to higher values than 95 induces cracking sound
-        convertTo16BitPCM();
-
-        return new Music(sampleRate, outputSound);
-    }
-
-    private List<Tone> prepareTonesForTrackGeneration(List<Tone> tones) {
-        List<Tone> resampledTones = new ArrayList<>();
-
-        for (Tone tone : tones) {
-            if (tone.getSampleRate() != sampleRate)
-                tone = resampleTone(tone);
-            resampledTones.add(tone);
-        }
-
-        return resampledTones;
-    }
-
-    private Tone resampleTone(Tone tone) {
-        ToneGenerator generator = new ToneGenerator(sampleRate, tone.getDurationInSeconds());
-
-        if (tone.getFundamentalFrequencyComponent() == null)
-            return generator.generateSilence();
-
-        return generator.generateTone(tone.getEnvelopeComponent(), tone.getFundamentalFrequencyComponent(), tone.getOvertonesComponent());
-    }
-
-    private void reassignSamplesNumber(List<Tone> tones) {
-        int trackSamplesNumber = 0;
-
-        for (Tone tone : tones)
-            trackSamplesNumber += tone.getSamplesNumber();
-
-        this.samplesNumber = trackSamplesNumber;
-        this.samples = new double[trackSamplesNumber];
-        this.outputSound = new byte[2 * trackSamplesNumber];      // 2 bytes of data for 16bit sample
+        return new Tone(sampleRate, ec, ffc, oc, durationMilliseconds, samples, pcmData);
     }
 
     private void addOvertonesData(int sampleRateInHz, ArrayList<Overtone> overtones) {
@@ -177,21 +70,21 @@ public class ToneGenerator {
     }
 
     private void applyEnvelope(EnvelopeComponent ec) {
-        double sustainLevel = ec.getSustainLevel() / 100.0d;
-        double envelopeDurationInMs = ec.getEnvelopeDurationInMs();
+        double sustainLevel = ec.getSustainLevelPercent() / 100.0d;
+        double envelopeDurationMilliseconds = ec.getEnvelopeDurationMilliseconds();
 
-        int attackInMs = ec.getAttackDuration();
-        int decayInMs = ec.getDecayDuration();
-        int sustainInMs = ec.getSustainDuration();
-        int releaseInMs = ec.getReleaseDuration();
+        int attackMilliseconds = ec.getAttackDurationMilliseconds();
+        int decayMilliseconds = ec.getDecayDurationMilliseconds();
+        int sustainMilliseconds = ec.getSustainDurationMilliseconds();
+        int releaseMilliseconds = ec.getReleaseDurationMilliseconds();
 
-        double envelopeToToneRatio = envelopeDurationInMs / durationInMs;   // ratio between envelope and tone duration
-        double timePercentMultiplier = 100 / envelopeDurationInMs * envelopeToToneRatio;   // phase percent of envelope times ratio
+        double envelopeToToneRatio = envelopeDurationMilliseconds / durationMilliseconds;   // ratio between envelope and tone duration
+        double timePercentMultiplier = 100 / envelopeDurationMilliseconds * envelopeToToneRatio;   // phase percent of envelope times ratio
 
-        double attackTimePercent = attackInMs * timePercentMultiplier;
-        double decayTimePercent = decayInMs * timePercentMultiplier;
-        double sustainTimePercent = sustainInMs * timePercentMultiplier;
-        double releaseTimePercent = releaseInMs * timePercentMultiplier;
+        double attackTimePercent = attackMilliseconds * timePercentMultiplier;
+        double decayTimePercent = decayMilliseconds * timePercentMultiplier;
+        double sustainTimePercent = sustainMilliseconds * timePercentMultiplier;
+        double releaseTimePercent = releaseMilliseconds * timePercentMultiplier;
 
         int attackSamples = (int) Math.round(samplesNumber * attackTimePercent / 100);
         int decaySamples = (int) Math.round(samplesNumber * decayTimePercent / 100);
@@ -274,8 +167,8 @@ public class ToneGenerator {
             // scale to maximum amplitude
             final short val = (short) ((dVal * 32767));
             // in 16 bit wav PCM, first byte is the low order byte
-            outputSound[index++] = (byte) (val & 0x00ff);
-            outputSound[index++] = (byte) ((val & 0xff00) >>> 8);
+            pcmData[index++] = (byte) (val & 0x00ff);
+            pcmData[index++] = (byte) ((val & 0xff00) >>> 8);
         }
     }
 
@@ -310,8 +203,8 @@ public class ToneGenerator {
         double fader = 0.0d;
 
         for (int i = 0; i < fadeDuration; ++i) {
-            outputSound[index++] *= fader;
-            outputSound[index++] *= fader;
+            pcmData[index++] *= fader;
+            pcmData[index++] *= fader;
             fader += faderStep;
         }
     }
@@ -323,8 +216,8 @@ public class ToneGenerator {
         double fader = 0.0d;
 
         for (int i = samplesNumber - 1; i > samplesNumber - fadeDuration; --i) {
-            outputSound[index--] *= fader;
-            outputSound[index--] *= fader;
+            pcmData[index--] *= fader;
+            pcmData[index--] *= fader;
             fader += faderStep;
         }
     }

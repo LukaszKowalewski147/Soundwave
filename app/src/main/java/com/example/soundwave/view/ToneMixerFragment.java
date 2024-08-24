@@ -9,13 +9,6 @@ import android.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,11 +24,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.soundwave.R;
-import com.example.soundwave.components.ControlPanelComponent;
-import com.example.soundwave.components.Tone;
 import com.example.soundwave.additionalviews.OnToneSelectedListener;
 import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
+import com.example.soundwave.components.ControlPanelComponent;
+import com.example.soundwave.components.sound.Tone;
+import com.example.soundwave.components.sound.Trackable;
 import com.example.soundwave.databinding.FragmentToneMixerBinding;
 import com.example.soundwave.utils.OnFragmentExitListener;
 import com.example.soundwave.utils.Options;
@@ -388,8 +388,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         toneToRemove = tone;
     }
 
-    private List<List<Tone>> getTracksData() {
-        List<List<Tone>> tracksData = new ArrayList<>();
+    private List<List<Trackable>> getTracksData() {
+        List<List<Trackable>> tracksData = new ArrayList<>();
 
         tracksData.add(getTonesFromTrack(binding.toneMixerTrack1));
         tracksData.add(getTonesFromTrack(binding.toneMixerTrack2));
@@ -400,8 +400,8 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return tracksData;
     }
 
-    private List<Tone> getTonesFromTrack(LinearLayout track) {
-        List<Tone> tones = new ArrayList<>();
+    private List<Trackable> getTonesFromTrack(LinearLayout track) {
+        List<Trackable> tones = new ArrayList<>();
 
         for (int i = 0; i < track.getChildCount(); i++) {
             View child = track.getChildAt(i);
@@ -442,7 +442,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         String scale = UnitsConverter.convertFrequencyToNote(frequency);
         String frequencyDisplay = frequency + getString(R.string.affix_Hz) + " (" + scale + ")";
         String volume = tone.getMasterVolume() + getString(R.string.affix_percent);
-        String duration = String.format(Locale.US, "%.3fs", tone.getDurationInSeconds());
+        String duration = String.format(Locale.US, "%.3fs", tone.getDurationSeconds());
 
         toneName.setSelected(true);
         toneName.setText(name);
@@ -481,7 +481,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         TextView mixerName = trackTone.findViewById(R.id.tone_mixer_track_tone_name);
         mixerName.setText(tone.getName());
 
-        int widthInPx = convertDurationInSecondsToWidthInPx(tone.getDurationInSeconds());
+        int widthInPx = convertDurationInSecondsToWidthInPx(tone.getDurationSeconds());
         int heightInPx = (int) getResources().getDimension(R.dimen.tone_mixer_track_tone_height);
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(widthInPx, heightInPx);
@@ -686,7 +686,7 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
 
     private void animateTimeIndicator() {
         float indicatorStart = getResources().getDimensionPixelSize(R.dimen.tone_mixer_track_padding_start);
-        int musicDurationInMs = viewModel.getMusicDurationInMs();
+        int musicDurationInMs = viewModel.getMusicDurationMilliseconds();
         boolean scrollToAnimate = musicDurationInMs > 1000;
 
         binding.toneMixerMusicScrollView.scrollTo(0, 0);
@@ -704,16 +704,16 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         indicatorAnimator.start();
     }
 
-    private ObjectAnimator getScrollAnimator(int musicDurationInMs) {
-        if (musicDurationInMs <= 1000)
+    private ObjectAnimator getScrollAnimator(int musicDurationMilliseconds) {
+        if (musicDurationMilliseconds <= 1000)
             return null;
 
-        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMs);
+        double musicDurationSeconds = UnitsConverter.convertMillisecondsToSeconds(musicDurationMilliseconds);
         int scrollStart = binding.toneMixerMusicScrollView.getScrollX();
-        int scrollEnd = (int) Math.ceil(getOneSecondWidthPixels() * (musicDurationInSeconds - 1));
+        int scrollEnd = (int) Math.ceil(getOneSecondWidthPixels() * (musicDurationSeconds - 1));
 
         ObjectAnimator scrollAnimator = ObjectAnimator.ofInt(binding.toneMixerMusicScrollView, "scrollX", scrollStart, scrollEnd);
-        scrollAnimator.setDuration(musicDurationInMs - 1000);
+        scrollAnimator.setDuration(musicDurationMilliseconds - 1000);
         scrollAnimator.setInterpolator(new LinearInterpolator());
 
         scrollAnimator.addListener(new AnimatorListenerAdapter() {
@@ -726,12 +726,12 @@ public class ToneMixerFragment extends Fragment implements OnToneSelectedListene
         return scrollAnimator;
     }
 
-    private ObjectAnimator getShortTimeIndicatorAnimator(float indicatorStart, int musicDurationInMs) {
-        double musicDurationInSeconds = UnitsConverter.convertMsToSeconds(musicDurationInMs);
-        float indicatorEnd = (float) (getOneSecondWidthPixels() * musicDurationInSeconds) + indicatorStart;     // <1s of pixels
+    private ObjectAnimator getShortTimeIndicatorAnimator(float indicatorStart, int musicDurationMilliseconds) {
+        double musicDurationSeconds = UnitsConverter.convertMillisecondsToSeconds(musicDurationMilliseconds);
+        float indicatorEnd = (float) (getOneSecondWidthPixels() * musicDurationSeconds) + indicatorStart;     // <1s of pixels
 
         ObjectAnimator indicatorAnimator = ObjectAnimator.ofFloat(binding.toneMixerTimeIndicator, "x", indicatorStart, indicatorEnd);
-        indicatorAnimator.setDuration(musicDurationInMs);     // <1s
+        indicatorAnimator.setDuration(musicDurationMilliseconds);     // <1s
         indicatorAnimator.setInterpolator(new LinearInterpolator());
         indicatorAnimator.addListener(new AnimatorListenerAdapter() {
             @Override

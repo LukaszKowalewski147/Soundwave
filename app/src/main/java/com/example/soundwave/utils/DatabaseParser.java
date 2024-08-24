@@ -1,11 +1,12 @@
 package com.example.soundwave.utils;
 
-import com.example.soundwave.components.Overtone;
-import com.example.soundwave.components.Music;
-import com.example.soundwave.components.Tone;
 import com.example.soundwave.components.EnvelopeComponent;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.components.OvertonesComponent;
+import com.example.soundwave.components.sound.Music;
+import com.example.soundwave.components.sound.Overtone;
+import com.example.soundwave.components.sound.Tone;
+import com.example.soundwave.utils.soundgenerator.ToneGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,12 +14,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-public class ToneParser {
+public class DatabaseParser {
 
     public Tone parseToneFromDb(com.example.soundwave.model.entity.Tone dbTone) {
         int id = dbTone.getId();
         String name = dbTone.getName();
-        double durationInSeconds = UnitsConverter.convertMsToSeconds(dbTone.getDuration());
+        double durationInSeconds = UnitsConverter.convertMillisecondsToSeconds(dbTone.getDuration());
         SampleRate sampleRate = parseSampleRate(dbTone);
         EnvelopeComponent ec = parseEnvelopeComponent(dbTone);
         FundamentalFrequencyComponent ffc = parseFundamentalFrequencyComponent(dbTone);
@@ -35,10 +36,10 @@ public class ToneParser {
         int id = dbMusic.getId();
         String name = dbMusic.getName();
         SampleRate sampleRate = parseSampleRate(dbMusic);
-        String samplesFilepath = dbMusic.getSamples16BitPcmFilepath();
-        byte[] samples = read16BitPcmSamples(samplesFilepath);
+        String pcmDataFilepath = dbMusic.getPcmData16BitFilepath();
+        byte[] pcmData = read16BitPcmData(pcmDataFilepath);
 
-        Music music = new Music(sampleRate, samples);
+        Music music = new Music(sampleRate, pcmData);
         music.setId(id);
         music.setName(name);
 
@@ -49,7 +50,7 @@ public class ToneParser {
         String toneName = tone.getName();
         int toneFrequency = tone.getFundamentalFrequency();
         int toneVolume = tone.getMasterVolume();
-        int toneDuration = tone.getDurationInMs();
+        int toneDuration = tone.getDurationMilliseconds();
         String envelopeComponent = tone.getEnvelopeComponent().toString();
         String overtonesPreset = tone.getOvertonesPreset().toString();
 
@@ -66,23 +67,27 @@ public class ToneParser {
         String overtonesComponent = overtonesPreset + "!" + overtonesDetails;
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(tone.getSampleRate());
 
-        return new com.example.soundwave.model.entity.Tone(toneName, toneFrequency,
-                toneVolume, toneDuration, envelopeComponent, overtonesComponent, sampleRate);
+        return new com.example.soundwave.model.entity.Tone(
+                toneName, toneFrequency, toneVolume, toneDuration,
+                envelopeComponent, overtonesComponent, sampleRate);
     }
 
     public com.example.soundwave.model.entity.Music parseMusicToDbEntity(Music music) {
         String musicName = music.getName();
         String sampleRate = UnitsConverter.convertSampleRateToStringVisible(music.getSampleRate());
-        byte[] samples16BitPcm = music.getSamples16BitPCM();
+        byte[] samples16BitPcm = music.getPcmData();
         long unixTime = System.currentTimeMillis();
-        String samplesFileName = "m-" + musicName + "-" + unixTime;
-        String samples16BitPcmFilepath = save16BitPcmSamples(samples16BitPcm, samplesFileName);
+        String pcmDataFileName = "m-" + musicName + "-" + unixTime;
+        String pcmData16BitFilepath = save16BitPcmData(samples16BitPcm, pcmDataFileName);
 
-        return new com.example.soundwave.model.entity.Music(musicName, sampleRate, samples16BitPcmFilepath);
+        return new com.example.soundwave.model.entity.Music(
+                musicName, sampleRate, pcmData16BitFilepath);
     }
 
     public com.example.soundwave.model.entity.Music parseMusicToDbEntityForDeletion(Music music) {
-        com.example.soundwave.model.entity.Music musicToDelete = new com.example.soundwave.model.entity.Music("", "", "");
+        com.example.soundwave.model.entity.Music musicToDelete =
+                new com.example.soundwave.model.entity.Music("", "", "");
+
         musicToDelete.setId(music.getId());
 
         return musicToDelete;
@@ -97,25 +102,28 @@ public class ToneParser {
     }
 
     private EnvelopeComponent parseEnvelopeComponent(com.example.soundwave.model.entity.Tone dbTone) {
-        String dbEC = dbTone.getEnvelopeComponent();
+        String dbEnvelopeComponent = dbTone.getEnvelopeComponent();
 
-        if (dbEC == null || dbEC.trim().isEmpty())
+        if (dbEnvelopeComponent == null || dbEnvelopeComponent.trim().isEmpty())
             return null;
 
-        EnvelopeComponent eC = null;
-        String[] fields = dbEC.split(",");
+        EnvelopeComponent envelopeComponent = null;
+        String[] fields = dbEnvelopeComponent.split(",");
 
         if (fields.length == 6) {
             PresetEnvelope preset = UnitsConverter.convertStringToPresetEnvelope(fields[0].trim());
-            int attackDuration = Integer.parseInt(fields[1].trim());
-            int decayDuration = Integer.parseInt(fields[2].trim());
-            int sustainLevel = Integer.parseInt(fields[3].trim());
-            int sustainDuration = Integer.parseInt(fields[4].trim());
-            int releaseDuration = Integer.parseInt(fields[5].trim());
+            int attackDurationMilliseconds = Integer.parseInt(fields[1].trim());
+            int decayDurationMilliseconds = Integer.parseInt(fields[2].trim());
+            int sustainLevelPercent = Integer.parseInt(fields[3].trim());
+            int sustainDurationMilliseconds = Integer.parseInt(fields[4].trim());
+            int releaseDurationMilliseconds = Integer.parseInt(fields[5].trim());
 
-            eC = new EnvelopeComponent(preset, attackDuration, decayDuration, sustainLevel, sustainDuration, releaseDuration);
+            envelopeComponent = new EnvelopeComponent(
+                    preset, attackDurationMilliseconds,
+                    decayDurationMilliseconds, sustainLevelPercent,
+                    sustainDurationMilliseconds, releaseDurationMilliseconds);
         }
-        return eC;
+        return envelopeComponent;
     }
 
     private FundamentalFrequencyComponent parseFundamentalFrequencyComponent(com.example.soundwave.model.entity.Tone dbTone) {
@@ -151,18 +159,18 @@ public class ToneParser {
         return new OvertonesComponent(overtonesList, preset);
     }
 
-    private String save16BitPcmSamples(byte[] samples, String filename) {
-        File audioFile = new File(Options.filepathToSavePcmSamples, filename);
+    private String save16BitPcmData(byte[] pcmData, String filename) {
+        File audioFile = new File(Options.filepathToSavePcmData, filename);
 
         try (FileOutputStream fos = new FileOutputStream(audioFile)) {
-            fos.write(samples);
+            fos.write(pcmData);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return audioFile.getAbsolutePath();
     }
 
-    private byte[] read16BitPcmSamples(String absoluteFilePath) {
+    private byte[] read16BitPcmData(String absoluteFilePath) {
         File audioFile = new File(absoluteFilePath);
 
         try {

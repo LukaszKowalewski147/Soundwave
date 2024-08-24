@@ -1,5 +1,10 @@
 package com.example.soundwave.view;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -7,13 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
-
 import com.example.soundwave.R;
-import com.example.soundwave.components.Tone;
+import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.databinding.ActivityMainBinding;
 import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.WavCreator;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         File filesDir = getFilesDir();
 
         if (filesDir != null)
-            Options.filepathToSavePcmSamples = filesDir.toString();
+            Options.filepathToSavePcmData = filesDir.toString();
         else
             Toast.makeText(this, R.string.error_msg_filepath_to_save_samples_fail, Toast.LENGTH_SHORT).show();
     }

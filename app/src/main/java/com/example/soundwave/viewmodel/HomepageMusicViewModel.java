@@ -9,11 +9,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.example.soundwave.components.Music;
+import com.example.soundwave.components.sound.Music;
 import com.example.soundwave.model.repository.SoundwaveRepo;
-import com.example.soundwave.utils.AudioPlayer;
-import com.example.soundwave.utils.ToneParser;
+import com.example.soundwave.utils.DatabaseParser;
 import com.example.soundwave.utils.WavCreator;
+import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,9 +28,9 @@ public class HomepageMusicViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isMusicPlaying = new MutableLiveData<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private AudioPlayer currentAudioPlayer;         // null if no music is playing
-    private int currentlyPlayingMusicPosition;      //   -1 if no music is playing
-    private int lastPlayedMusicPosition;            //   -1 if no music is playing
+    private AudioStaticPlayer currentAudioPlayer;       // null if no music is playing
+    private int currentlyPlayingMusicPosition;          //   -1 if no music is playing
+    private int lastPlayedMusicPosition;                //   -1 if no music is playing
 
     private Handler handler;
     private Runnable runnable;
@@ -43,7 +43,7 @@ public class HomepageMusicViewModel extends AndroidViewModel {
         allMusic = Transformations.map(repository.getAllMusic(), input -> {
             List<Music> musicList = new ArrayList<>();
             for (com.example.soundwave.model.entity.Music dbMusic : input) {
-                musicList.add(new ToneParser().parseMusicFromDb(dbMusic));
+                musicList.add(new DatabaseParser().parseMusicFromDb(dbMusic));
             }
             return musicList;
         });
@@ -75,7 +75,9 @@ public class HomepageMusicViewModel extends AndroidViewModel {
 
         music.setName(musicNewName);
 
-        com.example.soundwave.model.entity.Music musicToUpdate = new ToneParser().parseMusicToDbEntity(music);
+        com.example.soundwave.model.entity.Music musicToUpdate =
+                new DatabaseParser().parseMusicToDbEntity(music);
+
         musicToUpdate.setId(music.getId());
 
         executorService.execute(() -> {
@@ -93,7 +95,9 @@ public class HomepageMusicViewModel extends AndroidViewModel {
     public LiveData<Boolean> deleteMusic(Music music) {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
 
-        com.example.soundwave.model.entity.Music musicToDelete = new ToneParser().parseMusicToDbEntityForDeletion(music);
+        com.example.soundwave.model.entity.Music musicToDelete =
+                new DatabaseParser().parseMusicToDbEntityForDeletion(music);
+
         String samplesFilepath = repository.getSamplesFilepath(music.getId());
 
         if (deleteMusicSamplesFromStorage(samplesFilepath)) {
@@ -126,8 +130,8 @@ public class HomepageMusicViewModel extends AndroidViewModel {
     }
 
     public boolean playMusic(Music music, int position) {
-        currentAudioPlayer = new AudioPlayer();
-        boolean loadingSuccessful = currentAudioPlayer.loadMusic(music);
+        currentAudioPlayer = new AudioStaticPlayer();
+        boolean loadingSuccessful = currentAudioPlayer.loadSound(music);
 
         if (!loadingSuccessful)
             return false;
@@ -146,7 +150,7 @@ public class HomepageMusicViewModel extends AndroidViewModel {
             }
         };
 
-        handler.postDelayed(runnable, music.getDurationInMs());
+        handler.postDelayed(runnable, music.getDurationMilliseconds());
         return true;
     }
 

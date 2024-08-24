@@ -1,5 +1,8 @@
-package com.example.soundwave.components;
+package com.example.soundwave.components.sound;
 
+import com.example.soundwave.components.EnvelopeComponent;
+import com.example.soundwave.components.FundamentalFrequencyComponent;
+import com.example.soundwave.components.OvertonesComponent;
 import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
@@ -9,43 +12,47 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Tone implements Serializable {
+public class Tone extends Sound implements Listenable, Trackable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private int id;
     private String name;
-    private final SampleRate sampleRate;
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
     private final OvertonesComponent overtonesComponent;
-    private final int durationInMs;
     private final double[] samples;
-    private final byte[] pcmSound;
+    private final byte[] pcmData;
 
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
-                OvertonesComponent oc, int durationInMs, double[] samples, byte[] pcmSound) {
+                OvertonesComponent oc, int durationMilliseconds, double[] samples, byte[] pcmData) {
+        super(sampleRate, durationMilliseconds);
         this.id = -1;
         this.name = "";
-        this.sampleRate = sampleRate;
         this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
         this.overtonesComponent = oc;
-        this.durationInMs = durationInMs;
         this.samples = samples;
-        this.pcmSound = pcmSound;
+        this.pcmData = pcmData;
     }
 
-    // Constructor to generate silence tone
-    public Tone(SampleRate sampleRate, int durationInMs, double[] samples) {
-        this.id = -1;
-        this.sampleRate = sampleRate;
-        this.durationInMs = durationInMs;
-        this.samples = samples;
-        this.name = null;
-        this.envelopeComponent = null;
-        this.fundamentalFrequencyComponent = null;
-        this.overtonesComponent = null;
-        this.pcmSound = null;
+    @Override
+    public byte[] getPcmData() {
+        return pcmData;
+    }
+
+    @Override
+    public double[] getSamples() {
+        return samples;
+    }
+
+    @Override
+    public double getDurationSeconds() {
+        return UnitsConverter.convertMillisecondsToSeconds(durationMilliseconds);
+    }
+
+    @Override
+    public int getSamplesNumber() {
+        return samples.length;
     }
 
     public void setId(int id) {
@@ -64,10 +71,6 @@ public class Tone implements Serializable {
         return name;
     }
 
-    public SampleRate getSampleRate() {
-        return sampleRate;
-    }
-
     public EnvelopeComponent getEnvelopeComponent() {
         return envelopeComponent;
     }
@@ -78,14 +81,6 @@ public class Tone implements Serializable {
 
     public OvertonesComponent getOvertonesComponent() {
         return overtonesComponent;
-    }
-
-    public double[] getSamples() {
-        return samples;
-    }
-
-    public byte[] getPcmSound() {
-        return pcmSound;
     }
 
     public PresetEnvelope getEnvelopePreset() {
@@ -104,19 +99,7 @@ public class Tone implements Serializable {
         return Objects.requireNonNull(fundamentalFrequencyComponent).getMasterVolume();
     }
 
-    public double getDurationInSeconds() {
-        return UnitsConverter.convertMsToSeconds(durationInMs);
-    }
-
-    public int getDurationInMs() {
-        return durationInMs;
-    }
-
     public ArrayList<Overtone> getOvertones() {
         return Objects.requireNonNull(overtonesComponent).getOvertones();
-    }
-
-    public int getSamplesNumber() {
-        return samples.length;
     }
 }

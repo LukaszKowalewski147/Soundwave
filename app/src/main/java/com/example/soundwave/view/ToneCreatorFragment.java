@@ -3,12 +3,6 @@ package com.example.soundwave.view;
 import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Handler;
 import android.text.Editable;
 import android.text.InputType;
@@ -26,21 +20,26 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.soundwave.utils.OnFragmentExitListener;
-import com.example.soundwave.utils.PresetEnvelope;
-import com.example.soundwave.utils.PresetOvertones;
-import com.example.soundwave.utils.SeekBarUpdater;
-import com.example.soundwave.components.Tone;
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.soundwave.R;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.EnvelopeComponent;
+import com.example.soundwave.components.sound.Overtone;
+import com.example.soundwave.components.sound.Tone;
+import com.example.soundwave.databinding.FragmentToneCreatorBinding;
 import com.example.soundwave.databinding.OvertoneCreatorBinding;
 import com.example.soundwave.databinding.ToneCreatorCustomEnvelopeLayoutBinding;
-import com.example.soundwave.components.Overtone;
 import com.example.soundwave.utils.Config;
-import com.example.soundwave.R;
+import com.example.soundwave.utils.OnFragmentExitListener;
 import com.example.soundwave.utils.Options;
-import com.example.soundwave.databinding.FragmentToneCreatorBinding;
+import com.example.soundwave.utils.PresetEnvelope;
+import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.Scale;
+import com.example.soundwave.utils.SeekBarUpdater;
 import com.example.soundwave.utils.UnitsConverter;
 import com.example.soundwave.viewmodel.ToneCreatorViewModel;
 
@@ -174,22 +173,22 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
             if (envelopeComponent.getEnvelopePreset() == PresetEnvelope.CUSTOM) {
                 inflateCustomEnvelopeLayout();
 
-                int attackDuration = envelopeComponent.getAttackDuration();
-                int decayDuration = envelopeComponent.getDecayDuration();
-                int sustainLevel = envelopeComponent.getSustainLevel();
-                int sustainDuration = envelopeComponent.getSustainDuration();
-                int releaseDuration = envelopeComponent.getReleaseDuration();
+                int attackDurationMilliseconds = envelopeComponent.getAttackDurationMilliseconds();
+                int decayDurationMilliseconds = envelopeComponent.getDecayDurationMilliseconds();
+                int sustainLevelPercent = envelopeComponent.getSustainLevelPercent();
+                int sustainDurationMilliseconds = envelopeComponent.getSustainDurationMilliseconds();
+                int releaseDurationMilliseconds = envelopeComponent.getReleaseDurationMilliseconds();
 
-                if (!customEnvelopeBinding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDuration)))
-                    customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
-                if (!customEnvelopeBinding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDuration)))
-                    customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
-                if (!customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevel)))
-                    customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
-                if (!customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDuration)))
-                    customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
-                if (!customEnvelopeBinding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDuration)))
-                    customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeAttack.getText().toString().equals(String.valueOf(attackDurationMilliseconds)))
+                    customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDurationMilliseconds));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeDecay.getText().toString().equals(String.valueOf(decayDurationMilliseconds)))
+                    customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDurationMilliseconds));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.getText().toString().equals(String.valueOf(sustainLevelPercent)))
+                    customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevelPercent));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.getText().toString().equals(String.valueOf(sustainDurationMilliseconds)))
+                    customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDurationMilliseconds));
+                if (!customEnvelopeBinding.toneCreatorEnvelopeRelease.getText().toString().equals(String.valueOf(releaseDurationMilliseconds)))
+                    customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDurationMilliseconds));
             }
         });
 
@@ -529,17 +528,17 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
             EnvelopeComponent ec = Objects.requireNonNull(viewModel.getEnvelopeComponent().getValue());
 
-            int attackDuration = ec.getAttackDuration();
-            int decayDuration = ec.getDecayDuration();
-            int sustainLevel = ec.getSustainLevel();
-            int sustainDuration = ec.getSustainDuration();
-            int releaseDuration = ec.getReleaseDuration();
+            int attackDurationMilliseconds = ec.getAttackDurationMilliseconds();
+            int decayDurationMilliseconds = ec.getDecayDurationMilliseconds();
+            int sustainLevelPercent = ec.getSustainLevelPercent();
+            int sustainDurationMilliseconds = ec.getSustainDurationMilliseconds();
+            int releaseDurationMilliseconds = ec.getReleaseDurationMilliseconds();
 
-            customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDuration));
-            customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDuration));
-            customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevel));
-            customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDuration));
-            customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDuration));
+            customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDurationMilliseconds));
+            customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDurationMilliseconds));
+            customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevelPercent));
+            customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDurationMilliseconds));
+            customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDurationMilliseconds));
 
             setCustomEnvelopeListeners();
         }
