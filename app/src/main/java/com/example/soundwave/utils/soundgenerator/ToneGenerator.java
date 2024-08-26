@@ -11,7 +11,7 @@ import com.example.soundwave.utils.UnitsConverter;
 
 import java.util.ArrayList;
 
-public class ToneGenerator extends SoundGenerator {
+public class ToneGenerator extends SoundListenableGenerator {
 
     private final int durationMilliseconds;
 
@@ -49,23 +49,6 @@ public class ToneGenerator extends SoundGenerator {
 
             for (int i = 0; i < samplesNumber; ++i)
                 samples[i] += overtoneAmplitude * (Math.sin(2 * Math.PI * i / (sampleRateInHz / overtoneFrequency)));
-        }
-    }
-
-    private void compressToMasterVolume(int masterVolume) {
-        double masterVolumePercent = masterVolume / 100.0d; // master volume in %
-        double maxVolumeSample = samples[0];
-
-        for (int i = 1; i < samplesNumber; ++i) {
-            if (samples[i] > maxVolumeSample)
-                maxVolumeSample = samples[i];
-        }
-
-        double compressionRate = maxVolumeSample / masterVolumePercent;
-
-        // compress to target volume
-        for (int i = 0; i < samplesNumber; ++i) {
-            samples[i] = samples[i] / compressionRate;
         }
     }
 
@@ -158,17 +141,6 @@ public class ToneGenerator extends SoundGenerator {
         startSample = attackSamples + decaySamples + sustainSamples + releaseSamples;
         for (int i = startSample; i < samplesNumber; ++i) {
             samples[i] = 0;
-        }
-    }
-
-    private void convertTo16BitPCM() {
-        int index = 0;
-        for (final double dVal : samples) {
-            // scale to maximum amplitude
-            final short val = (short) ((dVal * 32767));
-            // in 16 bit wav PCM, first byte is the low order byte
-            pcmData[index++] = (byte) (val & 0x00ff);
-            pcmData[index++] = (byte) ((val & 0xff00) >>> 8);
         }
     }
 
