@@ -12,32 +12,24 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Tone extends Sound implements Listenable, Trackable, Serializable {
+public class Tone extends ListenableSound implements Trackable, Serializable {
     private static final long serialVersionUID = 1L;
 
     private int id;
-    private String name;
     private final EnvelopeComponent envelopeComponent;
     private final FundamentalFrequencyComponent fundamentalFrequencyComponent;
     private final OvertonesComponent overtonesComponent;
     private final double[] samples;
-    private final byte[] pcmData;
 
     public Tone(SampleRate sampleRate, EnvelopeComponent ec, FundamentalFrequencyComponent ffc,
                 OvertonesComponent oc, int durationMilliseconds, double[] samples, byte[] pcmData) {
-        super(sampleRate, durationMilliseconds);
+
+        super("", sampleRate, durationMilliseconds, pcmData);
         this.id = -1;
-        this.name = "";
         this.envelopeComponent = ec;
         this.fundamentalFrequencyComponent = ffc;
         this.overtonesComponent = oc;
         this.samples = samples;
-        this.pcmData = pcmData;
-    }
-
-    @Override
-    public byte[] getPcmData() {
-        return pcmData;
     }
 
     @Override
@@ -61,14 +53,6 @@ public class Tone extends Sound implements Listenable, Trackable, Serializable {
 
     public int getId() {
         return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public EnvelopeComponent getEnvelopeComponent() {

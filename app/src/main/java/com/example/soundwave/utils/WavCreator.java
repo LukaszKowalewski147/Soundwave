@@ -3,6 +3,7 @@ package com.example.soundwave.utils;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.soundwave.components.sound.ListenableSound;
 import com.example.soundwave.components.sound.Music;
 import com.example.soundwave.components.sound.Tone;
 
@@ -13,7 +14,6 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Objects;
 
 public class WavCreator {
     private final String TAG = "WavCreator";
@@ -22,20 +22,12 @@ public class WavCreator {
     private static final String FILE_FOLDER_MUSIC = "myMusic";
     private final String FILE_EXTENSION = ".wav";
 
-    private final Tone tone;
-    private final Music music;
+    private final ListenableSound sound;
     private boolean success;
 
-    public WavCreator(Tone tone) {
-        this.tone = tone;
+    public WavCreator(ListenableSound sound) {
+        this.sound = sound;
         this.success = false;
-        this.music = null;
-    }
-
-    public WavCreator(Music music) {
-        this.music = music;
-        this.success = false;
-        this.tone = null;
     }
 
     public static String getFileFolderTones() {
@@ -59,11 +51,11 @@ public class WavCreator {
 
             String fileName = getFilename();
             File wavFile = new File(filepathBase, fileName);
-            byte[] pcmSamples = getPcmData();
+            byte[] pcmData = getPcmData();
             try {
                 out = new FileOutputStream(wavFile);
                 writeWavHeader(out);
-                out.write(pcmSamples);
+                out.write(pcmData);
                 updateWavHeader(wavFile);
                 success = true;
             } catch (IOException e) {
@@ -80,7 +72,12 @@ public class WavCreator {
     }
 
     private File getFilepathBase() {
-        String filepathToDownload = tone != null ? Options.filepathToDownloadTones : Options.filepathToDownloadMusic;
+        String filepathToDownload = "";
+
+        if (sound instanceof Tone)
+            filepathToDownload = Options.filepathToDownloadTones;
+        else if (sound instanceof Music)
+            filepathToDownload = Options.filepathToDownloadMusic;
 
         if (!filepathToDownload.isEmpty())
             return new File(filepathToDownload);
@@ -89,17 +86,15 @@ public class WavCreator {
     }
 
     private String getFilename() {
-        String name = tone != null ? Objects.requireNonNull(tone).getName() : Objects.requireNonNull(music).getName();
-
-        return name + FILE_EXTENSION;
+        return sound.getName() + FILE_EXTENSION;
     }
 
     private int getSampleRate() {
-        return tone != null ? Objects.requireNonNull(tone).getSampleRate().sampleRate : Objects.requireNonNull(music).getSampleRate().sampleRate;
+        return sound.getSampleRate().sampleRate;
     }
 
     private byte[] getPcmData() {
-        return tone != null ? Objects.requireNonNull(tone).getPcmData() : Objects.requireNonNull(music).getPcmData();
+        return sound.getPcmData();
     }
 
     private boolean isExternalStorageAvailable() {

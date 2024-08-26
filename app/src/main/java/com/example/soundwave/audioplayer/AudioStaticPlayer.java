@@ -5,7 +5,7 @@ import android.media.AudioFormat;
 import android.media.AudioTrack;
 import android.util.Log;
 
-import com.example.soundwave.components.sound.Listenable;
+import com.example.soundwave.components.sound.ListenableSound;
 
 public class AudioStaticPlayer extends AudioPlayer {
     private final String TAG = "AudioStaticPlayer";
@@ -41,7 +41,7 @@ public class AudioStaticPlayer extends AudioPlayer {
         }
     }
 
-    public boolean loadSound(Listenable sound) {
+    public boolean loadSound(ListenableSound sound) {
         if (!isReadyToWriteSound(sound)) {
             Log.e(TAG, "Load sound: audioTrack not ready to write sound");
             return false;
@@ -67,7 +67,7 @@ public class AudioStaticPlayer extends AudioPlayer {
         return false;
     }
 
-    private boolean isReadyToWriteSound(Listenable sound) {
+    private boolean isReadyToWriteSound(ListenableSound sound) {
         if (audioTrack == null) {
             getPcmDataLength(sound);
             getSampleRate(sound);
@@ -76,11 +76,11 @@ public class AudioStaticPlayer extends AudioPlayer {
         return audioTrack.getState() != AudioTrack.STATE_UNINITIALIZED;
     }
 
-    private void getPcmDataLength(Listenable sound) {
+    private void getPcmDataLength(ListenableSound sound) {
         bufferSize = sound.getPcmData().length;
     }
 
-    private void getSampleRate(Listenable sound) {
+    private void getSampleRate(ListenableSound sound) {
         sampleRate = sound.getSampleRate().sampleRate;
     }
 
