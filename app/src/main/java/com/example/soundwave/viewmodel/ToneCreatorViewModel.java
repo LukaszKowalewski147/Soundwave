@@ -22,8 +22,8 @@ import com.example.soundwave.utils.PresetEnvelope;
 import com.example.soundwave.utils.PresetOvertones;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.UnitsConverter;
-import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
-import com.example.soundwave.utils.soundgenerator.ToneGenerator;
+import com.example.soundwave.audioplayer.AudioStaticPlayer;
+import com.example.soundwave.soundgenerator.ToneGenerator;
 
 import java.util.ArrayList;
 import java.util.Arrays;

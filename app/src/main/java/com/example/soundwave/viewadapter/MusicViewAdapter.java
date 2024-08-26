@@ -1,4 +1,4 @@
-package com.example.soundwave.additionalviews;
+package com.example.soundwave.viewadapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

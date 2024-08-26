@@ -1,4 +1,4 @@
-package com.example.soundwave.additionalviews;
+package com.example.soundwave.dialog;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

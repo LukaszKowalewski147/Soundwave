@@ -31,8 +31,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.soundwave.R;
-import com.example.soundwave.additionalviews.OnToneSelectedListener;
-import com.example.soundwave.additionalviews.SelectToneToMixDialogFragment;
+import com.example.soundwave.dialog.OnToneSelectedListener;
+import com.example.soundwave.dialog.SelectToneToMixDialogFragment;
 import com.example.soundwave.components.ControlPanelComponent;
 import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.components.sound.Trackable;

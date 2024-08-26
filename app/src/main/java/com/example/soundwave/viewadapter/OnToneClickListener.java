@@ -1,4 +1,4 @@
-package com.example.soundwave.additionalviews;
+package com.example.soundwave.viewadapter;
 
 import com.example.soundwave.components.sound.Tone;
 

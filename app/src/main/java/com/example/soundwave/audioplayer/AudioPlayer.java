@@ -1,4 +1,4 @@
-package com.example.soundwave.utils.audioplayer;
+package com.example.soundwave.audioplayer;
 
 import android.media.AudioTrack;
 

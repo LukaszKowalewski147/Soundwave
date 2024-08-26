@@ -13,7 +13,7 @@ import com.example.soundwave.components.sound.Tone;
 import com.example.soundwave.model.repository.SoundwaveRepo;
 import com.example.soundwave.utils.DatabaseParser;
 import com.example.soundwave.utils.WavCreator;
-import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
+import com.example.soundwave.audioplayer.AudioStaticPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

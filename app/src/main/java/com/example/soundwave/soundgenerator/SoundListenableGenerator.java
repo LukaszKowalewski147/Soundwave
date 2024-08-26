@@ -1,4 +1,4 @@
-package com.example.soundwave.utils.soundgenerator;
+package com.example.soundwave.soundgenerator;
 
 import com.example.soundwave.utils.SampleRate;
 

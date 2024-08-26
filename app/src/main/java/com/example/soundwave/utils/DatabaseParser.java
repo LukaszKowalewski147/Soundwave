@@ -6,7 +6,7 @@ import com.example.soundwave.components.OvertonesComponent;
 import com.example.soundwave.components.sound.Music;
 import com.example.soundwave.components.sound.Overtone;
 import com.example.soundwave.components.sound.Tone;
-import com.example.soundwave.utils.soundgenerator.ToneGenerator;
+import com.example.soundwave.soundgenerator.ToneGenerator;
 
 import java.io.File;
 import java.io.FileOutputStream;

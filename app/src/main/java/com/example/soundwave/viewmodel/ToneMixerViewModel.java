@@ -21,10 +21,10 @@ import com.example.soundwave.utils.Options;
 import com.example.soundwave.utils.SampleRate;
 import com.example.soundwave.utils.TrackData;
 import com.example.soundwave.utils.TrackToneData;
-import com.example.soundwave.utils.audioplayer.AudioStaticPlayer;
-import com.example.soundwave.utils.soundgenerator.MusicGenerator;
-import com.example.soundwave.utils.soundgenerator.SilenceGenerator;
-import com.example.soundwave.utils.soundgenerator.TrackGenerator;
+import com.example.soundwave.audioplayer.AudioStaticPlayer;
+import com.example.soundwave.soundgenerator.MusicGenerator;
+import com.example.soundwave.soundgenerator.SilenceGenerator;
+import com.example.soundwave.soundgenerator.TrackGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;

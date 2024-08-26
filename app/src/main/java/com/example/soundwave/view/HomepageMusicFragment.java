@@ -16,8 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.soundwave.R;
-import com.example.soundwave.additionalviews.MusicViewAdapter;
-import com.example.soundwave.additionalviews.OnMusicClickListener;
+import com.example.soundwave.viewadapter.MusicViewAdapter;
+import com.example.soundwave.viewadapter.OnMusicClickListener;
 import com.example.soundwave.components.sound.Music;
 import com.example.soundwave.databinding.FragmentHomepageMusicBinding;
 import com.example.soundwave.utils.Options;

@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.soundwave.components.FundamentalFrequencyComponent;
 import com.example.soundwave.utils.Config;
 import com.example.soundwave.utils.UnitsConverter;
-import com.example.soundwave.utils.audioplayer.AudioStreamPlayer;
+import com.example.soundwave.audioplayer.AudioStreamPlayer;
 
 import java.util.Objects;
 
