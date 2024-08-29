@@ -1,2 +1,3 @@
 # Soundwave
-Creating sound waves has never been easier.
+
+## Mobile application to create music out of scratch. 
