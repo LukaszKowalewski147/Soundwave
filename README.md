@@ -13,6 +13,10 @@ App has 3 main functionalities:
 ### Tone creator
 Here a user can create a single tone using built-in presets for different instrument characteristics like sound time escalation and instrument timbre.
 
+<p align="center">
+  <img src="https://github.com/LukaszKowalewski147/Soundwave/blob/main/gifs/tone_creator_2.gif" alt="animated" />
+</p>
+
 ### Tone mixer
 Here a user can mix previously created tones on 5 tracks. Mixing is as simple as dragging and dropping tones on track wherever you like.
 
