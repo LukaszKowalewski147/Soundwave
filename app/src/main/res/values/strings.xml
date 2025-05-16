@@ -26,6 +26,7 @@
 
     <!--    Settings            -->
     <string name="settings_account_header">Account</string>
+    <string name="settings_language_header">Language</string>
     <string name="settings_storage_header">Storage</string>
     <string name="settings_storage_tones_header">Tones</string>
     <string name="settings_storage_music_header">Music</string>
@@ -212,6 +213,11 @@
         <item>Flute</item>
         <item>Trumpet</item>
         <item>Custom</item>
+    </string-array>
+
+    <string-array name="app_languages">
+        <item>English</item>
+        <item>Polski</item>
     </string-array>
 
     <!--    Content desc        -->

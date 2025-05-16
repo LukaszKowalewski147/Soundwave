@@ -128,4 +128,9 @@ public class SettingsViewModel extends AndroidViewModel {
         }
         return length;
     }
+
+    public String getSelectedLanguage() {
+        // TODO: return saved selected language
+        return "English";
+    }
 }

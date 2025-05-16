@@ -64,6 +64,18 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setupView() {
+        setupViewLanguage();
+        setupViewStorage();
+    }
+
+    private void setupViewLanguage() {
+        //TODO: a line below is getting the first element of app_languages from strings.xml, get it from viewModel.getSelectedLanguage();
+        String selectedLanguage = getResources().getStringArray(R.array.app_languages)[0];
+
+        binding.settingsLanguageBtn.setText(selectedLanguage);
+    }
+
+    private void setupViewStorage() {
         String tonesDir = Options.filepathToDownloadTones;
         String musicDir = Options.filepathToDownloadMusic;
 
