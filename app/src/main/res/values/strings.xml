@@ -1,16 +1,16 @@
 <resources>
-    <string name="app_name">Soundwave</string>
+    <string name="app_name" translatable="false">Soundwave</string>
 
     <!--    Affixes             -->
-    <string name="affix_Hz">Hz</string>
-    <string name="affix_dB">dB</string>
-    <string name="affix_percent">%</string>
-    <string name="affix_milliseconds">ms</string>
+    <string name="affix_Hz" translatable="false">Hz</string>
+    <string name="affix_dB" translatable="false">dB</string>
+    <string name="affix_percent" translatable="false">%</string>
+    <string name="affix_milliseconds" translatable="false">ms</string>
 
     <!--    Units             -->
-    <string name="unit_millisecond">[ms]</string>
-    <string name="unit_percent">[%]</string>
-    <string name="unit_megabyte">MB</string>
+    <string name="unit_millisecond" translatable="false">[ms]</string>
+    <string name="unit_percent" translatable="false">[%]</string>
+    <string name="unit_megabyte" translatable="false">MB</string>
 
     <!--    Layout headers      -->
     <string name="my_tones_header">My tones</string>
@@ -71,10 +71,10 @@
     <string name="delete_all_music_btn">Delete all in app music</string>
 
     <!--    Units               -->
-    <string name="percent_unit">%</string>
-    <string name="second_unit">s</string>
-    <string name="millisecond_unit">ms</string>
-    <string name="hertz_unit">Hz</string>
+    <string name="percent_unit" translatable="false">%</string>
+    <string name="second_unit" translatable="false">s</string>
+    <string name="millisecond_unit" translatable="false">ms</string>
+    <string name="hertz_unit" translatable="false">Hz</string>
 
     <!--    Navigation          -->
     <string name="bottom_nav_tone_creator">Creator</string>

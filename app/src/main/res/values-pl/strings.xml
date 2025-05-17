@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--    Layout headers      -->
+    <string name="my_tones_header">Moje dźwięki</string>
+    <string name="tone_streaming_header">Strumieniowanie dźwięków</string>
+    <string name="tone_creator_header">Kreator dźwięków</string>
+    <string name="tone_mixer_header">Mikser dźwięków</string>
+    <string name="tone_details_header">Szczegóły dźwięku</string>
+    <string name="control_panel_header">Panel sterowania</string>
+    <string name="create_sound_header">Stwórz dźwięk</string>
+    <string name="sound_details_header">Szczegóły dźwięku</string>
+    <string name="settings_header">Ustawienia</string>
+    <string name="account_header">Konto</string>
+
+    <!--    Settings            -->
+    <string name="settings_account_header">Konto</string>
+    <string name="settings_language_header">Język</string>
+    <string name="settings_storage_header">Pamięć</string>
+    <string name="settings_storage_tones_header">Dźwięki</string>
+    <string name="settings_storage_music_header">Muzyka</string>
+    <string name="settings_storage_download_directory">Katalog pobranych</string>
+    <string name="settings_storage_downloaded_size">Zajęte miejsce</string>
+    <string name="settings_storage_tones_database_number">Liczba dźwięków w aplikacji</string>
+    <string name="settings_storage_music_database_number">Ilość muzyki w aplikacji</string>
+
+    <!--    Element headers     -->
+    <string name="overtones_header">Alikwoty</string>
+    <string name="sample_rate_header">Częstotliwość próbkowania</string>
+    <string name="duration_header">Długość</string>
+    <string name="frequency_header">Częstotliwość</string>
+    <string name="envelope_header">Obwiednia</string>
+    <string name="envelope_attack_header">Atak</string>
+    <string name="envelope_decay_header">Zanik</string>
+    <string name="envelope_sustain_header">Podtrzymanie</string>
+    <string name="envelope_sustain_level_header">Poziom podtrzymania</string>
+    <string name="envelope_sustain_duration_header">Długość podtrzymania</string>
+    <string name="envelope_release_header">Uwolnienie</string>
+    <string name="timbre_header">Tembr</string>
+    <string name="tones_number_header">Ilość dźwięków</string>
+    <string name="tone_volume_header">Głośność</string>
+    <string name="tone_mixer_track_1">ŚCIEŻKA 1</string>
+    <string name="tone_mixer_track_2">ŚCIEŻKA 2</string>
+    <string name="tone_mixer_track_3">ŚCIEŻKA 3</string>
+    <string name="tone_mixer_track_4">ŚCIEŻKA 4</string>
+    <string name="tone_mixer_track_5">ŚCIEŻKA 5</string>
+
+    <!--    Buttons             -->
+    <string name="load_sound_btn">Załaduj dźwięk</string>
+    <string name="generate_btn">Wygeneruj</string>
+    <string name="play_btn">Odtwórz</string>
+    <string name="stop_btn">Zatrzymaj</string>
+    <string name="save_btn">Zapisz</string>
+    <string name="saved_btn">Zapisano</string>
+    <string name="reset_btn">Resetuj</string>
+    <string name="more_info_btn">Więcej…</string>
+    <string name="less_info_btn">Mniej…</string>
+    <string name="add_tone_btn">Dodaj dźwięk</string>
+    <string name="delete_all_tones_btn">Usuń wszystkie dźwięki w aplikacji</string>
+    <string name="delete_all_music_btn">Usuń całą muzykę w aplikacji</string>
+
+    <!--    Navigation          -->
+    <string name="bottom_nav_tone_creator">Kreator</string>
+    <string name="bottom_nav_tone_mixer">Mikser</string>
+    <string name="bottom_nav_home">Strona główna</string>
+    <string name="bottom_nav_dynamic_playback">Generator</string>
+
+    <!--    Alert dialogs       -->
+    <string name="alert_dialog_tone_creator_generate_message">Czy chcesz wygenerować dźwięk?</string>
+    <string name="alert_dialog_tone_creator_generate_positive">TAK</string>
+    <string name="alert_dialog_tone_creator_generate_negative">NIE</string>
+
+    <string name="alert_dialog_tone_creator_save_message">Nazwij ten dźwięk…</string>
+    <string name="alert_dialog_tone_creator_save_positive">ZAPISZ</string>
+    <string name="alert_dialog_tone_creator_save_negative">Anuluj</string>
+
+    <string name="alert_dialog_tone_creator_reset_message">Czy chcesz zresetować kreator?</string>
+    <string name="alert_dialog_tone_creator_reset_positive">TAK</string>
+    <string name="alert_dialog_tone_creator_reset_negative">NIE</string>
+
+    <string name="alert_dialog_tone_creator_exit_message">Masz niezapisane zmiany. Czy chcesz wyjść bez zapisywania?</string>
+    <string name="alert_dialog_tone_creator_exit_positive">TAK</string>
+    <string name="alert_dialog_tone_creator_exit_negative">NIE</string>
+
+    <string name="alert_dialog_tone_mixer_generate_message">Czy chcesz wygenerować muzykę?</string>
+    <string name="alert_dialog_tone_mixer_generate_positive">TAK</string>
+    <string name="alert_dialog_tone_mixer_generate_negative">NIE</string>
+
+    <string name="alert_dialog_tone_mixer_save_message">Nazwij tę muzykę…</string>
+    <string name="alert_dialog_tone_mixer_save_positive">ZAPISZ</string>
+    <string name="alert_dialog_tone_mixer_save_negative">Anuluj</string>
+
+    <string name="alert_dialog_tone_mixer_reset_message">Czy chcesz zresetować mikser?</string>
+    <string name="alert_dialog_tone_mixer_reset_positive">TAK</string>
+    <string name="alert_dialog_tone_mixer_reset_negative">NIE</string>
+
+    <string name="alert_dialog_tone_mixer_exit_message">Masz niezapisane zmiany. Czy chcesz wyjść bez zapisywania?</string>
+    <string name="alert_dialog_tone_mixer_exit_positive">TAK</string>
+    <string name="alert_dialog_tone_mixer_exit_negative">NIE</string>
+
+    <string name="alert_dialog_homepage_delete_tone_message">Czy chcesz usunąć dźwięk?</string>
+    <string name="alert_dialog_homepage_delete_tone_positive">TAK</string>
+    <string name="alert_dialog_homepage_delete_tone_negative">NIE</string>
+    <string name="alert_dialog_homepage_delete_tone_success">Dźwięk usunięty</string>
+    <string name="alert_dialog_homepage_delete_tone_fail">Błąd usuwania</string>
+
+    <string name="alert_dialog_homepage_delete_music_message">Czy chcesz usunąć muzykę?</string>
+    <string name="alert_dialog_homepage_delete_music_positive">TAK</string>
+    <string name="alert_dialog_homepage_delete_music_negative">NIE</string>
+    <string name="alert_dialog_homepage_delete_music_success">Muzyka usunięta</string>
+    <string name="alert_dialog_homepage_delete_music_fail">Błąd usuwania</string>
+
+    <string name="alert_dialog_homepage_rename_tone_message">Nadaj nową nazwę dźwiękowi…</string>
+    <string name="alert_dialog_homepage_rename_tone_positive">ZMIEŃ NAZWĘ</string>
+    <string name="alert_dialog_homepage_rename_tone_negative">Anuluj</string>
+    <string name="alert_dialog_homepage_rename_tone_success">Nazwa dźwięku zmieniona</string>
+    <string name="alert_dialog_homepage_rename_tone_fail">Błąd zmiany nazwy</string>
+
+    <string name="alert_dialog_homepage_rename_music_message">Nadaj nową nazwę muzyce…</string>
+    <string name="alert_dialog_homepage_rename_music_positive">ZMIEŃ NAZWĘ</string>
+    <string name="alert_dialog_homepage_rename_music_negative">Anuluj</string>
+    <string name="alert_dialog_homepage_rename_music_success">Nazwa muzyki zmieniona</string>
+    <string name="alert_dialog_homepage_rename_music_fail">Błąd zmiany nazwy</string>
+
+    <string name="alert_dialog_homepage_download_tone_message">Czy chcesz pobrać ten dźwięk?</string>
+    <string name="alert_dialog_homepage_download_tone_positive">TAK</string>
+    <string name="alert_dialog_homepage_download_tone_negative">NIE</string>
+    <string name="alert_dialog_homepage_download_tone_success">Dźwięk pobrany do:</string>
+    <string name="alert_dialog_homepage_download_tone_fail">Błąd pobierania</string>
+
+    <string name="alert_dialog_homepage_download_music_message">Czy chcesz pobrać tę muzykę?</string>
+    <string name="alert_dialog_homepage_download_music_positive">TAK</string>
+    <string name="alert_dialog_homepage_download_music_negative">NIE</string>
+    <string name="alert_dialog_homepage_download_music_success">Muzyka pobrana do:</string>
+    <string name="alert_dialog_homepage_download_music_fail">Błąd pobierania</string>
+
+    <string name="alert_dialog_settings_delete_database_tones_message">Czy chcesz usunąć wszystkie dźwięki w aplikacji?</string>
+    <string name="alert_dialog_settings_delete_database_tones_positive">TAK</string>
+    <string name="alert_dialog_settings_delete_database_tones_negative">NIE</string>
+    <string name="alert_dialog_settings_delete_database_tones_success">Dźwięki usunięte</string>
+    <string name="alert_dialog_settings_delete_database_tones_fail">Błąd usuwania</string>
+
+    <string name="alert_dialog_settings_delete_database_music_message">Czy chcesz usunąć całą muzykę w aplikacji?</string>
+    <string name="alert_dialog_settings_delete_database_music_positive">TAK</string>
+    <string name="alert_dialog_settings_delete_database_music_negative">NIE</string>
+    <string name="alert_dialog_settings_delete_database_music_success">Muzyka usunięta</string>
+    <string name="alert_dialog_settings_delete_database_music_fail">Błąd usuwania</string>
+
+    <string name="alert_dialog_settings_language_message">Wybierz język</string>
+    <string name="alert_dialog_settings_language_negative">Anuluj</string>
+
+    <!--    Error messages      -->
+    <string name="error_msg_filepath_to_download_tones_fail">Błąd ścieżki pobierania dźwięków</string>
+    <string name="error_msg_filepath_to_download_music_fail">Błąd ścieżki pobierania muzyki</string>
+    <string name="error_msg_filepath_to_save_samples_fail">Błąd ścieżki zapisu próbek dźwięku</string>
+    <string name="error_msg_empty_name">Nazwa nie może być pusta</string>
+    <string name="error_msg_empty_tones">Nie znaleziono dźwięków</string>
+    <string name="error_loading_tone">Dźwięk nie może zostać załadowany</string>
+    <string name="error_generating_tone">Dźwięk nie może zostać wygenerowany</string>
+    <string name="error_generating_music">Muzyka nie może zostać wygenerowana</string>
+    <string name="error_playing_tone">Dźwięk nie może zostać odtworzony</string>
+    <string name="error_playing_music">Muzyka nie może zostać odtworzona</string>
+
+    <!--    Messages            -->
+    <string name="msg_empty_tones">Stwórz swój pierwszy dźwięk w Kreatorze Dźwięków!</string>
+    <string name="msg_empty_music">Stwórz swoją pierwszą muzykę w Mikserze Dźwięków!</string>
+    <string name="msg_stream_frequency_to_pick">Wybierz częstotliwość dźwięku do strumieniowania</string>
+    <string name="msg_stream_to_play">Kliknij przycisk start poniżej, aby rozpocząć strumieniowanie</string>
+    <string name="msg_stream_to_stop">Kliknij przycisk stop poniżej, aby zakończyć strumieniowanie</string>
+
+    <!--    Toasts              -->
+    <string name="toast_language_not_supported">Język jeszcze niedostępny</string>
+
+    <!--    Spinners            -->
+    <string-array name="playback_modes_array">
+        <item>Statyczny</item>
+        <item>Strumieniowanie</item>
+    </string-array>
+
+    <string-array name="envelope_presets_array">
+        <item>Płaska</item>
+        <item>Fortepian</item>
+        <item>Gitara</item>
+        <item>Flet</item>
+        <item>Trąbka</item>
+        <item>Własna</item>
+    </string-array>
+
+    <string-array name="overtones_presets_array">
+        <item>Płaskie</item>
+        <item>Fortepian</item>
+        <item>Gitara akustyczna</item>
+        <item>Gitara basowa</item>
+        <item>Gitara elektryczna</item>
+        <item>Flet</item>
+        <item>Trąbka</item>
+        <item>Własne</item>
+    </string-array>
+
+    <!--    Content desc        -->
+    <string name="desc_main_tab_btn">Karta dźwięki/muzyka</string>
+    <string name="desc_settings_btn">Ustawienia</string>
+    <string name="desc_account_btn">Konto użytkownika</string>
+    <string name="desc_frequency_increment_btn">Zwiększ częstotliwość</string>
+    <string name="desc_frequency_decrement_btn">Zmniejsz częstotliwość</string>
+    <string name="desc_tone_info_btn">Informacje o dźwięku</string>
+    <string name="desc_play_tone_btn">Odtwórz dźwięk</string>
+    <string name="desc_play_pause_tone_btn">Odtwórz/wstrzymaj dźwięk</string>
+    <string name="desc_edit_tone_btn">Edytuj dźwięk</string>
+    <string name="desc_add_tone_to_workbench_btn">Dodaj dźwięk do obszaru roboczego</string>
+    <string name="desc_workbench">Obszar roboczy</string>
+    <string name="desc_delete_tone_btn">Usuń dźwięk</string>
+    <string name="desc_download_tone_btn">Pobierz dźwięk</string>
+    <string name="desc_rename_tone_btn">Zmień nazwę dźwięku</string>
+    <string name="desc_rename_music_btn">Zmień nazwę muzyki</string>
+    <string name="desc_play_music_btn">Odtwórz muzykę</string>
+    <string name="desc_edit_music_btn">Edytuj muzykę</string>
+    <string name="desc_delete_music_btn">Usuń muzykę</string>
+    <string name="desc_download_music_btn">Pobierz muzykę</string>
+
+    <!--    Old                 -->
+    <string name="playback_mode_header">Tryb odtwarzania</string>
+    <string name="tone_2_header">Drugi dźwięk</string>
+    <string name="tone_3_header">Trzeci dźwięk</string>
+    <string name="tone_4_header">Czwarty dźwięk</string>
+
+</resources>
