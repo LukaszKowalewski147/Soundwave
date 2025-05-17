@@ -163,6 +163,9 @@
     <string name="alert_dialog_settings_delete_database_music_success">Music deleted</string>
     <string name="alert_dialog_settings_delete_database_music_fail">Deletion failed</string>
 
+    <string name="alert_dialog_settings_language_message">Select language</string>
+    <string name="alert_dialog_settings_language_negative">Cancel</string>
+
     <!--    Error messages      -->
     <string name="error_msg_filepath_to_download_tones_fail">Filepath to download tones error</string>
     <string name="error_msg_filepath_to_download_music_fail">Filepath to download music error</string>
@@ -181,6 +184,9 @@
     <string name="msg_stream_frequency_to_pick">Pick sound frequency to stream</string>
     <string name="msg_stream_to_play">Tap the start button below to stream sound</string>
     <string name="msg_stream_to_stop">Tap the stop button below to stop streaming</string>
+
+    <!--    Toasts              -->
+    <string name="toast_language_not_supported">Language not supported yet</string>
 
     <!--    Spinners            -->
     <string-array name="playback_modes_array">
@@ -218,6 +224,7 @@
     <string-array name="app_languages">
         <item>English</item>
         <item>Polski</item>
+        <item>Deutsch (not supported yet)</item>
     </string-array>
 
     <!--    Content desc        -->

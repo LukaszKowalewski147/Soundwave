@@ -122,6 +122,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void setListeners() {
         binding.settingsAccountBtn.setOnClickListener(view -> startAccountActivity());
 
+        binding.settingsLanguageBtn.setOnClickListener(view -> showLanguageDialog());
+
         binding.settingsStorageDeleteDatabaseTonesBtn.setOnClickListener(view -> deleteDatabaseTonesDialog());
 
         binding.settingsStorageDeleteDatabaseMusicBtn.setOnClickListener(view -> deleteDatabaseMusicDialog());
@@ -130,6 +132,30 @@ public class SettingsActivity extends AppCompatActivity {
     private void startAccountActivity() {
         Intent intent = new Intent(SettingsActivity.this, AccountActivity.class);
         startActivity(intent);
+    }
+
+    private void showLanguageDialog() {
+        String[] languages = getResources().getStringArray(R.array.app_languages);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.alert_dialog_settings_language_message);
+        builder.setItems(languages, (dialog, languageIndex) -> {
+            String selectedLanguage = languages[languageIndex];
+
+            // Update number of supported languages to make them selectable
+            short supportedLanguages = 2;
+
+            if (languageIndex >= supportedLanguages) {
+                Toast.makeText(this, R.string.toast_language_not_supported, Toast.LENGTH_SHORT).show();
+            } else {
+                binding.settingsLanguageBtn.setText(selectedLanguage);
+
+                // TODO: Here logic behind actual language change
+            }
+
+        });
+        builder.setNegativeButton(R.string.alert_dialog_settings_language_negative, null);
+        builder.show();
     }
 
     private void deleteDatabaseTonesDialog() {
