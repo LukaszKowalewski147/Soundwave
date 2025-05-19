@@ -21,16 +21,19 @@
         app:titleTextColor="@android:color/white" />
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/settings_toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
             <TextView
                 android:id="@+id/settings_account_header"
@@ -65,7 +68,6 @@
                     android:background="@drawable/background_btn_standard"
                     android:drawableEnd="@drawable/ic_arrow_right"
                     android:foreground="?android:selectableItemBackground"
-
                     android:gravity="start|center_vertical"
                     android:paddingStart="24dp"
                     android:paddingEnd="16dp"
@@ -113,7 +115,6 @@
                     android:background="@drawable/background_btn_standard"
                     android:drawableEnd="@drawable/ic_arrow_right"
                     android:foreground="?android:selectableItemBackground"
-
                     android:gravity="start|center_vertical"
                     android:paddingStart="24dp"
                     android:paddingEnd="16dp"
@@ -163,9 +164,7 @@
                     android:textAllCaps="true"
                     android:textColor="@color/white80transparent"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/settings_account_layout" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -269,9 +268,7 @@
                     android:textAllCaps="true"
                     android:textColor="@color/white80transparent"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/settings_account_layout" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/settings_storage_music_filepath_header"
@@ -281,9 +278,7 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/settings_storage_download_directory"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/settings_storage_music_filepath"
@@ -358,6 +353,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:background="@drawable/background_btn_standard"
                     android:foreground="?android:selectableItemBackground"
                     android:gravity="start|center_vertical"
