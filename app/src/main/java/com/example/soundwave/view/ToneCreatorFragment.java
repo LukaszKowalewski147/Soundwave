@@ -526,24 +526,35 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
 
             customEnvelopeBinding = ToneCreatorCustomEnvelopeLayoutBinding.bind(customEnvelopeView);
 
-            EnvelopeComponent ec = Objects.requireNonNull(viewModel.getEnvelopeComponent().getValue());
-
-            int attackDurationMilliseconds = ec.getAttackDurationMilliseconds();
-            int decayDurationMilliseconds = ec.getDecayDurationMilliseconds();
-            int sustainLevelPercent = ec.getSustainLevelPercent();
-            int sustainDurationMilliseconds = ec.getSustainDurationMilliseconds();
-            int releaseDurationMilliseconds = ec.getReleaseDurationMilliseconds();
-
-            customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDurationMilliseconds));
-            customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDurationMilliseconds));
-            customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevelPercent));
-            customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDurationMilliseconds));
-            customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDurationMilliseconds));
-
+            prepareCustomEnvelopeLayout();
             setCustomEnvelopeListeners();
         }
 
         showCustomEnvelopeLayout();
+    }
+
+    private void prepareCustomEnvelopeLayout() {
+        //  Prepare headers for marquee effect
+        customEnvelopeBinding.toneCreatorEnvelopeAttackHeader.setSelected(true);
+        customEnvelopeBinding.toneCreatorEnvelopeDecayHeader.setSelected(true);
+        customEnvelopeBinding.toneCreatorEnvelopeSustainDurationHeader.setSelected(true);
+        customEnvelopeBinding.toneCreatorEnvelopeSustainLevelHeader.setSelected(true);
+        customEnvelopeBinding.toneCreatorEnvelopeReleaseHeader.setSelected(true);
+
+        //  Set envelope components values
+        EnvelopeComponent ec = Objects.requireNonNull(viewModel.getEnvelopeComponent().getValue());
+
+        int attackDurationMilliseconds = ec.getAttackDurationMilliseconds();
+        int decayDurationMilliseconds = ec.getDecayDurationMilliseconds();
+        int sustainLevelPercent = ec.getSustainLevelPercent();
+        int sustainDurationMilliseconds = ec.getSustainDurationMilliseconds();
+        int releaseDurationMilliseconds = ec.getReleaseDurationMilliseconds();
+
+        customEnvelopeBinding.toneCreatorEnvelopeAttack.setText(String.valueOf(attackDurationMilliseconds));
+        customEnvelopeBinding.toneCreatorEnvelopeDecay.setText(String.valueOf(decayDurationMilliseconds));
+        customEnvelopeBinding.toneCreatorEnvelopeSustainLevel.setText(String.valueOf(sustainLevelPercent));
+        customEnvelopeBinding.toneCreatorEnvelopeSustainDuration.setText(String.valueOf(sustainDurationMilliseconds));
+        customEnvelopeBinding.toneCreatorEnvelopeRelease.setText(String.valueOf(releaseDurationMilliseconds));
     }
 
     private void showCustomEnvelopeLayout() {
