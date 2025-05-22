@@ -112,6 +112,14 @@ public class ToneViewAdapter extends RecyclerView.Adapter<ToneViewHolder> {
             expandedPositions.put(position, !expanded);
             notifyItemChanged(position);
         });
+
+        //  Prepare headers for marquee effect
+        holder.toneFrequencyHeader.setSelected(true);
+        holder.toneEnvelopeHeader.setSelected(true);
+        holder.toneTimbreHeader.setSelected(true);
+        holder.toneVolumeHeader.setSelected(true);
+        holder.toneOvertonesNumberHeader.setSelected(true);
+        holder.toneSampleRateHeader.setSelected(true);
     }
 
     @Override

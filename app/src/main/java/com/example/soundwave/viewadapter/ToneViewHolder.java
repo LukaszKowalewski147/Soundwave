@@ -15,8 +15,11 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
 
     ConstraintLayout parentLayout;
     TextView toneName;
+    TextView toneFrequencyHeader;
     TextView toneFrequency;
+    TextView toneEnvelopeHeader;
     TextView toneEnvelope;
+    TextView toneTimbreHeader;
     TextView toneTimbre;
     TextView toneVolumeHeader;
     TextView toneVolume;
@@ -37,8 +40,11 @@ public class ToneViewHolder extends RecyclerView.ViewHolder {
 
         parentLayout = itemView.findViewById(R.id.parent_tone_layout);
         toneName = itemView.findViewById(R.id.tone_name);
+        toneFrequencyHeader = itemView.findViewById(R.id.tone_details_frequency_header);
         toneFrequency = itemView.findViewById(R.id.tone_details_frequency);
+        toneEnvelopeHeader = itemView.findViewById(R.id.tone_details_envelope_preset_header);
         toneEnvelope = itemView.findViewById(R.id.tone_details_envelope_preset);
+        toneTimbreHeader = itemView.findViewById(R.id.tone_details_timbre_preset_header);
         toneTimbre = itemView.findViewById(R.id.tone_details_timbre_preset);
         toneVolumeHeader = itemView.findViewById(R.id.tone_details_volume_header);
         toneVolume = itemView.findViewById(R.id.tone_details_volume);
