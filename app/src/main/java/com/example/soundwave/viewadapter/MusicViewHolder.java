@@ -15,6 +15,7 @@ public class MusicViewHolder extends RecyclerView.ViewHolder {
 
     ConstraintLayout parentLayout;
     TextView musicName;
+    TextView musicSampleRateHeader;
     TextView musicSampleRate;
     TextView musicDuration;
     ImageButton musicDeleteBtn;
@@ -27,6 +28,7 @@ public class MusicViewHolder extends RecyclerView.ViewHolder {
 
         parentLayout = itemView.findViewById(R.id.parent_music_layout);
         musicName = itemView.findViewById(R.id.music_name);
+        musicSampleRateHeader = itemView.findViewById(R.id.music_details_sample_rate_header);
         musicSampleRate = itemView.findViewById(R.id.music_details_sample_rate);
         musicDuration = itemView.findViewById(R.id.music_details_duration);
         musicDeleteBtn = itemView.findViewById(R.id.music_delete_btn);

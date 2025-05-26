@@ -76,6 +76,9 @@ public class MusicViewAdapter extends RecyclerView.Adapter<MusicViewHolder> {
         });
 
         holder.musicDownloadBtn.setOnClickListener(v -> listener.onDownloadClick(music));
+
+        //  Prepare headers for marquee effect
+        holder.musicSampleRateHeader.setSelected(true);
     }
 
     @Override
