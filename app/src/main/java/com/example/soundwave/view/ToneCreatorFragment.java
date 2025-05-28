@@ -157,6 +157,8 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
         binding.toneCreatorOvertonesLayout.setVisibility(View.GONE);
         binding.toneCreatorOvertonesPreset.setVisibility(View.GONE);
 
+        prepareMarqueeEffect();
+
         manageToneDetails(null);
     }
 
@@ -659,6 +661,25 @@ public class ToneCreatorFragment extends Fragment implements OnFragmentExitListe
                 binding.toneCreatorEnvelopePresetSpinner.setSelection(viewModel.getEnvelopePresetPosition());
             }
         });
+    }
+
+    private void prepareMarqueeEffect() {
+        //  Prepare text for marquee effect
+        binding.toneCreatorSampleRateHeader.setSelected(true);
+        binding.toneCreatorEnvelopeHeader.setSelected(true);
+        binding.toneCreatorDurationHeader.setSelected(true);
+        binding.toneCreatorFrequencyHeader.setSelected(true);
+        binding.toneCreatorVolumeHeader.setSelected(true);
+        binding.toneCreatorControlPanelHeader.setSelected(true);
+        binding.toneCreatorToneDetailsHeader.setSelected(true);
+        binding.toneCreatorToneDetailsSampleRateHeader.setSelected(true);
+        binding.toneCreatorToneDetailsSampleRate.setSelected(true);
+        binding.toneCreatorToneDetailsFundamentalFrequencyHeader.setSelected(true);
+        binding.toneCreatorToneDetailsFundamentalFrequency.setSelected(true);
+        binding.toneCreatorToneDetailsEnvelopePresetHeader.setSelected(true);
+        binding.toneCreatorToneDetailsEnvelopePreset.setSelected(true);
+        binding.toneCreatorToneDetailsTimbrePresetHeader.setSelected(true);
+        binding.toneCreatorToneDetailsTimbrePreset.setSelected(true);
     }
 
     private void takeResetAction() {
